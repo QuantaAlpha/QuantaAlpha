@@ -1,0 +1,30 @@
+planning:
+  # 是否启用“规划并行”功能：在第一轮把初始方向扩展成 N 条探索方向
+  enabled: true
+  # 并行方向数量：planning 会生成这么多条探索方向（每条方向独立循环）
+  num_directions: 2
+  # 规划阶段最大重试次数：当 LLM 输出不符合 JSON 规范时会重试
+  max_attempts: 5
+  # 是否使用 LLM 生成方向：true=调用大模型；false=只使用 fallback
+  use_llm: true
+  # 当 LLM 失败时是否允许 fallback：true=使用内置方向模板补齐
+  allow_fallback: true
+  # 规划提示词文件路径：相对 qlib_rd_loop 目录
+  prompt_file: planning_prompts.yaml
+
+execution:
+  # 最大循环轮数：与 steps_per_loop 相乘得到 step_n（当 step_n 未显式给出时）
+  max_loops: 2
+  # 每轮步骤数：固定为 5（propose/construct/calculate/backtest/feedback）
+  steps_per_loop: 5
+  # 总步数（优先级最高）：如果设置，则覆盖 max_loops * steps_per_loop
+  step_n: null
+  # 是否使用本地环境回测：true=本地，false=Docker
+  use_local: true
+  # 是否多进程并行运行各分支：true=每条方向独立进程
+  parallel_execution: true
+  # 分支日志根目录：仅在并行规划开启且分支>1时生效
+  branch_log_root: log
+  # 分支日志前缀：日志目录名格式为 {prefix}_{index}
+  branch_log_prefix: branch
+

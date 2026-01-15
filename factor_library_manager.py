@@ -207,7 +207,9 @@ class FactorLibraryManager:
         is_sota: bool = False,
         max_correlation_with_alpha158: Optional[float] = None,
         initial_direction: Optional[str] = None,
-        factor_implementation_code: Optional[str] = None
+        factor_implementation_code: Optional[str] = None,
+        user_initial_direction: Optional[str] = None,
+        planning_direction: Optional[str] = None,
     ) -> str:
         """
         添加因子到库中
@@ -249,7 +251,12 @@ class FactorLibraryManager:
             "experiment_id": experiment_id,
             "round_number": round_number,
             "hypothesis": hypothesis or "",
+            # planning 分支方向（如果启用 planning 则为分支方向，否则等同用户输入）
             "initial_direction": initial_direction or "",
+            # 用户最初输入（始终记录）
+            "user_initial_direction": user_initial_direction or "",
+            # 显式保存 planning 方向字段，方便后续区分
+            "planning_direction": planning_direction or "",
             "is_sota": is_sota,
             "quality": quality,
             "backtest_metrics": {
@@ -289,7 +296,9 @@ class FactorLibraryManager:
         round_number: int,
         hypothesis: Optional[str] = None,
         feedback: Optional[Any] = None,
-        initial_direction: Optional[str] = None
+        initial_direction: Optional[str] = None,
+        user_initial_direction: Optional[str] = None,
+        planning_direction: Optional[str] = None,
     ):
         """
         从实验对象中添加所有因子
@@ -345,7 +354,9 @@ class FactorLibraryManager:
                 factor_description=factor_description,
                 backtest_result=backtest_result,
                 is_sota=is_sota,
-                initial_direction=initial_direction
+                initial_direction=initial_direction,
+                user_initial_direction=user_initial_direction,
+                planning_direction=planning_direction,
             )
     
     def get_factors_by_quality(self, quality: str) -> List[Dict]:

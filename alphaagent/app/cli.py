@@ -6,9 +6,16 @@ This will
 - autoamtically load dotenv
 """
 
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv(".env")
+# Prefer AlphaAgent root .env, fallback to current working directory .env
+_alphaagent_root = Path(__file__).resolve().parents[3]
+_env_path = _alphaagent_root / ".env"
+if _env_path.exists():
+    load_dotenv(_env_path)
+else:
+    load_dotenv(".env")
 # 1) Make sure it is at the beginning of the script so that it will load dotenv before initializing BaseSettings.
 # 2) The ".env" argument is necessary to make sure it loads `.env` from the current directory.
 

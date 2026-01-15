@@ -183,8 +183,9 @@ class AlphaAgentLoop(LoopBase, metaclass=LoopMeta):
             if prev_out.get("factor_propose"):
                 hypothesis_text = str(prev_out["factor_propose"])
             
-            # 获取初始方向
-            initial_direction = getattr(self, 'potential_direction', None)
+            # 获取初始方向（用户输入 + planning 分支方向）
+            planning_direction = getattr(self, 'potential_direction', None)
+            user_initial_direction = getattr(self, 'user_initial_direction', None)
             
             # 创建因子库管理器并保存因子
             library_path = project_root / "all_factors_library.json"
@@ -195,7 +196,9 @@ class AlphaAgentLoop(LoopBase, metaclass=LoopMeta):
                 round_number=round_number,
                 hypothesis=hypothesis_text,
                 feedback=feedback,
-                initial_direction=initial_direction
+                initial_direction=planning_direction,
+                user_initial_direction=user_initial_direction,
+                planning_direction=planning_direction,
             )
             logger.info(f"已保存因子到统一因子库: {library_path}")
         except Exception as e:
