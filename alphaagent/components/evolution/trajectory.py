@@ -155,20 +155,25 @@ class TrajectoryPool:
     - Persist trajectories to disk
     """
     
-    def __init__(self, save_path: Optional[Path] = None):
+    def __init__(self, save_path: Optional[Path] = None, fresh_start: bool = True):
         """
         Initialize trajectory pool.
         
         Args:
             save_path: Path to save/load pool state. If None, pool is memory-only.
+            fresh_start: If True, start with empty pool even if save_path exists.
+                        If False, load existing data from save_path.
         """
         self.save_path = Path(save_path) if save_path else None
         self._trajectories: dict[str, StrategyTrajectory] = {}
         self._by_direction: dict[int, list[str]] = {}  # direction_id -> [traj_ids]
         self._by_phase: dict[RoundPhase, list[str]] = {p: [] for p in RoundPhase}
         
-        if self.save_path and self.save_path.exists():
+        # Only load existing data if fresh_start is False
+        if not fresh_start and self.save_path and self.save_path.exists():
             self._load()
+        elif fresh_start and self.save_path and self.save_path.exists():
+            logger.info(f"Fresh start: ignoring existing trajectory pool at {self.save_path}")
     
     def add(self, trajectory: StrategyTrajectory) -> str:
         """
@@ -385,4 +390,20 @@ class TrajectoryPool:
             "successful_trajectories": sum(1 for t in self._trajectories.values() if t.is_successful()),
             "latest_round": self.get_latest_round_idx(),
         }
+    
+    def clear(self):
+        """Clear all trajectories from the pool."""
+        self._trajectories.clear()
+        self._by_direction.clear()
+        self._by_phase = {p: [] for p in RoundPhase}
+        logger.info("Trajectory pool cleared")
+    
+    def cleanup_file(self):
+        """Delete the trajectory pool file from disk."""
+        if self.save_path and self.save_path.exists():
+            try:
+                self.save_path.unlink()
+                logger.info(f"Deleted trajectory pool file: {self.save_path}")
+            except Exception as e:
+                logger.warning(f"Failed to delete trajectory pool file: {e}")
 

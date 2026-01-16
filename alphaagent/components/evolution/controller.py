@@ -50,6 +50,10 @@ class EvolutionConfig:
     # Path to evolution prompts
     mutation_prompt_path: Optional[str] = None
     crossover_prompt_path: Optional[str] = None
+    
+    # Whether to start with an empty trajectory pool
+    # 是否从空轨迹池开始（忽略已有数据）
+    fresh_start: bool = True
 
 
 class EvolutionController:
@@ -82,9 +86,9 @@ class EvolutionController:
         """
         self.config = config
         
-        # Initialize trajectory pool
+        # Initialize trajectory pool with fresh_start option
         pool_path = Path(config.pool_save_path) if config.pool_save_path else None
-        self.pool = TrajectoryPool(save_path=pool_path)
+        self.pool = TrajectoryPool(save_path=pool_path, fresh_start=config.fresh_start)
         
         # Initialize operators
         mutation_path = Path(config.mutation_prompt_path) if config.mutation_prompt_path else None

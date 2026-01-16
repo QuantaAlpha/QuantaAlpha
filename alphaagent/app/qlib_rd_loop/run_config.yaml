@@ -17,10 +17,10 @@ planning:
   enabled: true
   # Number of parallel directions: planning generates this many exploration directions
   # 并行方向数量：规划生成多少个探索方向
-  num_directions: 2
+  num_directions: 10  #超参
   # Maximum retry attempts for planning: retries when LLM output doesn't match JSON format
   # 规划最大重试次数：当LLM输出不符合JSON格式时重试
-  max_attempts: 5
+  max_attempts: 5 
   # Whether to use LLM to generate directions: true=call LLM; false=only use fallback
   # 是否使用LLM生成方向：true=调用LLM；false=仅使用备用方案
   use_llm: true
@@ -81,16 +81,16 @@ evolution:
   # Flow: round 0 = original, round 1 = mutation, round 2 = crossover, ...
   # 最大进化轮数（包括原始轮、变异轮和交叉轮）
   # 流程：轮次0=原始轮，轮次1=变异轮，轮次2=交叉轮，...
-  max_rounds: 7
+  max_rounds: 6  #超参
   
   # Crossover operation parameters
   # crossover_size: Number of parents selected per crossover operation
   # 交叉操作参数
   # crossover_size: 每次交叉操作选择的父代数量
-  crossover_size: 2
+  crossover_size: 2  #超参  or 3
   # crossover_n: Number of combinations generated per crossover round (determines parallelism after crossover)
   # crossover_n: 每轮交叉生成的组合数量（决定交叉后的并行度）
-  crossover_n: 2
+  crossover_n: 10  #超参
   
   # Enable parallel execution within each evolution phase
   # When true:
@@ -127,6 +127,22 @@ evolution:
   # best: 优先选择表现最好的轨迹
   # random: 随机选择
   parent_selection_strategy: best
+  
+  # Fresh start: whether to start with an empty trajectory pool
+  # true: Each experiment starts with a clean slate (recommended for independent experiments)
+  # false: Load existing trajectory pool if available (for resuming experiments)
+  # 是否从空轨迹池开始
+  # true: 每次实验从头开始，不加载历史数据（推荐用于独立实验）
+  # false: 如果存在历史数据则加载（用于恢复实验）
+  fresh_start: true
+  
+  # Cleanup on finish: whether to delete trajectory pool file after experiment completes
+  # true: Delete trajectory pool file to save disk space
+  # false: Keep trajectory pool file for later analysis
+  # 实验结束后是否清理轨迹池文件
+  # true: 删除轨迹池文件以节省磁盘空间
+  # false: 保留轨迹池文件供后续分析
+  cleanup_on_finish: false
 
 
 # ============================================================

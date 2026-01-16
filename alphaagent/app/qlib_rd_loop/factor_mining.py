@@ -358,10 +358,18 @@ def run_evolution_loop(
     crossover_n = int(evolution_cfg.get("crossover_n", 3))
     steps_per_loop = int(exec_cfg.get("steps_per_loop", 5))
     use_local = bool(exec_cfg.get("use_local", True))
-    log_root = exec_cfg.get("branch_log_root") or "log"
+    
+    # 使用当前实验的日志目录作为轨迹池根目录，确保多实验隔离
+    # logger.log_trace_path 是每个实验的专属目录（如 log/2026-01-16_10-01-59-778290/）
+    log_root = str(logger.log_trace_path)
     
     # 并行配置
     parallel_enabled = bool(evolution_cfg.get("parallel_enabled", False))
+    
+    # 轨迹池配置：是否每次从空池开始
+    fresh_start = bool(evolution_cfg.get("fresh_start", True))
+    # 实验结束后是否清理轨迹池文件
+    cleanup_on_finish = bool(evolution_cfg.get("cleanup_on_finish", False))
     
     # 生成初始方向
     prompt_file = planning_cfg.get("prompt_file") or "planning_prompts.yaml"
@@ -384,8 +392,11 @@ def run_evolution_loop(
         logger.info(f"  方向 {i}: {d}")
     
     # 创建进化控制器
+    # 轨迹池文件保存在实验专属目录下，确保多实验隔离
     pool_save_path = Path(log_root) / "trajectory_pool.json"
     mutation_prompt_path = Path(__file__).parent / "evolution_prompts.yaml"
+    
+    logger.info(f"轨迹池路径: {pool_save_path} (fresh_start={fresh_start})")
     
     config = EvolutionConfig(
         num_directions=len(directions),
@@ -398,6 +409,7 @@ def run_evolution_loop(
         pool_save_path=str(pool_save_path),
         mutation_prompt_path=str(mutation_prompt_path) if mutation_prompt_path.exists() else None,
         crossover_prompt_path=str(mutation_prompt_path) if mutation_prompt_path.exists() else None,
+        fresh_start=fresh_start,  # 传递 fresh_start 参数
     )
     
     controller = EvolutionController(config)
@@ -525,6 +537,11 @@ def run_evolution_loop(
         logger.info(f"  {i+1}. {t.trajectory_id}: phase={t.phase.value}, RankIC={metric_str}")
     logger.info(f"轨迹池统计: {controller.pool.get_statistics()}")
     logger.info("="*60)
+    
+    # 实验结束后清理轨迹池文件（如果配置了 cleanup_on_finish）
+    if cleanup_on_finish:
+        logger.info("清理轨迹池文件...")
+        controller.pool.cleanup_file()
 
 
 @force_timeout()
