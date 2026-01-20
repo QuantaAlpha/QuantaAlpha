@@ -1,0 +1,32 @@
+[
+  {
+    "model": "Claude",
+    "num_factors": 80,
+    "Rank_IC": 0.10620926892164985,
+    "Rank_ICIR": 0.759645262301024,
+    "annualized_return": 0.16475554923506824,
+    "information_ratio": 2.2739059967406856,
+    "max_drawdown": -0.081370505068729,
+    "calmar_ratio": 2.0247576083730667
+  },
+  {
+    "model": "DeepSeek",
+    "num_factors": 80,
+    "Rank_IC": 0.09193119688134152,
+    "Rank_ICIR": 0.6449872760245825,
+    "annualized_return": 0.14512811638362566,
+    "information_ratio": 1.9229839478713282,
+    "max_drawdown": -0.0984204386293539,
+    "calmar_ratio": 1.4745729485129646
+  },
+  {
+    "model": "GPT",
+    "num_factors": 80,
+    "Rank_IC": 0.10840954086079717,
+    "Rank_ICIR": 0.7466837210701601,
+    "annualized_return": 0.16539173780092362,
+    "information_ratio": 2.123874593038607,
+    "max_drawdown": -0.11727178778755132,
+    "calmar_ratio": 1.4103284423406766
+  }
+]

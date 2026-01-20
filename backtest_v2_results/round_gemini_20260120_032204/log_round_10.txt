@@ -1,0 +1,195 @@
+✓ 已加载环境变量: /home/tjxy/quantagent/AlphaAgent/.env
+2026-01-20 03:46:17,692 - INFO - Note: detected 112 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-01-20 03:46:17,692 - INFO - Note: NumExpr detected 112 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-01-20 03:46:17,692 - INFO - NumExpr defaulting to 16 threads.
+2026-01-20 03:46:17,816 - INFO - ✓ 加载配置文件: backtest_v2/config.yaml
+[4041679:MainThread](2026-01-20 03:46:18,450) INFO - qlib.Initialization - [config.py:452] - default_conf: client.
+[4041679:MainThread](2026-01-20 03:46:18,830) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[4041679:MainThread](2026-01-20 03:46:18,830) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/home/tjxy/.qlib/qlib_data/cn_data')}
+2026-01-20 03:46:18,830 - INFO - ✓ Qlib 初始化完成: /home/tjxy/.qlib/qlib_data/cn_data
+
+======================================================================
+🚀 开始回测: round_10_random30_gemini_123
+📁 因子库: /home/tjxy/quantagent/AlphaAgent/factor_library/round_10_random30_gemini_123.json
+======================================================================
+
+📊 第一步：加载因子...
+2026-01-20 03:46:18,830 - INFO - 📊 加载因子源: custom
+2026-01-20 03:46:18,832 - INFO -   ✓ 加载自定义因子: 30 个 (使用自定义计算器)
+[4041679:MainThread](2026-01-20 03:46:18,833) INFO - qlib.Initialization - [config.py:452] - default_conf: client.
+[4041679:MainThread](2026-01-20 03:46:18,833) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[4041679:MainThread](2026-01-20 03:46:18,834) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/home/tjxy/.qlib/qlib_data/cn_data')}
+  ✓ Qlib 兼容因子: 0 个
+  ✓ 需要计算的自定义因子: 30 个
+
+🔧 第二步：计算自定义因子...
+  获取股票数据...
+2026-01-20 03:46:20,129 - INFO - ✓ 加载股票数据: 727818 行
+2026-01-20 03:46:20,130 - INFO -   ✓ 加载股票数据: 727818 条记录
+2026-01-20 03:46:20,395 - INFO - 数据准备完成: 727818 行, 列: ['$open', '$high', '$low', '$close', '$volume', '$vwap', '$return']
+2026-01-20 03:46:20,395 - INFO -   计算因子 [1/30]: LVIF_Reversal_Conviction_20D
+2026-01-20 03:46:22,543 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 716833/727818)
+2026-01-20 03:46:22,543 - INFO -   计算因子 [2/30]: MSID_Efficiency_Momentum_20D
+2026-01-20 03:46:24,862 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 720985/727818)
+2026-01-20 03:46:24,863 - INFO -   计算因子 [3/30]: IER_Tactical_Reversal_20D
+2026-01-20 03:46:26,968 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 717146/727818)
+2026-01-20 03:46:26,969 - INFO -   计算因子 [4/30]: LBMR_Exhaustion_Factor_10D
+2026-01-20 03:46:29,296 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 716772/727818)
+2026-01-20 03:46:29,296 - INFO -   计算因子 [5/30]: Fragile_Floor_Liquidity_Failure_15D
+2026-01-20 03:46:31,611 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716763/727818)
+2026-01-20 03:46:31,611 - INFO -   计算因子 [6/30]: Gap_Noise_Efficiency_Factor
+2026-01-20 03:46:33,712 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 716850/727818)
+2026-01-20 03:46:33,712 - INFO -   计算因子 [7/30]: Institutional_Support_Ratio_10D
+2026-01-20 03:46:35,942 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 719646/727818)
+2026-01-20 03:46:35,942 - INFO -   计算因子 [8/30]: Short_Term_Liquidity_Stress_Rank
+2026-01-20 03:46:38,015 - INFO -     ✓ 从 cache_location 加载 (有效数据: 718739/727818)
+2026-01-20 03:46:38,015 - INFO -   计算因子 [9/30]: Inst_Absorption_Diffusion_5D
+2026-01-20 03:46:40,206 - INFO -     ✓ 从 cache_location 加载 (有效数据: 718445/727818)
+2026-01-20 03:46:40,206 - INFO -   计算因子 [10/30]: Residual_Acceleration_Shadow_Factor_10D
+2026-01-20 03:46:42,391 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717375/727818)
+2026-01-20 03:46:42,391 - INFO -   计算因子 [11/30]: LISP_Liquidity_Exhaustion_10D
+2026-01-20 03:46:44,498 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717197/727818)
+2026-01-20 03:46:44,499 - INFO -   计算因子 [12/30]: MSID_Gap_Volatility_Filter_20D
+2026-01-20 03:46:46,846 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716959/727818)
+2026-01-20 03:46:46,846 - INFO -   计算因子 [13/30]: Idiosyncratic_Acceleration_Efficiency
+2026-01-20 03:46:48,884 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 715165/727818)
+2026-01-20 03:46:48,884 - INFO -   计算因子 [14/30]: Normalized_IEVS_Synergy
+2026-01-20 03:46:51,061 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 710261/727818)
+2026-01-20 03:46:51,061 - INFO -   计算因子 [15/30]: IVES_Simplified_Efficiency_20D
+2026-01-20 03:46:53,310 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 721091/727818)
+2026-01-20 03:46:53,310 - INFO -   计算因子 [16/30]: IILS_Institutional_Discovery_5D
+2026-01-20 03:46:55,469 - INFO -     ✓ 从 cache_location 加载 (有效数据: 718445/727818)
+2026-01-20 03:46:55,469 - INFO -   计算因子 [17/30]: Asymmetry_Decay_Pivot
+2026-01-20 03:46:57,485 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716065/727818)
+2026-01-20 03:46:57,485 - INFO -   计算因子 [18/30]: Efficiency_Volume_ZScore_Combo
+2026-01-20 03:46:59,682 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 710261/727818)
+2026-01-20 03:46:59,682 - INFO -   计算因子 [19/30]: Informed_Accumulation_Filter_8D
+2026-01-20 03:47:01,712 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 718140/727818)
+2026-01-20 03:47:01,712 - INFO -   计算因子 [20/30]: Exhaustion_Gated_Illiquidity_Factor
+2026-01-20 03:47:03,906 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 721091/727818)
+2026-01-20 03:47:03,907 - INFO -   计算因子 [21/30]: Institutional_Floor_Reversion_5D
+2026-01-20 03:47:06,051 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716878/727818)
+2026-01-20 03:47:06,051 - INFO -   计算因子 [22/30]: ILE_Informed_Exhaustion_20D
+2026-01-20 03:47:08,068 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 715722/727818)
+2026-01-20 03:47:08,068 - INFO -   计算因子 [23/30]: MSID_Integrated_Discovery_Factor
+2026-01-20 03:47:10,251 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 716959/727818)
+2026-01-20 03:47:10,251 - INFO -   计算因子 [24/30]: Normalized_ICE_Rank_10D
+2026-01-20 03:47:12,422 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 717818/727818)
+2026-01-20 03:47:12,422 - INFO -   计算因子 [25/30]: Institutional_Absorption_Index
+2026-01-20 03:47:14,465 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716959/727818)
+2026-01-20 03:47:14,465 - INFO -   计算因子 [26/30]: Regime_Switching_Exhaustion_Index
+2026-01-20 03:47:16,495 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717205/727818)
+2026-01-20 03:47:16,495 - INFO -   计算因子 [27/30]: Gap_VWAP_Divergence_Zscore
+2026-01-20 03:47:18,833 - INFO -     ✓ 从 cache_location 加载 (有效数据: 711372/727818)
+2026-01-20 03:47:18,833 - INFO -   计算因子 [28/30]: Institutional_Conviction_Reversal
+2026-01-20 03:47:20,855 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 716958/727818)
+2026-01-20 03:47:20,855 - INFO -   计算因子 [29/30]: Institutional_Cohesion_Gap_Rank
+2026-01-20 03:47:23,021 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 716461/727818)
+2026-01-20 03:47:23,021 - INFO -   计算因子 [30/30]: Ranked_VSA_Institutional_Signal
+2026-01-20 03:47:25,194 - INFO -     ✓ 从 MD5 缓存加载 (有效数据: 720877/727818)
+2026-01-20 03:47:25,194 - INFO -   因子计算完成: 成功 30, 失败 0
+2026-01-20 03:47:25,194 - INFO -     - cache_location 命中: 12
+2026-01-20 03:47:25,194 - INFO -     - MD5 缓存命中: 18
+2026-01-20 03:47:25,194 - INFO -     - 重新计算: 0
+2026-01-20 03:47:25,266 - INFO -   结果 DataFrame: (727818, 30), 索引类型: MultiIndex
+2026-01-20 03:47:25,272 - INFO -   ✓ 因子计算完成: 30 个因子, 727818 行数据
+  ✓ 成功计算 30 个因子
+
+📈 第三步：创建数据集...
+2026-01-20 03:47:25,276 - INFO -   检测到预计算因子: 30 个因子, 727818 行数据
+  使用自定义因子模式 (预计算因子值)...
+  计算因子数量: 30
+  计算标签...
+  标签表达式: Ref($close, -2) / Ref($close, -1) - 1
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+/home/tjxy/quantagent/venv/lib/python3.12/site-packages/mlflow/tracking/_tracking_service/utils.py:178: FutureWarning: The filesystem tracking backend (e.g., './mlruns') will be deprecated in February 2026. Consider transitioning to a database backend (e.g., 'sqlite:///mlflow.db') to take advantage of the latest MLflow features. See https://github.com/mlflow/mlflow/issues/18534 for more details and migration guidance. For migrating existing data, https://github.com/mlflow/mlflow-export-import can be used.
+  return FileStore(store_uri, store_uri)
+[4041679:MainThread](2026-01-20 03:47:48,451) WARNING - qlib.workflow - [expm.py:231] - No valid experiment found. Create a new experiment with name round_10_random30_gemini_123.
+[4041679:MainThread](2026-01-20 03:47:48,461) INFO - qlib.workflow - [exp.py:258] - Experiment 115331896970006221 starts running ...
+[4041679:MainThread](2026-01-20 03:47:48,518) INFO - qlib.workflow - [recorder.py:345] - Recorder d08e8ec1b48d4f58bffd2e9c678b81ec starts running under Experiment 115331896970006221 ...
+[4041679:MainThread](2026-01-20 03:47:50,931) INFO - qlib.workflow - [record_temp.py:198] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 115331896970006221
+  标签数据行数: 727818
+  总因子数量: 30
+  数据行数: 727818
+  应用数据预处理...
+  预处理后数据行数: 716950
+  训练集: ['2016-01-01', '2020-12-31']
+  验证集: ['2021-01-01', '2021-12-31']
+  测试集: ['2022-01-01', '2025-12-26']
+
+🤖 第四步：训练模型并执行回测...
+ModuleNotFoundError.  PyTorch models are skipped (optional: maybe installing pytorch can fix it).
+  训练 LightGBM 模型...
+Training until validation scores don't improve for 50 rounds
+[20]	train's l2: 0.0831473	valid's l2: 0.0831473
+[40]	train's l2: 0.0830866	valid's l2: 0.0830866
+[60]	train's l2: 0.0830496	valid's l2: 0.0830496
+[80]	train's l2: 0.0830227	valid's l2: 0.0830227
+[100]	train's l2: 0.0830045	valid's l2: 0.0830045
+[120]	train's l2: 0.0830013	valid's l2: 0.0830013
+[140]	train's l2: 0.0830013	valid's l2: 0.0830013
+[160]	train's l2: 0.0830013	valid's l2: 0.0830013
+Early stopping, best iteration is:
+[116]	train's l2: 0.0830013	valid's l2: 0.0830013
+  ✓ 模型训练完成 (耗时: 1.96秒)
+  生成预测...
+  ✓ 预测数据形状: (716950,)
+'The following are prediction results of the LGBModel model.'
+                          score
+instrument datetime            
+SH600000   2016-01-04 -0.004266
+           2016-01-05 -0.007170
+           2016-01-06 -0.012313
+           2016-01-07 -0.005849
+           2016-01-08  0.003190
+  计算 IC 指标...
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 66.55it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 66.07it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 69.66it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 69.22it/s]
+{'IC': np.float64(0.0659777432324181),
+ 'ICIR': np.float64(0.4227223013925969),
+ 'Rank IC': np.float64(0.06457747368928983),
+ 'Rank ICIR': np.float64(0.4172619574010844)}
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 400.64it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 387.97it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 674.33it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 641.82it/s]
+  ✓ IC=0.065978, ICIR=0.422722
+  ✓ Rank IC=0.064577, Rank ICIR=0.417262
+  执行组合回测...
+  ✓ 股票数量: 394
+  检查并过滤价格异常数据...
+[4041679:MainThread](2026-01-20 03:47:54,356) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+  ⚠️ 发现 350 条价格为0/NaN的记录
+[4041679:MainThread](2026-01-20 03:47:56,091) WARNING - qlib.online operator - [exchange.py:219] - $open field data contains nan.
+[4041679:MainThread](2026-01-20 03:47:56,092) WARNING - qlib.online operator - [exchange.py:219] - $open field data contains nan.
+[4041679:MainThread](2026-01-20 03:47:58,419) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x7f7d64112b70>
+backtest loop:   0%|          | 0/966 [00:00<?, ?it/s]backtest loop:   1%|          | 10/966 [00:00<00:09, 97.44it/s]backtest loop:   2%|▏         | 21/966 [00:00<00:09, 103.32it/s]backtest loop:   3%|▎         | 32/966 [00:00<00:08, 104.88it/s]backtest loop:   4%|▍         | 43/966 [00:00<00:08, 105.46it/s]backtest loop:   6%|▌         | 54/966 [00:00<00:09, 101.31it/s]backtest loop:   7%|▋         | 65/966 [00:00<00:08, 103.23it/s]backtest loop:   8%|▊         | 76/966 [00:00<00:08, 104.28it/s]backtest loop:   9%|▉         | 87/966 [00:00<00:08, 100.34it/s]backtest loop:  10%|█         | 98/966 [00:00<00:08, 98.01it/s] backtest loop:  11%|█▏        | 109/966 [00:01<00:08, 100.32it/s]backtest loop:  12%|█▏        | 120/966 [00:01<00:08, 101.85it/s]backtest loop:  14%|█▎        | 131/966 [00:01<00:09, 89.21it/s] backtest loop:  15%|█▍        | 141/966 [00:01<00:10, 78.62it/s]backtest loop:  16%|█▌        | 150/966 [00:01<00:11, 71.83it/s]backtest loop:  17%|█▋        | 161/966 [00:01<00:10, 80.10it/s]backtest loop:  18%|█▊        | 172/966 [00:01<00:09, 83.57it/s]backtest loop:  19%|█▉        | 183/966 [00:01<00:08, 89.38it/s]backtest loop:  20%|██        | 194/966 [00:02<00:08, 94.14it/s]backtest loop:  21%|██        | 205/966 [00:02<00:07, 97.64it/s]backtest loop:  22%|██▏       | 215/966 [00:02<00:08, 92.10it/s]backtest loop:  23%|██▎       | 226/966 [00:02<00:07, 95.88it/s]backtest loop:  25%|██▍       | 237/966 [00:02<00:07, 94.42it/s]backtest loop:  26%|██▌       | 248/966 [00:02<00:07, 97.77it/s]backtest loop:  27%|██▋       | 259/966 [00:02<00:07, 100.39it/s]backtest loop:  28%|██▊       | 270/966 [00:02<00:06, 102.04it/s]backtest loop:  29%|██▉       | 281/966 [00:02<00:06, 99.23it/s] backtest loop:  30%|███       | 291/966 [00:03<00:06, 99.34it/s]backtest loop:  31%|███▏      | 302/966 [00:03<00:06, 101.03it/s]backtest loop:  32%|███▏      | 313/966 [00:03<00:06, 97.23it/s] backtest loop:  33%|███▎      | 323/966 [00:03<00:06, 94.87it/s]backtest loop:  35%|███▍      | 334/966 [00:03<00:06, 97.94it/s]backtest loop:  36%|███▌      | 345/966 [00:03<00:06, 100.33it/s]backtest loop:  37%|███▋      | 356/966 [00:03<00:06, 98.34it/s] backtest loop:  38%|███▊      | 366/966 [00:03<00:06, 98.66it/s]backtest loop:  39%|███▉      | 377/966 [00:03<00:05, 101.22it/s]backtest loop:  40%|████      | 388/966 [00:04<00:05, 102.56it/s]backtest loop:  41%|████▏     | 399/966 [00:04<00:05, 103.27it/s]backtest loop:  42%|████▏     | 410/966 [00:04<00:05, 99.49it/s] backtest loop:  44%|████▎     | 421/966 [00:04<00:05, 100.95it/s]backtest loop:  45%|████▍     | 432/966 [00:04<00:05, 102.27it/s]backtest loop:  46%|████▌     | 443/966 [00:04<00:05, 103.14it/s]backtest loop:  47%|████▋     | 454/966 [00:04<00:05, 99.48it/s] backtest loop:  48%|████▊     | 464/966 [00:04<00:05, 91.93it/s]backtest loop:  49%|████▉     | 475/966 [00:04<00:05, 95.24it/s]backtest loop:  50%|█████     | 485/966 [00:05<00:04, 96.34it/s]backtest loop:  51%|█████▏    | 496/966 [00:05<00:04, 98.48it/s]backtest loop:  52%|█████▏    | 506/966 [00:05<00:04, 98.25it/s]backtest loop:  53%|█████▎    | 516/966 [00:05<00:04, 98.51it/s]backtest loop:  54%|█████▍    | 526/966 [00:05<00:04, 96.92it/s]backtest loop:  55%|█████▌    | 536/966 [00:05<00:04, 95.75it/s]backtest loop:  57%|█████▋    | 546/966 [00:05<00:04, 90.00it/s]backtest loop:  58%|█████▊    | 556/966 [00:05<00:04, 90.61it/s]backtest loop:  59%|█████▊    | 567/966 [00:05<00:04, 91.21it/s]backtest loop:  60%|█████▉    | 578/966 [00:06<00:04, 95.12it/s]backtest loop:  61%|██████    | 589/966 [00:06<00:03, 97.73it/s]backtest loop:  62%|██████▏   | 599/966 [00:06<00:03, 98.12it/s]backtest loop:  63%|██████▎   | 610/966 [00:06<00:03, 100.11it/s]backtest loop:  64%|██████▍   | 621/966 [00:06<00:03, 97.13it/s] backtest loop:  65%|██████▌   | 632/966 [00:06<00:03, 99.07it/s]backtest loop:  66%|██████▋   | 642/966 [00:06<00:03, 98.78it/s]backtest loop:  67%|██████▋   | 652/966 [00:06<00:03, 92.01it/s]backtest loop:  69%|██████▊   | 662/966 [00:06<00:03, 91.81it/s]backtest loop:  70%|██████▉   | 672/966 [00:07<00:03, 91.62it/s]backtest loop:  71%|███████   | 683/966 [00:07<00:02, 94.97it/s]backtest loop:  72%|███████▏  | 694/966 [00:07<00:02, 93.57it/s]backtest loop:  73%|███████▎  | 704/966 [00:07<00:02, 89.01it/s]backtest loop:  74%|███████▍  | 713/966 [00:07<00:03, 83.83it/s]backtest loop:  75%|███████▍  | 722/966 [00:07<00:03, 77.00it/s]backtest loop:  76%|███████▌  | 730/966 [00:07<00:03, 74.06it/s]backtest loop:  77%|███████▋  | 741/966 [00:07<00:02, 82.34it/s]backtest loop:  78%|███████▊  | 750/966 [00:07<00:02, 83.32it/s]backtest loop:  79%|███████▊  | 759/966 [00:08<00:02, 82.42it/s]backtest loop:  80%|███████▉  | 769/966 [00:08<00:02, 87.05it/s]backtest loop:  81%|████████  | 780/966 [00:08<00:02, 92.32it/s]backtest loop:  82%|████████▏ | 791/966 [00:08<00:01, 92.47it/s]backtest loop:  83%|████████▎ | 802/966 [00:08<00:01, 95.66it/s]backtest loop:  84%|████████▍ | 813/966 [00:08<00:01, 94.11it/s]backtest loop:  85%|████████▌ | 824/966 [00:08<00:01, 96.77it/s]backtest loop:  86%|████████▋ | 835/966 [00:08<00:01, 98.54it/s]backtest loop:  87%|████████▋ | 845/966 [00:08<00:01, 95.04it/s]backtest loop:  89%|████████▊ | 855/966 [00:09<00:01, 96.34it/s]backtest loop:  90%|████████▉ | 865/966 [00:09<00:01, 94.69it/s]backtest loop:  91%|█████████ | 876/966 [00:09<00:00, 98.13it/s]backtest loop:  92%|█████████▏| 887/966 [00:09<00:00, 96.60it/s]backtest loop:  93%|█████████▎| 898/966 [00:09<00:00, 99.57it/s]backtest loop:  94%|█████████▍| 909/966 [00:09<00:00, 97.56it/s]backtest loop:  95%|█████████▌| 920/966 [00:09<00:00, 100.16it/s]backtest loop:  96%|█████████▋| 931/966 [00:09<00:00, 97.97it/s] backtest loop:  98%|█████████▊| 942/966 [00:09<00:00, 100.53it/s]backtest loop:  99%|█████████▊| 953/966 [00:10<00:00, 102.49it/s]backtest loop: 100%|█████████▉| 964/966 [00:10<00:00, 103.80it/s]backtest loop: 100%|██████████| 966/966 [00:10<00:00, 95.16it/s] 
+[4041679:MainThread](2026-01-20 03:48:08,614) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
+  ✓ 组合回测完成 (耗时: 15.97秒)
+  ✓ 提取了组合策略指标
+
+======================================================================
+📈 回测结果:
+======================================================================
+
+【IC 指标】
+  IC:               0.065978
+  ICIR:             0.422722
+  Rank IC:          0.064577
+  Rank ICIR:        0.417262
+
+【策略指标】
+  年化收益:         0.0967
+  信息比率:         1.1225
+  最大回撤:         -0.1285
+  卡尔玛比率:       0.7521
+
+⏱️  总耗时: 110.83 秒
+======================================================================
+
+✓ 结果已保存到: backtest_v2_results/round_10_random30_gemini_123_backtest_metrics.json
+
+✓ 已追加到汇总: backtest_v2_results/batch_summary.json

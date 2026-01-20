@@ -1,0 +1,23 @@
+{
+  "experiment_name": "AA_random30_round5",
+  "factor_source": "custom",
+  "num_factors": 23,
+  "metrics": {
+    "IC": 0.060415845012708275,
+    "ICIR": 0.37662203627233976,
+    "Rank IC": 0.05930176970518722,
+    "Rank ICIR": 0.372112679924929,
+    "annualized_return": 0.09704947614760494,
+    "information_ratio": 1.1597548726031177,
+    "max_drawdown": -0.1125559855854158,
+    "calmar_ratio": 0.8622329202915346
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 898.5787539482117
+}

@@ -1,0 +1,142 @@
+✓ 已加载环境变量: /home/tjxy/quantagent/AlphaAgent/.env
+2026-01-20 04:13:57,691 - INFO - Note: detected 112 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-01-20 04:13:57,692 - INFO - Note: NumExpr detected 112 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-01-20 04:13:57,692 - INFO - NumExpr defaulting to 16 threads.
+2026-01-20 04:13:57,813 - INFO - ✓ 加载配置文件: backtest_v2/config.yaml
+[4093725:MainThread](2026-01-20 04:13:58,469) INFO - qlib.Initialization - [config.py:452] - default_conf: client.
+[4093725:MainThread](2026-01-20 04:13:59,022) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[4093725:MainThread](2026-01-20 04:13:59,022) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/home/tjxy/.qlib/qlib_data/cn_data')}
+2026-01-20 04:13:59,023 - INFO - ✓ Qlib 初始化完成: /home/tjxy/.qlib/qlib_data/cn_data
+
+======================================================================
+🚀 开始回测: AA_top80_RankIC_AA_claude_123_csi300
+📁 因子库: /home/tjxy/quantagent/AlphaAgent/factor_library/AA_top80_RankIC_AA_claude_123_csi300.json
+======================================================================
+
+📊 第一步：加载因子...
+2026-01-20 04:13:59,023 - INFO - 📊 加载因子源: custom
+2026-01-20 04:13:59,028 - INFO -   ✓ 加载自定义因子: 80 个 (使用自定义计算器)
+[4093725:MainThread](2026-01-20 04:13:59,030) INFO - qlib.Initialization - [config.py:452] - default_conf: client.
+[4093725:MainThread](2026-01-20 04:13:59,032) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[4093725:MainThread](2026-01-20 04:13:59,032) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/home/tjxy/.qlib/qlib_data/cn_data')}
+  ✓ Qlib 兼容因子: 0 个
+  ✓ 需要计算的自定义因子: 80 个
+
+🔧 第二步：计算自定义因子...
+  获取股票数据...
+2026-01-20 04:14:02,695 - INFO - ✓ 加载股票数据: 727818 行
+2026-01-20 04:14:02,695 - INFO -   ✓ 加载股票数据: 727818 条记录
+2026-01-20 04:14:02,956 - INFO - 数据准备完成: 727818 行, 列: ['$open', '$high', '$low', '$close', '$volume', '$vwap', '$return']
+2026-01-20 04:14:02,957 - INFO -   计算因子 [1/80]: ZScored_Eff5_VPC_Rank20
+2026-01-20 04:14:03.271 | WARNING  | alphaagent.oai.llm_utils:<module>:142 - azure.identity is not installed.
+2026-01-20 04:14:03.961 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-20 04:14:06,491 - INFO -     ✓ 计算成功 (有效数据: 715921/727818)
+2026-01-20 04:14:06,499 - INFO -   计算因子 [2/80]: Gated_Momentum_Efficiency_5D_20D
+2026-01-20 04:14:07,929 - INFO -     ✓ 计算成功 (有效数据: 716599/727818)
+2026-01-20 04:14:07,936 - INFO -   计算因子 [3/80]: Regime_Aware_Institutional_Velocity
+2026-01-20 04:14:10,943 - INFO -     ✓ 计算成功 (有效数据: 715921/727818)
+2026-01-20 04:14:10,955 - INFO -   计算因子 [4/80]: EMA_Deviation_Stability_LAPS_Factor
+2026-01-20 04:14:13,394 - INFO -     ✓ 从 cache_location 加载 (有效数据: 713599/727818)
+2026-01-20 04:14:13,394 - INFO -   计算因子 [5/80]: Ranked_EMA_Reversion_Exhaustion_Factor
+2026-01-20 04:14:33,680 - INFO -     ✓ 计算成功 (有效数据: 713041/727818)
+2026-01-20 04:14:33,686 - INFO -   计算因子 [6/80]: Momentum_Conviction_Stability_Factor
+2026-01-20 04:14:35,869 - INFO -     ✓ 从 cache_location 加载 (有效数据: 718149/727818)
+2026-01-20 04:14:35,869 - INFO -   计算因子 [7/80]: Institutional_Accumulation_Index
+2026-01-20 04:14:37,995 - INFO -     ✓ 从 cache_location 加载 (有效数据: 713742/727818)
+2026-01-20 04:14:37,995 - INFO -   计算因子 [8/80]: Volume_Conviction_Reversal_Signal
+2026-01-20 04:14:40,305 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717082/727818)
+2026-01-20 04:14:40,305 - INFO -   计算因子 [9/80]: Volume_Efficiency_Institutional_Trend_10D
+2026-01-20 04:14:41,971 - INFO -     ✓ 计算成功 (有效数据: 716658/727818)
+2026-01-20 04:14:41,986 - INFO -   计算因子 [10/80]: Institutional_Quiet_Accumulation_Factor
+2026-01-20 04:14:43,072 - INFO -     ✓ 计算成功 (有效数据: 715776/727818)
+2026-01-20 04:14:43,080 - INFO -   计算因子 [11/80]: Smoothed_Efficiency_Momentum_Z
+2026-01-20 04:14:46,632 - INFO -     ✓ 计算成功 (有效数据: 713726/727818)
+2026-01-20 04:14:46,638 - INFO -   计算因子 [12/80]: Vol_Adj_Momentum_Convex_VPC_20D
+2026-01-20 04:14:48,938 - INFO -     ✓ 计算成功 (有效数据: 718027/727818)
+2026-01-20 04:14:48,945 - INFO -   计算因子 [13/80]: Institutional_Conviction_Efficiency_10D
+2026-01-20 04:14:51,397 - INFO -     ✓ 计算成功 (有效数据: 718027/727818)
+2026-01-20 04:14:51,404 - INFO -   计算因子 [14/80]: NonLinear_VPC_Gated_Velocity
+2026-01-20 04:14:53,766 - INFO -     ✓ 计算成功 (有效数据: 715721/727818)
+2026-01-20 04:14:53,773 - INFO -   计算因子 [15/80]: VW_Mean_Reversion_Stability_Factor
+2026-01-20 04:14:55,830 - INFO -     ✓ 从 cache_location 加载 (有效数据: 713599/727818)
+2026-01-20 04:14:55,830 - INFO -   计算因子 [16/80]: Ranked_PMA_Stability_Support
+2026-01-20 04:14:57,903 - INFO -     ✓ 从 cache_location 加载 (有效数据: 713599/727818)
+2026-01-20 04:14:57,903 - INFO -   计算因子 [17/80]: VWPE_Efficiency_Rank_10D
+2026-01-20 04:15:00,066 - INFO -     ✓ 从 cache_location 加载 (有效数据: 719720/727818)
+2026-01-20 04:15:00,066 - INFO -   计算因子 [18/80]: Institutional_Conviction_Efficiency_Z
+2026-01-20 04:15:02,103 - INFO -     ✓ 从 cache_location 加载 (有效数据: 719720/727818)
+2026-01-20 04:15:02,103 - INFO -   计算因子 [19/80]: Volume_Intensity_Adjusted_Return_10D
+2026-01-20 04:15:04,639 - INFO -     ✓ 从 cache_location 加载 (有效数据: 719826/727818)
+2026-01-20 04:15:04,639 - INFO -   计算因子 [20/80]: Volume_Force_Divergence_20D
+2026-01-20 04:15:05,832 - INFO -     ✓ 计算成功 (有效数据: 717830/727818)
+2026-01-20 04:15:05,839 - INFO -   计算因子 [21/80]: Consistent_Force_Trend_Factor
+2026-01-20 04:15:09,267 - INFO -     ✓ 计算成功 (有效数据: 715120/727818)
+2026-01-20 04:15:09,274 - INFO -   计算因子 [22/80]: Institutional_Flow_Persistence_Index
+2026-01-20 04:15:10,159 - INFO -     ✓ 计算成功 (有效数据: 726336/727818)
+2026-01-20 04:15:10,166 - INFO -   计算因子 [23/80]: Volume_Price_Synchronicity_V1
+2026-01-20 04:15:13,566 - INFO -     ✓ 计算成功 (有效数据: 714224/727818)
+2026-01-20 04:15:13,573 - INFO -   计算因子 [24/80]: Smooth_Path_Efficiency_Factor
+2026-01-20 04:15:17,061 - INFO -     ✓ 计算成功 (有效数据: 716427/727818)
+2026-01-20 04:15:17,068 - INFO -   计算因子 [25/80]: Institutional_Control_Synchronicity
+2026-01-20 04:15:40,335 - INFO -     ✓ 计算成功 (有效数据: 705487/727818)
+2026-01-20 04:15:40,342 - INFO -   计算因子 [26/80]: Trend_Efficiency_VPC_Filtered_20D
+2026-01-20 04:15:41,686 - INFO -     ✓ 计算成功 (有效数据: 719482/727818)
+2026-01-20 04:15:41,693 - INFO -   计算因子 [27/80]: Conditional_Institutional_Momentum_20D
+2026-01-20 04:15:42,969 - INFO -     ✓ 计算成功 (有效数据: 727818/727818)
+2026-01-20 04:15:42,976 - INFO -   计算因子 [28/80]: ZScored_Trend_Liquidity_Synergy_20D
+2026-01-20 04:15:44,864 - INFO -     ✓ 计算成功 (有效数据: 719476/727818)
+2026-01-20 04:15:44,871 - INFO -   计算因子 [29/80]: EWSD_Exhaustion_ZScore_5D
+2026-01-20 04:15:52,675 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717377/727818)
+2026-01-20 04:15:52,675 - INFO -   计算因子 [30/80]: Ranked_Exhaustion_Shadow_Dominance
+2026-01-20 04:15:54,877 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717377/727818)
+2026-01-20 04:15:54,877 - INFO -   计算因子 [31/80]: Continuous_EWSD_Stabilized
+2026-01-20 04:15:56,987 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717044/727818)
+2026-01-20 04:15:56,987 - INFO -   计算因子 [32/80]: PVE_Multiplicative_Conviction_20D
+2026-01-20 04:22:37,037 - INFO -     ✓ 计算成功 (有效数据: 709237/727818)
+2026-01-20 04:22:37,043 - INFO -   计算因子 [33/80]: Efficiency_Weighted_Slope_20D
+2026-01-20 04:25:55,891 - INFO -     ✓ 计算成功 (有效数据: 709237/727818)
+2026-01-20 04:25:55,898 - INFO -   计算因子 [34/80]: Volatility_Adjusted_PVE_Synergy_20D
+2026-01-20 04:29:15,897 - INFO -     ✓ 计算成功 (有效数据: 709118/727818)
+2026-01-20 04:29:15,903 - INFO -   计算因子 [35/80]: Composite_Trend_Liquidity_Factor
+2026-01-20 04:29:17,642 - INFO -     ✓ 计算成功 (有效数据: 674820/727818)
+2026-01-20 04:29:17,649 - INFO -   计算因子 [36/80]: Stable_Recovery_Momentum_Z
+2026-01-20 04:29:19,644 - INFO -     ✓ 从 cache_location 加载 (有效数据: 715839/727818)
+2026-01-20 04:29:19,644 - INFO -   计算因子 [37/80]: Volume_Confirmed_Reversal_Filter
+2026-01-20 04:29:21,646 - INFO -     ✓ 从 cache_location 加载 (有效数据: 710091/727818)
+2026-01-20 04:29:21,646 - INFO -   计算因子 [38/80]: Std_Slope_VPE_Synergy_20D
+2026-01-20 04:33:13,315 - INFO -     ✓ 计算成功 (有效数据: 709118/727818)
+2026-01-20 04:33:13,322 - INFO -   计算因子 [39/80]: Institutional_VPE_Efficiency_20D
+2026-01-20 04:33:13,929 - INFO -     ✓ 计算成功 (有效数据: 720313/727818)
+2026-01-20 04:33:13,936 - INFO -   计算因子 [40/80]: Standardized_Velocity_Rank_20D
+2026-01-20 04:36:19,966 - INFO -     ✓ 计算成功 (有效数据: 709118/727818)
+2026-01-20 04:36:19,972 - INFO -   计算因子 [41/80]: Liquidity_Validated_Stability_20D
+2026-01-20 04:40:04,986 - WARNING - 因子计算失败 [Liquidity_Validated_Stability_20D]: 'instrument'
+2026-01-20 04:40:04,986 - WARNING -     ✗ 因子 Liquidity_Validated_Stability_20D 计算失败或为空
+2026-01-20 04:40:04,986 - INFO -   计算因子 [42/80]: Institutional_Momentum_Quality_20D
+2026-01-20 04:43:06,043 - WARNING - 因子计算失败 [Institutional_Momentum_Quality_20D]: 'instrument'
+2026-01-20 04:43:06,043 - WARNING -     ✗ 因子 Institutional_Momentum_Quality_20D 计算失败或为空
+2026-01-20 04:43:06,043 - INFO -   计算因子 [43/80]: Trend_Efficiency_Liquidity_Filter
+2026-01-20 04:43:08,146 - INFO -     ✓ 计算成功 (有效数据: 701529/727818)
+2026-01-20 04:43:08,154 - INFO -   计算因子 [44/80]: Volume_Force_Efficiency_Ratio_20D
+2026-01-20 04:43:08,972 - INFO -     ✓ 计算成功 (有效数据: 725714/727818)
+2026-01-20 04:43:08,980 - INFO -   计算因子 [45/80]: Consistent_Institutional_Flow_Factor_20D
+2026-01-20 04:43:10,089 - INFO -     ✓ 计算成功 (有效数据: 726336/727818)
+2026-01-20 04:43:10,100 - INFO -   计算因子 [46/80]: Supply_Exhaustion_Efficiency_10D
+2026-01-20 04:43:13,056 - INFO -     ✓ 从 cache_location 加载 (有效数据: 720133/727818)
+2026-01-20 04:43:13,056 - INFO -   计算因子 [47/80]: Low_Churn_Markup_Efficiency_10D
+2026-01-20 04:43:15,624 - INFO -     ✓ 从 cache_location 加载 (有效数据: 719826/727818)
+2026-01-20 04:43:15,624 - INFO -   计算因子 [48/80]: Thin_Supply_Momentum_Index_10D
+2026-01-20 04:43:17,731 - INFO -     ✓ 计算成功 (有效数据: 718399/727818)
+2026-01-20 04:43:17,742 - INFO -   计算因子 [49/80]: Institutional_Trend_Stability_Exhaustion_Factor
+2026-01-20 04:47:07,517 - INFO -     ✓ 计算成功 (有效数据: 698207/727818)
+2026-01-20 04:47:07,523 - INFO -   计算因子 [50/80]: Robust_Quiet_Accumulation_Velocity
+2026-01-20 04:50:50,776 - INFO -     ✓ 计算成功 (有效数据: 709118/727818)
+2026-01-20 04:50:50,783 - INFO -   计算因子 [51/80]: VASI_Efficiency_Reversal_5D
+2026-01-20 04:50:53,001 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716303/727818)
+2026-01-20 04:50:53,001 - INFO -   计算因子 [52/80]: VASI_Shadow_Dominance_ATR_3D
+2026-01-20 04:50:55,188 - INFO -     ✓ 从 cache_location 加载 (有效数据: 717377/727818)
+2026-01-20 04:50:55,188 - INFO -   计算因子 [53/80]: VASI_Normalized_Liquidity_Clearing
+2026-01-20 04:50:57,444 - INFO -     ✓ 从 cache_location 加载 (有效数据: 716303/727818)
+2026-01-20 04:50:57,444 - INFO -   计算因子 [54/80]: Steady_Institutional_Accumulation_20D
+2026-01-20 04:54:10,805 - INFO -     ✓ 计算成功 (有效数据: 709237/727818)
+2026-01-20 04:54:10,812 - INFO -   计算因子 [55/80]: Volatility_Adjusted_Quiet_Trend_20D

@@ -1,0 +1,23 @@
+{
+  "experiment_name": "round_5_random30_gemini_123",
+  "factor_source": "custom",
+  "num_factors": 30,
+  "metrics": {
+    "IC": 0.0675566652510386,
+    "ICIR": 0.47826172299130065,
+    "Rank IC": 0.06551774300666383,
+    "Rank ICIR": 0.4682587029822837,
+    "annualized_return": 0.12871285883624928,
+    "information_ratio": 1.696361415869765,
+    "max_drawdown": -0.09489450522064635,
+    "calmar_ratio": 1.3563784176646405
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 123.19044184684753
+}

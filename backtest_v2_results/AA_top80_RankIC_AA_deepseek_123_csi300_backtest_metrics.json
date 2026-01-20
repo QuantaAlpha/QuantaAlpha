@@ -1,0 +1,23 @@
+{
+  "experiment_name": "AA_top80_RankIC_AA_deepseek_123_csi300",
+  "factor_source": "custom",
+  "num_factors": 80,
+  "metrics": {
+    "IC": 0.09596834156435102,
+    "ICIR": 0.616183643696964,
+    "Rank IC": 0.09238698679820603,
+    "Rank ICIR": 0.5990897821529061,
+    "annualized_return": 0.17154355524694717,
+    "information_ratio": 2.119738200242699,
+    "max_drawdown": -0.08746184614044072,
+    "calmar_ratio": 1.961353010677288
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 396.92120003700256
+}

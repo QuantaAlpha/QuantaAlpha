@@ -1,0 +1,23 @@
+{
+  "experiment_name": "QA_phase_mutation",
+  "factor_source": "custom",
+  "num_factors": 185,
+  "metrics": {
+    "IC": 0.12767465018136845,
+    "ICIR": 0.8738015210738682,
+    "Rank IC": 0.12423771797948302,
+    "Rank ICIR": 0.8566008537319991,
+    "annualized_return": 0.18273252101658669,
+    "information_ratio": 2.25880203483068,
+    "max_drawdown": -0.08936916054049593,
+    "calmar_ratio": 2.0446932690364137
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 544.2438821792603
+}

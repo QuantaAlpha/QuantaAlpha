@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "created_at": "2026-01-17T12:00:22.267921",
+    "last_updated": "2026-01-17T12:00:22.267927",
+    "total_factors": 3,
+    "version": "1.0",
+    "source": "all_factors_library_10_10_10_best1_组合123_QA.json",
+    "note": "evolution_phase为crossover的后半部分因子，保持原始顺序"
+  },
+  "factors": {
+    "136f1dd35e873a74": {
+      "factor_id": "136f1dd35e873a74",
+      "factor_name": "LSDI_Structural_Reversal_5D",
+      "factor_expression": "TS_ZSCORE(($high - $low) / ($volume + 1e-8), 5) * (1 - TS_CORR($return, $volume, 20)) * TS_MEAN(ABS($return) / ($volume * $close + 1e-8), 5)",
+      "factor_implementation_code": "\nimport pandas as pd\nimport numpy as np\nimport os\nfrom alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol\nfrom alphaagent.components.coder.factor_coder.function_lib import *\n\n\ndef calculate_factor(expr: str, name: str):\n    # stock dataframe\n    df = pd.read_hdf('./daily_pv.h5', key='data')\n    \n    expr = parse_symbol(expr, df.columns)\n    expr = parse_expression(expr)\n\n    # replace '$var' by 'df['var'] to extract var's actual values\n    for col in df.columns:\n        expr = expr.replace(col[1:], f\"df[\\'{col}\\']\")\n\n    df[name] = eval(expr)\n    result = df[name].astype(np.float64)\n\n    if os.path.exists('result.h5'):\n        os.remove('result.h5')\n    result.to_hdf('result.h5', key='data')\n\nif __name__ == '__main__':\n    # Input factor expression. Do NOT use the variable format like \"df['$xxx']\" in factor expressions. Instead, you should use \"$xxx\". \n    expr = \"TS_ZSCORE(($high - $low) / ($volume + 1e-8), 5) * (1 - TS_CORR($close / DELAY($close, 1) - 1, $volume, 20)) * TS_MEAN(ABS($close / DELAY($close, 1) - 1) / ($volume * $close + 1e-8), 5)\" # Your output factor expression will be filled in here\n    name = \"LSDI_Structural_Reversal_5D\" # Your output factor name will be filled in here\n    calculate_factor(expr, name)",
+      "factor_description": "Liquidity-Structural Divergence Index: Identifies mean-reversion candidates by combining high intraday price dispersion relative to volume (liquidity exhaustion), low price-volume correlation (structural weakness), and rising illiquidity (Amihud).",
+      "experiment_id": "2026-01-16_17-24-17-907337",
+      "round_number": 1,
+      "hypothesis": "Hypothesis: The 'Liquidity-Structural Divergence Index' (LSDI) predicts reversals by identifying assets where the 5-day Z-score of the (High-Low)/Volume ratio is high, while the 20-day price-volume correlation is low and the 5-day Amihud Illiquidity is rising.\n                Concise Observation: Parent 1 successfully captured mean-reversion via intraday range/volume (RankIC 0.0268), while Parent 2 identified regime shifts via price-volume correlation and Amihud illiquidity (RankIC 0.0255); however, both suffer from noise during trending markets with low-quality volume.\n                Concise Justification: Fusing these identifies 'Liquidity Vacuums' where price moves are 'expensive' (high Amihud) and 'disorganized' (low PV correlation), ensuring that the exhaustion signal from Parent 1 is validated by the structural weakness identified in Parent 2.\n                Concise Knowledge: If extreme intraday price dispersion occurs without a corresponding increase in price-volume reflexivity, the price move is likely a liquidity-driven exhaustion rather than a sustainable trend; when high illiquidity coincides with low correlation, the market is in a 'regime trap' prone to mean reversion.\n                concise Specification: The factor is defined as the product of the 5-day Z-score of (High-Low)/Volume and the inverse of the 20-day rolling correlation between price changes and volume, scaled by the 5-day average of absolute return divided by dollar volume (Amihud).\n                ",
+      "initial_direction": "",
+      "user_initial_direction": "参考以下组合给出假设。组合2包含ROC60（表达式：Ref(, 60)/，含义：60日价格反转因子，值>1表示长期下跌）、CORR20（表达式：Corr(, Log(+1), 20)，含义：20日收盘价与成交量对数的相关系数）、VSTD5（表达式：Std(, 5)/(+1e-12)，含义：5日成交量标准差，反映资金流向稳定性）。",
+      "planning_direction": "",
+      "evolution_phase": "crossover",
+      "trajectory_id": "2978591db7ac",
+      "parent_trajectory_ids": [
+        "0b251d2e379b",
+        "3c37422cea0a"
+      ],
+      "is_sota": false,
+      "quality": "high_quality",
+      "backtest_metrics": {
+        "IC": 0.0046096241986078,
+        "ICIR": 0.032824358114378,
+        "RankIC": 0.021486235632396,
+        "RankICIR": 0.1551139432987301,
+        "annualized_return": 0.0164555744396186,
+        "information_ratio": 0.2351988131090285,
+        "max_drawdown": -0.1148980339497351
+      },
+      "max_correlation_with_alpha158": null,
+      "added_at": "2026-01-17T08:38:04.473403",
+      "updated_at": "2026-01-17T08:38:04.473410"
+    },
+    "dc804a0cabe34420": {
+      "factor_id": "dc804a0cabe34420",
+      "factor_name": "Liquidity_Vacuum_Exhaustion_10D",
+      "factor_expression": "RANK(($high - $low) / ($volume + 1e-8)) * RANK(1 - ABS(TS_CORR($close, $volume, 10)))",
+      "factor_implementation_code": "\nimport pandas as pd\nimport numpy as np\nimport os\nfrom alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol\nfrom alphaagent.components.coder.factor_coder.function_lib import *\n\n\ndef calculate_factor(expr: str, name: str):\n    # stock dataframe\n    df = pd.read_hdf('./daily_pv.h5', key='data')\n    \n    expr = parse_symbol(expr, df.columns)\n    expr = parse_expression(expr)\n\n    # replace '$var' by 'df['var'] to extract var's actual values\n    for col in df.columns:\n        expr = expr.replace(col[1:], f\"df[\\'{col}\\']\")\n\n    df[name] = eval(expr)\n    result = df[name].astype(np.float64)\n\n    if os.path.exists('result.h5'):\n        os.remove('result.h5')\n    result.to_hdf('result.h5', key='data')\n\nif __name__ == '__main__':\n    # Input factor expression. Do NOT use the variable format like \"df['$xxx']\" in factor expressions. Instead, you should use \"$xxx\". \n    expr = \"RANK(($high - $low) / ($volume + 1e-8)) * RANK(1 - ABS(TS_CORR($close, $volume, 10)))\" # Your output factor expression will be filled in here\n    name = \"Liquidity_Vacuum_Exhaustion_10D\" # Your output factor name will be filled in here\n    calculate_factor(expr, name)",
+      "factor_description": "Captures 'Liquidity Vacuums' where price range expands on low relative volume efficiency. It uses the rank of the ratio between price range and volume, weighted by the inverse of the recent price-volume trend stability.",
+      "experiment_id": "2026-01-16_17-24-17-907337",
+      "round_number": 1,
+      "hypothesis": "Hypothesis: The 'Liquidity-Structural Divergence Index' (LSDI) predicts reversals by identifying assets where the 5-day Z-score of the (High-Low)/Volume ratio is high, while the 20-day price-volume correlation is low and the 5-day Amihud Illiquidity is rising.\n                Concise Observation: Parent 1 successfully captured mean-reversion via intraday range/volume (RankIC 0.0268), while Parent 2 identified regime shifts via price-volume correlation and Amihud illiquidity (RankIC 0.0255); however, both suffer from noise during trending markets with low-quality volume.\n                Concise Justification: Fusing these identifies 'Liquidity Vacuums' where price moves are 'expensive' (high Amihud) and 'disorganized' (low PV correlation), ensuring that the exhaustion signal from Parent 1 is validated by the structural weakness identified in Parent 2.\n                Concise Knowledge: If extreme intraday price dispersion occurs without a corresponding increase in price-volume reflexivity, the price move is likely a liquidity-driven exhaustion rather than a sustainable trend; when high illiquidity coincides with low correlation, the market is in a 'regime trap' prone to mean reversion.\n                concise Specification: The factor is defined as the product of the 5-day Z-score of (High-Low)/Volume and the inverse of the 20-day rolling correlation between price changes and volume, scaled by the 5-day average of absolute return divided by dollar volume (Amihud).\n                ",
+      "initial_direction": "",
+      "user_initial_direction": "参考以下组合给出假设。组合2包含ROC60（表达式：Ref(, 60)/，含义：60日价格反转因子，值>1表示长期下跌）、CORR20（表达式：Corr(, Log(+1), 20)，含义：20日收盘价与成交量对数的相关系数）、VSTD5（表达式：Std(, 5)/(+1e-12)，含义：5日成交量标准差，反映资金流向稳定性）。",
+      "planning_direction": "",
+      "evolution_phase": "crossover",
+      "trajectory_id": "2978591db7ac",
+      "parent_trajectory_ids": [
+        "0b251d2e379b",
+        "3c37422cea0a"
+      ],
+      "is_sota": false,
+      "quality": "high_quality",
+      "backtest_metrics": {
+        "IC": 0.0046096241986078,
+        "ICIR": 0.032824358114378,
+        "RankIC": 0.021486235632396,
+        "RankICIR": 0.1551139432987301,
+        "annualized_return": 0.0164555744396186,
+        "information_ratio": 0.2351988131090285,
+        "max_drawdown": -0.1148980339497351
+      },
+      "max_correlation_with_alpha158": null,
+      "added_at": "2026-01-17T08:38:04.504382",
+      "updated_at": "2026-01-17T08:38:04.504388"
+    },
+    "d1c4f598a5239432": {
+      "factor_id": "d1c4f598a5239432",
+      "factor_name": "Amihud_Regime_Trap_Index",
+      "factor_expression": "RANK(ABS($return) / ($volume * $close + 1e-8)) * RANK(TS_MEAN($volume, 20) / ($volume + 1e-8))",
+      "factor_implementation_code": "\nimport pandas as pd\nimport numpy as np\nimport os\nfrom alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol\nfrom alphaagent.components.coder.factor_coder.function_lib import *\n\n\ndef calculate_factor(expr: str, name: str):\n    # stock dataframe\n    df = pd.read_hdf('./daily_pv.h5', key='data')\n    \n    expr = parse_symbol(expr, df.columns)\n    expr = parse_expression(expr)\n\n    # replace '$var' by 'df['var'] to extract var's actual values\n    for col in df.columns:\n        expr = expr.replace(col[1:], f\"df[\\'{col}\\']\")\n\n    df[name] = eval(expr)\n    result = df[name].astype(np.float64)\n\n    if os.path.exists('result.h5'):\n        os.remove('result.h5')\n    result.to_hdf('result.h5', key='data')\n\nif __name__ == '__main__':\n    # Input factor expression. Do NOT use the variable format like \"df['$xxx']\" in factor expressions. Instead, you should use \"$xxx\". \n    expr = \"RANK(ABS(TS_PCTCHANGE($close, 1)) / ($volume * $close + 1e-8)) * RANK(TS_MEAN($volume, 20) / ($volume + 1e-8))\" # Your output factor expression will be filled in here\n    name = \"Amihud_Regime_Trap_Index\" # Your output factor name will be filled in here\n    calculate_factor(expr, name)",
+      "factor_description": "Identifies 'Regime Traps' where illiquidity is high but price movement lacks volume confirmation. It measures the cross-sectional rank of Amihud illiquidity multiplied by the divergence of current volume from its 20-day mean.",
+      "experiment_id": "2026-01-16_17-24-17-907337",
+      "round_number": 1,
+      "hypothesis": "Hypothesis: The 'Liquidity-Structural Divergence Index' (LSDI) predicts reversals by identifying assets where the 5-day Z-score of the (High-Low)/Volume ratio is high, while the 20-day price-volume correlation is low and the 5-day Amihud Illiquidity is rising.\n                Concise Observation: Parent 1 successfully captured mean-reversion via intraday range/volume (RankIC 0.0268), while Parent 2 identified regime shifts via price-volume correlation and Amihud illiquidity (RankIC 0.0255); however, both suffer from noise during trending markets with low-quality volume.\n                Concise Justification: Fusing these identifies 'Liquidity Vacuums' where price moves are 'expensive' (high Amihud) and 'disorganized' (low PV correlation), ensuring that the exhaustion signal from Parent 1 is validated by the structural weakness identified in Parent 2.\n                Concise Knowledge: If extreme intraday price dispersion occurs without a corresponding increase in price-volume reflexivity, the price move is likely a liquidity-driven exhaustion rather than a sustainable trend; when high illiquidity coincides with low correlation, the market is in a 'regime trap' prone to mean reversion.\n                concise Specification: The factor is defined as the product of the 5-day Z-score of (High-Low)/Volume and the inverse of the 20-day rolling correlation between price changes and volume, scaled by the 5-day average of absolute return divided by dollar volume (Amihud).\n                ",
+      "initial_direction": "",
+      "user_initial_direction": "参考以下组合给出假设。组合2包含ROC60（表达式：Ref(, 60)/，含义：60日价格反转因子，值>1表示长期下跌）、CORR20（表达式：Corr(, Log(+1), 20)，含义：20日收盘价与成交量对数的相关系数）、VSTD5（表达式：Std(, 5)/(+1e-12)，含义：5日成交量标准差，反映资金流向稳定性）。",
+      "planning_direction": "",
+      "evolution_phase": "crossover",
+      "trajectory_id": "2978591db7ac",
+      "parent_trajectory_ids": [
+        "0b251d2e379b",
+        "3c37422cea0a"
+      ],
+      "is_sota": false,
+      "quality": "high_quality",
+      "backtest_metrics": {
+        "IC": 0.0046096241986078,
+        "ICIR": 0.032824358114378,
+        "RankIC": 0.021486235632396,
+        "RankICIR": 0.1551139432987301,
+        "annualized_return": 0.0164555744396186,
+        "information_ratio": 0.2351988131090285,
+        "max_drawdown": -0.1148980339497351
+      },
+      "max_correlation_with_alpha158": null,
+      "added_at": "2026-01-17T08:38:04.535079",
+      "updated_at": "2026-01-17T08:38:04.535085"
+    }
+  }
+}

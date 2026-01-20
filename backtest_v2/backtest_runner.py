@@ -761,6 +761,12 @@ class BacktestRunner:
                 summary_data = []
         
         # 添加当前结果到汇总
+        ann_ret = metrics.get('annualized_return')
+        mdd = metrics.get('max_drawdown')
+        calmar_ratio = None
+        if ann_ret is not None and mdd is not None and mdd != 0:
+            calmar_ratio = ann_ret / abs(mdd)
+        
         summary_entry = {
             "name": output_name or exp_name,
             "num_factors": num_factors,
@@ -768,9 +774,10 @@ class BacktestRunner:
             "ICIR": metrics.get('ICIR'),
             "Rank_IC": metrics.get('Rank IC'),
             "Rank_ICIR": metrics.get('Rank ICIR'),
-            "annualized_return": metrics.get('annualized_return'),
+            "annualized_return": ann_ret,
             "information_ratio": metrics.get('information_ratio'),
-            "max_drawdown": metrics.get('max_drawdown'),
+            "max_drawdown": mdd,
+            "calmar_ratio": calmar_ratio,
             "elapsed_seconds": elapsed
         }
         summary_data.append(summary_entry)

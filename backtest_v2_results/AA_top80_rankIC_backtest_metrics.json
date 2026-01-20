@@ -1,0 +1,23 @@
+{
+  "experiment_name": "AA_top80_rankIC",
+  "factor_source": "custom",
+  "num_factors": 80,
+  "metrics": {
+    "IC": 0.096167192668078,
+    "ICIR": 0.6438395396875819,
+    "Rank IC": 0.0929412858548761,
+    "Rank ICIR": 0.6269451283770552,
+    "annualized_return": 0.1814815960789646,
+    "information_ratio": 2.320079424014433,
+    "max_drawdown": -0.10100136050775288,
+    "calmar_ratio": 1.7968232820490972
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 106.77957558631897
+}

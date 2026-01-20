@@ -1,0 +1,23 @@
+{
+  "experiment_name": "AA_top80_RankIC_AA_claude_123_csi300",
+  "factor_source": "custom",
+  "num_factors": 80,
+  "metrics": {
+    "IC": 0.10271549129452269,
+    "ICIR": 0.7154874207177085,
+    "Rank IC": 0.0999399029431189,
+    "Rank ICIR": 0.7062476525282539,
+    "annualized_return": 0.14995767365696272,
+    "information_ratio": 2.0655015781603967,
+    "max_drawdown": -0.0873517477638166,
+    "calmar_ratio": 1.716710626814489
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 1026.6408460140228
+}

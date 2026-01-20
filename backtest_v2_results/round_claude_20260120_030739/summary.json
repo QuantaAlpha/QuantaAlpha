@@ -1,0 +1,101 @@
+[
+  {
+    "round": 0,
+    "num_factors": 30,
+    "Rank_IC": 0.0673529720345298,
+    "Rank_ICIR": 0.49703229678216687,
+    "annualized_return": 0.1134386170163761,
+    "information_ratio": 1.5570855990141306,
+    "max_drawdown": -0.08562554782944648
+  },
+  {
+    "round": 1,
+    "num_factors": 30,
+    "Rank_IC": 0.06393821923314948,
+    "Rank_ICIR": 0.3316809018747117,
+    "annualized_return": 0.08960429005882654,
+    "information_ratio": 0.9333425879951424,
+    "max_drawdown": -0.1944410128352363
+  },
+  {
+    "round": 2,
+    "num_factors": 30,
+    "Rank_IC": 0.06600115677126003,
+    "Rank_ICIR": 0.3572862909816495,
+    "annualized_return": 0.07419344818729569,
+    "information_ratio": 0.7850028941545735,
+    "max_drawdown": -0.16802172101153479
+  },
+  {
+    "round": 3,
+    "num_factors": 27,
+    "Rank_IC": 0.07428024196196127,
+    "Rank_ICIR": 0.4078661825212138,
+    "annualized_return": 0.11743054297830206,
+    "information_ratio": 1.2861394670096702,
+    "max_drawdown": -0.14680123125815686
+  },
+  {
+    "round": 4,
+    "num_factors": 30,
+    "Rank_IC": 0.06312815021908251,
+    "Rank_ICIR": 0.31686004748441227,
+    "annualized_return": 0.09994091644360145,
+    "information_ratio": 1.0023763265794177,
+    "max_drawdown": -0.1638759363609606
+  },
+  {
+    "round": 5,
+    "num_factors": 30,
+    "Rank_IC": 0.07134817254938342,
+    "Rank_ICIR": 0.4356988399776871,
+    "annualized_return": 0.12967383201078284,
+    "information_ratio": 1.6803039221909268,
+    "max_drawdown": -0.11677368926282417
+  },
+  {
+    "round": 6,
+    "num_factors": 27,
+    "Rank_IC": 0.061486668796494316,
+    "Rank_ICIR": 0.30256889060510833,
+    "annualized_return": 0.11460139602670244,
+    "information_ratio": 1.119990790200309,
+    "max_drawdown": -0.15021793143748113
+  },
+  {
+    "round": 7,
+    "num_factors": 27,
+    "Rank_IC": 0.07341745862552046,
+    "Rank_ICIR": 0.4119417199724805,
+    "annualized_return": 0.13306166418943435,
+    "information_ratio": 1.459896107816071,
+    "max_drawdown": -0.11515680773192405
+  },
+  {
+    "round": 8,
+    "num_factors": 30,
+    "Rank_IC": 0.07439290783362662,
+    "Rank_ICIR": 0.39613589351031797,
+    "annualized_return": 0.14606123807710283,
+    "information_ratio": 1.5784323009824646,
+    "max_drawdown": -0.12280594786090471
+  },
+  {
+    "round": 9,
+    "num_factors": 27,
+    "Rank_IC": 0.06850642033376432,
+    "Rank_ICIR": 0.45738998039559364,
+    "annualized_return": 0.10562054186438338,
+    "information_ratio": 1.4590149877296394,
+    "max_drawdown": -0.12891998317467313
+  },
+  {
+    "round": 10,
+    "num_factors": 30,
+    "Rank_IC": 0.06853091709341375,
+    "Rank_ICIR": 0.36181953327591787,
+    "annualized_return": 0.10912093963565553,
+    "information_ratio": 1.2300330005220914,
+    "max_drawdown": -0.09810166529176773
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "experiment_name": "random_150_RANKIC_desc_phase_mutation_300_QA_round11_best_gemini_123",
+  "factor_source": "custom",
+  "num_factors": 150,
+  "metrics": {
+    "IC": 0.11242007765444464,
+    "ICIR": 0.7391843720055588,
+    "Rank IC": 0.10862020692403056,
+    "Rank ICIR": 0.7204917845063288,
+    "annualized_return": 0.20323548257968807,
+    "information_ratio": 2.51896842080981,
+    "max_drawdown": -0.09453274379851584,
+    "calmar_ratio": 2.149895098917872
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 595.8117523193359
+}

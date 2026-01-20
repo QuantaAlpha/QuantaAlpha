@@ -1,0 +1,23 @@
+{
+  "experiment_name": "backtest_v2_experiment",
+  "factor_source": "custom",
+  "num_factors": 176,
+  "metrics": {
+    "IC": 0.11946084988948734,
+    "ICIR": 0.8047719039612229,
+    "Rank IC": 0.11578268813569956,
+    "Rank ICIR": 0.7824628152076779,
+    "annualized_return": 0.17591713468487585,
+    "information_ratio": 2.125217103879767,
+    "max_drawdown": -0.10823032961262813,
+    "calmar_ratio": 1.6253959062538985
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 548.9890944957733
+}
