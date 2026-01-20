@@ -33,6 +33,16 @@ class EvolutionConfig:
     # Maximum total rounds (original + mutation + crossover rounds)
     max_rounds: int = 10
     
+    # Enable/disable mutation phase
+    # 启用/禁用变异阶段
+    # When false, evolution will skip mutation rounds entirely
+    mutation_enabled: bool = True
+    
+    # Enable/disable crossover phase
+    # 启用/禁用交叉阶段
+    # When false, evolution will skip crossover rounds entirely
+    crossover_enabled: bool = True
+    
     # Crossover parameters
     crossover_size: int = 2  # Number of parents per crossover
     crossover_n: int = 3     # Number of crossover combinations per round
@@ -197,12 +207,28 @@ class EvolutionController:
             
             # If no tasks, transition phase for next call
             if not tasks:
-                self._current_phase = RoundPhase.MUTATION
                 self._current_round += 1
+                # Transition based on enabled phases
+                if self.config.mutation_enabled:
+                    self._current_phase = RoundPhase.MUTATION
+                elif self.config.crossover_enabled:
+                    self._prepare_crossover_groups()
+                    self._current_phase = RoundPhase.CROSSOVER
+                else:
+                    return []  # No evolution, just original
                 return self.get_all_tasks_for_current_phase()
         
         # Phase: MUTATION - collect all remaining mutation tasks
         elif self._current_phase == RoundPhase.MUTATION:
+            # Skip if mutation is disabled
+            if not self.config.mutation_enabled:
+                if self.config.crossover_enabled:
+                    self._prepare_crossover_groups()
+                    self._current_phase = RoundPhase.CROSSOVER
+                    self._current_round += 1
+                    return self.get_all_tasks_for_current_phase()
+                return []
+            
             # Prepare mutation targets if needed
             if not self._mutation_targets:
                 self._prepare_mutation_targets()
@@ -230,15 +256,28 @@ class EvolutionController:
             
             # If no tasks, transition phase for next call
             if not tasks:
-                self._prepare_crossover_groups()
-                self._current_phase = RoundPhase.CROSSOVER
-                self._current_round += 1
                 self._mutation_targets = []
                 self._mutation_idx = 0
+                self._current_round += 1
+                
+                if self.config.crossover_enabled:
+                    self._prepare_crossover_groups()
+                    self._current_phase = RoundPhase.CROSSOVER
+                else:
+                    # Stay in mutation mode
+                    self._current_phase = RoundPhase.MUTATION
                 return self.get_all_tasks_for_current_phase()
         
         # Phase: CROSSOVER - collect all remaining crossover tasks
         elif self._current_phase == RoundPhase.CROSSOVER:
+            # Skip if crossover is disabled
+            if not self.config.crossover_enabled:
+                if self.config.mutation_enabled:
+                    self._current_phase = RoundPhase.MUTATION
+                    self._current_round += 1
+                    return self.get_all_tasks_for_current_phase()
+                return []
+            
             for idx in range(self._crossover_idx, len(self._crossover_groups)):
                 parents = self._crossover_groups[idx]
                 suffix = self.crossover_op.generate_crossover_prompt_suffix(parents)
@@ -252,8 +291,14 @@ class EvolutionController:
             
             # If no tasks, transition phase for next call
             if not tasks:
-                self._current_phase = RoundPhase.MUTATION
                 self._current_round += 1
+                
+                if self.config.mutation_enabled:
+                    self._current_phase = RoundPhase.MUTATION
+                else:
+                    # Stay in crossover mode, prepare new groups
+                    self._prepare_crossover_groups()
+                    self._current_phase = RoundPhase.CROSSOVER
                 return self.get_all_tasks_for_current_phase()
         
         return tasks
@@ -278,32 +323,50 @@ class EvolutionController:
             for task in completed_tasks:
                 self._directions_completed.add(task["direction_id"])
             
-            # Transition to mutation
+            # Transition based on enabled phases
             if len(self._directions_completed) >= self.config.num_directions:
-                self._current_phase = RoundPhase.MUTATION
                 self._current_round += 1
-                logger.info(f"All original rounds complete, transitioning to mutation (round {self._current_round})")
+                if self.config.mutation_enabled:
+                    self._current_phase = RoundPhase.MUTATION
+                    logger.info(f"All original rounds complete, transitioning to mutation (round {self._current_round})")
+                elif self.config.crossover_enabled:
+                    self._prepare_crossover_groups()
+                    self._current_phase = RoundPhase.CROSSOVER
+                    logger.info(f"All original rounds complete, transitioning to crossover (round {self._current_round})")
+                else:
+                    logger.info("Neither mutation nor crossover enabled, evolution complete")
         
         elif phase == RoundPhase.MUTATION:
             # Update mutation index to skip completed
             self._mutation_idx = len(self._mutation_targets)
-            
-            # Transition to crossover
-            self._prepare_crossover_groups()
-            self._current_phase = RoundPhase.CROSSOVER
-            self._current_round += 1
             self._mutation_targets = []
             self._mutation_idx = 0
-            logger.info(f"All mutation rounds complete, transitioning to crossover (round {self._current_round})")
+            self._current_round += 1
+            
+            # Transition based on enabled phases
+            if self.config.crossover_enabled:
+                self._prepare_crossover_groups()
+                self._current_phase = RoundPhase.CROSSOVER
+                logger.info(f"All mutation rounds complete, transitioning to crossover (round {self._current_round})")
+            else:
+                # Stay in mutation mode
+                self._current_phase = RoundPhase.MUTATION
+                logger.info(f"All mutation rounds complete, continuing with mutation (round {self._current_round})")
         
         elif phase == RoundPhase.CROSSOVER:
             # Update crossover index
             self._crossover_idx = len(self._crossover_groups)
-            
-            # Transition to mutation
-            self._current_phase = RoundPhase.MUTATION
             self._current_round += 1
-            logger.info(f"All crossover rounds complete, transitioning to mutation (round {self._current_round})")
+            
+            # Transition based on enabled phases
+            if self.config.mutation_enabled:
+                self._current_phase = RoundPhase.MUTATION
+                logger.info(f"All crossover rounds complete, transitioning to mutation (round {self._current_round})")
+            else:
+                # Stay in crossover mode, prepare new groups
+                self._prepare_crossover_groups()
+                self._current_phase = RoundPhase.CROSSOVER
+                logger.info(f"All crossover rounds complete, continuing with crossover (round {self._current_round})")
     
     def _get_original_task(self) -> Optional[dict[str, Any]]:
         """Get next original round task."""
@@ -318,14 +381,51 @@ class EvolutionController:
                     "round_idx": self._current_round,
                 }
         
-        # All directions completed original, move to mutation
-        self._current_phase = RoundPhase.MUTATION
+        # All directions completed original, transition to next phase
         self._current_round += 1
-        logger.info(f"All original rounds complete, transitioning to mutation (round {self._current_round})")
-        return self._get_mutation_task()
+        return self._transition_to_next_phase_after_original()
+    
+    def _transition_to_next_phase_after_original(self) -> Optional[dict[str, Any]]:
+        """
+        Determine and transition to the next phase after original round completes.
+        
+        Returns the first task of the next phase, or None if evolution is complete.
+        """
+        # Case 1: Both mutation and crossover enabled - follow standard flow
+        if self.config.mutation_enabled and self.config.crossover_enabled:
+            self._current_phase = RoundPhase.MUTATION
+            logger.info(f"All original rounds complete, transitioning to mutation (round {self._current_round})")
+            return self._get_mutation_task()
+        
+        # Case 2: Only mutation enabled - go to mutation
+        elif self.config.mutation_enabled:
+            self._current_phase = RoundPhase.MUTATION
+            logger.info(f"All original rounds complete, transitioning to mutation (round {self._current_round})")
+            return self._get_mutation_task()
+        
+        # Case 3: Only crossover enabled - go to crossover
+        elif self.config.crossover_enabled:
+            self._prepare_crossover_groups()
+            self._current_phase = RoundPhase.CROSSOVER
+            logger.info(f"All original rounds complete, transitioning to crossover (round {self._current_round})")
+            return self._get_crossover_task()
+        
+        # Case 4: Neither enabled - evolution is complete after original
+        else:
+            logger.info("Neither mutation nor crossover enabled, evolution complete after original")
+            return None
     
     def _get_mutation_task(self) -> Optional[dict[str, Any]]:
         """Get next mutation round task."""
+        # If mutation is disabled, skip to crossover or stay in mutation loop
+        if not self.config.mutation_enabled:
+            if self.config.crossover_enabled:
+                self._prepare_crossover_groups()
+                self._current_phase = RoundPhase.CROSSOVER
+                self._current_round += 1
+                return self._get_crossover_task()
+            return None
+        
         # If mutation targets not prepared, prepare them
         if not self._mutation_targets:
             self._prepare_mutation_targets()
@@ -358,14 +458,21 @@ class EvolutionController:
             self._mutation_idx += 1
             return task
         
-        # All mutation tasks complete, move to crossover
-        self._prepare_crossover_groups()
-        self._current_phase = RoundPhase.CROSSOVER
-        self._current_round += 1
+        # All mutation tasks complete, transition to next phase
         self._mutation_targets = []  # Reset for next mutation round
         self._mutation_idx = 0
-        logger.info(f"All mutation rounds complete, transitioning to crossover (round {self._current_round})")
-        return self._get_crossover_task()
+        self._current_round += 1
+        
+        # Determine next phase based on config
+        if self.config.crossover_enabled:
+            self._prepare_crossover_groups()
+            self._current_phase = RoundPhase.CROSSOVER
+            logger.info(f"All mutation rounds complete, transitioning to crossover (round {self._current_round})")
+            return self._get_crossover_task()
+        else:
+            # Stay in mutation mode (mutation-only loop)
+            logger.info(f"All mutation rounds complete, continuing with mutation (round {self._current_round})")
+            return self._get_mutation_task()
     
     def _prepare_mutation_targets(self):
         """
@@ -448,9 +555,13 @@ class EvolutionController:
         """
         Get candidates for crossover from the two most recent relevant rounds.
         
-        Logic:
-        - First crossover: original (round 0) + mutation (round 1)
-        - Subsequent crossovers: latest mutation + latest crossover
+        Logic depends on enabled phases:
+        - Both enabled:
+          - First crossover: original (round 0) + mutation (round 1)
+          - Subsequent crossovers: latest mutation + latest crossover
+        - Crossover-only (mutation disabled):
+          - First crossover: original trajectories only
+          - Subsequent crossovers: two most recent crossover rounds
         
         Returns:
             List of trajectories to use as crossover candidates
@@ -476,6 +587,42 @@ class EvolutionController:
         
         candidates = []
         
+        # ========================================================
+        # CROSSOVER-ONLY MODE (mutation disabled)
+        # ========================================================
+        if not self.config.mutation_enabled:
+            # Case 1: First crossover - use original trajectories
+            if latest_crossover_round < 0:
+                candidates.extend(original_trajs)
+                logger.info(f"First crossover (crossover-only mode): using {len(original_trajs)} original trajectories")
+            
+            # Case 2: Subsequent crossovers - use two most recent crossover rounds
+            else:
+                # Get unique crossover round indices, sorted descending
+                crossover_rounds = sorted(set(t.round_idx for t in crossover_trajs), reverse=True)
+                
+                if len(crossover_rounds) >= 2:
+                    # Use two most recent crossover rounds
+                    round1, round2 = crossover_rounds[0], crossover_rounds[1]
+                    trajs_round1 = [t for t in crossover_trajs if t.round_idx == round1]
+                    trajs_round2 = [t for t in crossover_trajs if t.round_idx == round2]
+                    candidates.extend(trajs_round1)
+                    candidates.extend(trajs_round2)
+                    logger.info(f"Crossover-only mode: using {len(trajs_round1)} from round {round1} + "
+                               f"{len(trajs_round2)} from round {round2}")
+                else:
+                    # Only one crossover round exists, use that + original
+                    latest_crossovers = [t for t in crossover_trajs if t.round_idx == latest_crossover_round]
+                    candidates.extend(latest_crossovers)
+                    candidates.extend(original_trajs)
+                    logger.info(f"Crossover-only mode (fallback): using {len(latest_crossovers)} crossover + "
+                               f"{len(original_trajs)} original")
+            
+            return candidates
+        
+        # ========================================================
+        # STANDARD MODE (mutation enabled)
+        # ========================================================
         # Case 1: First crossover (no previous crossover exists)
         # Use: original + latest mutation
         if latest_crossover_round < 0:
@@ -503,13 +650,29 @@ class EvolutionController:
     
     def _get_crossover_task(self) -> Optional[dict[str, Any]]:
         """Get next crossover round task."""
+        # If crossover is disabled, skip to mutation or stay in crossover loop
+        if not self.config.crossover_enabled:
+            if self.config.mutation_enabled:
+                self._current_phase = RoundPhase.MUTATION
+                self._current_round += 1
+                return self._get_mutation_task()
+            return None
+        
         # Check if there are remaining crossover groups
         if self._crossover_idx >= len(self._crossover_groups):
-            # All crossover tasks complete, move back to mutation
-            self._current_phase = RoundPhase.MUTATION
+            # All crossover tasks complete, transition to next phase
             self._current_round += 1
-            logger.info(f"All crossover rounds complete, transitioning to mutation (round {self._current_round})")
-            return self._get_mutation_task()
+            
+            if self.config.mutation_enabled:
+                self._current_phase = RoundPhase.MUTATION
+                logger.info(f"All crossover rounds complete, transitioning to mutation (round {self._current_round})")
+                return self._get_mutation_task()
+            else:
+                # Stay in crossover mode (crossover-only loop)
+                # Prepare next crossover groups from the two most recent rounds
+                self._prepare_crossover_groups()
+                logger.info(f"All crossover rounds complete, continuing with crossover (round {self._current_round})")
+                return self._get_crossover_task()
         
         # Get next crossover group
         parents = self._crossover_groups[self._crossover_idx]
@@ -736,6 +899,8 @@ class EvolutionController:
             "config": {
                 "num_directions": self.config.num_directions,
                 "max_rounds": self.config.max_rounds,
+                "mutation_enabled": self.config.mutation_enabled,
+                "crossover_enabled": self.config.crossover_enabled,
                 "crossover_size": self.config.crossover_size,
                 "crossover_n": self.config.crossover_n,
             }

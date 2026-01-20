@@ -360,6 +360,10 @@ def run_evolution_loop(
     steps_per_loop = int(exec_cfg.get("steps_per_loop", 5))
     use_local = bool(exec_cfg.get("use_local", True))
     
+    # 进化阶段启用配置
+    mutation_enabled = bool(evolution_cfg.get("mutation_enabled", True))
+    crossover_enabled = bool(evolution_cfg.get("crossover_enabled", True))
+    
     # 父代选择策略配置
     parent_selection_strategy = str(evolution_cfg.get("parent_selection_strategy", "best"))
     top_percent_threshold = float(evolution_cfg.get("top_percent_threshold", 0.3))
@@ -414,6 +418,8 @@ def run_evolution_loop(
         num_directions=len(directions),
         steps_per_loop=steps_per_loop,
         max_rounds=max_rounds,
+        mutation_enabled=mutation_enabled,
+        crossover_enabled=crossover_enabled,
         crossover_size=crossover_size,
         crossover_n=crossover_n,
         prefer_diverse_crossover=True,
@@ -433,6 +439,16 @@ def run_evolution_loop(
     logger.info("开始进化循环")
     logger.info(f"配置: directions={len(directions)}, max_rounds={max_rounds}, "
                f"crossover_size={crossover_size}, crossover_n={crossover_n}")
+    logger.info(f"进化阶段: mutation={'启用' if mutation_enabled else '禁用'}, "
+               f"crossover={'启用' if crossover_enabled else '禁用'}")
+    if mutation_enabled and not crossover_enabled:
+        logger.info("模式: 仅变异 (Original → Mutation → Mutation → ...)")
+    elif crossover_enabled and not mutation_enabled:
+        logger.info("模式: 仅交叉 (Original → Crossover → Crossover → ...)")
+    elif mutation_enabled and crossover_enabled:
+        logger.info("模式: 完整进化 (Original → Mutation → Crossover → Mutation → ...)")
+    else:
+        logger.info("模式: 仅原始轮 (无进化)")
     logger.info(f"父代选择策略: {parent_selection_strategy}" + 
                (f" (top_percent={top_percent_threshold})" if parent_selection_strategy == "top_percent_plus_random" else ""))
     logger.info(f"并行执行: {'启用' if parallel_enabled else '禁用'}")

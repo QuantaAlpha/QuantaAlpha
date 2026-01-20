@@ -222,12 +222,13 @@ factor_feedback_generation:
           - Recommend parameter ranges for further exploration
           - Identify critical components in the factor construction process
 
-      3. **Complexity Control (Critical):**
-          - **Symbol Length (SL)**: Factors with excessively long expressions (symbol length > 300) are prone to overfitting and poor generalization. If a factor is flagged for high symbol length, strongly recommend simplification.
-          - **Base Features Count (ER)**: Factors using too many distinct raw features (e.g., $close, $open, $high, $low, $volume) (> 6) indicate over-engineering. Recommend reducing the number of base features.
-          - **Free Parameters (PC)**: Factors with too many free parameters (numeric constants) relative to total nodes (> 50%) are likely over-parameterized. Recommend reducing parameter count.
-          - **Complexity Impact**: Overly complex factors often perform well on training/validation sets but fail on test sets due to overfitting. Always prioritize simpler, more interpretable factors that maintain predictive power.
-          - When complexity feedback is provided for a factor, it is a critical issue that must be addressed in the next iteration. The factor's poor test performance is likely due to its excessive complexity.
+      3. **Complexity Control (CRITICAL - PRIMARY CAUSE OF POOR TEST PERFORMANCE):**
+          - **Symbol Length (SL)**: Factors with expressions exceeding 250 characters are HIGHLY LIKELY to be OVERFITTING. If a factor is flagged for high symbol length, it MUST be drastically simplified in the next iteration. Target: 50-150 characters.
+          - **Base Features Count (ER)**: Factors using too many distinct raw features (> 6) indicate over-engineering. Recommend reducing to 2-4 core features.
+          - **Free Parameters (PC)**: Factors with too many free parameters (numeric constants) relative to total nodes (> 50%) are likely over-parameterized. Reduce parameter count significantly.
+          - **OVERFITTING WARNING**: Complex factors with long expressions, many nested functions, and conditional branches almost ALWAYS perform well on training/validation but FAIL CATASTROPHICALLY on test sets. This is the #1 cause of poor out-of-sample performance.
+          - **RECOMMENDED ACTION**: When a factor has high training IC but poor test IC, ASSUME it is overfitting due to complexity. Generate a MUCH simpler factor (< 150 characters) that captures the core idea.
+          - When complexity feedback is provided, treat it as a CRITICAL ERROR that must be addressed immediately. Do not just slightly modify the factor - generate a fundamentally simpler alternative.
 
     Focus on Continuous Refinement:
       - Exhaust all possible variations within the current theoretical framework
@@ -339,23 +340,27 @@ hypothesis2experiment:
       - Balance simplicity and innovation to build a robust factor library.
       - Note that each factor is independent. Please do NOT reference other factors within the factor expression.
 
-    2. **CRITICAL: Factor Complexity Constraints (MUST FOLLOW):**
-      - **Symbol Length (SL) Limit: ≤ 300 characters**
-        - Factor expressions MUST be concise and simple. Long expressions (> 300 characters) will be automatically rejected.
-        - Prefer shorter, more interpretable expressions over complex nested formulas.
-        - Example of GOOD (short): `RANK(TS_MEAN($return, 20))`
-        - Example of BAD (too long): `RANK(POW(TS_CORR($close, SEQUENCE(15), 15), 2)) * RANK(TS_MEAN(($high - $low) / ($volume + 1e-8), 15))`
+    2. **CRITICAL: Factor Complexity Constraints (MUST FOLLOW - OVERFITTING PREVENTION):**
+      - **Symbol Length (SL) Limit: ≤ 250 characters (STRICT LIMIT)**
+        - Factor expressions MUST NOT exceed 250 characters. This is a HARD LIMIT.
+        - **WARNING: Overly complex/long expressions (> 250 chars) are highly prone to OVERFITTING.** They may perform well on training data but fail catastrophically on test data.
+        - **Simple factors generalize better.** A concise factor with moderate performance is FAR more valuable than a complex one with high training performance but poor test performance.
+        - Example of GOOD (short, ~50 chars): `RANK(TS_MEAN($return, 20))`
+        - Example of GOOD (moderate, ~100 chars): `RANK(TS_CORR($close, $volume, 10)) * SIGN(TS_MEAN($return, 5))`
+        - Example of BAD (too long, > 250 chars): `RANK(POW(TS_CORR($close, SEQUENCE(15), 15), 2)) * RANK(TS_MEAN(($high - $low) / ($volume + 1e-8), 15)) * ...`
       - **Base Features (ER) Limit: ≤ 6 distinct raw features**
         - Use at most 6 distinct base features (e.g., $close, $open, $high, $low, $volume, $return).
         - Reusing the same feature multiple times is acceptable, but using too many different features indicates over-engineering.
-        - Example: Using $close, $open, $high, $low, $volume, $return = 6 features (at limit)
         - Prefer factors that focus on 2-4 core features rather than using all available features.
-      - **Simplicity Priority:**
-        - **ALWAYS prioritize simplicity over complexity.** A simple factor that works is better than a complex one.
+      - **Simplicity Priority (ANTI-OVERFITTING):**
+        - **ALWAYS prioritize simplicity over complexity.** A simple factor that works is FAR better than a complex one.
+        - **Complex factors with many nested functions, conditional branches, and parameters are OVERFITTING indicators.**
         - Avoid deep nesting (e.g., RANK(POW(TS_CORR(...))) is too nested)
+        - Avoid complex conditional expressions (e.g., (A > B) ? (C * D / E) : (F * G / H))
         - Prefer linear combinations over multiplicative chains
         - Use fewer function calls and simpler operations
-      - **If previous factors were flagged for complexity, you MUST generate simpler alternatives in the next iteration.**
+        - **Target expression length: 50-150 characters for optimal generalization.**
+      - **If previous factors were flagged for complexity, you MUST generate MUCH simpler alternatives in the next iteration.**
 
     3.**Key Considerations in Factor Construction:**
       - **Data Preprocessing and Standardization:**
@@ -457,12 +462,15 @@ expression_duplication: |-
     - This indicates the factor lacks diversity. Please use more repeated variables or operators.
   {% endif %}
   {% if symbol_length > symbol_length_threshold %}
-  - **Symbol Length (SL) Check Failed: Symbol length ({{ symbol_length }}) exceeds threshold ({{ symbol_length_threshold }})**
-    - **CRITICAL**: The factor expression is too long and complex. This will cause overfitting and poor generalization.
-    - **Action Required**: Generate a MUCH simpler and shorter expression. Reduce nesting, use fewer function calls, and simplify the logic.
-    - Target: Keep expressions under {{ symbol_length_threshold }} characters. Prefer simple linear combinations over complex multiplicative chains.
-    - Example of GOOD (short): `RANK(TS_MEAN($return, 20))`
-    - Example of BAD (too long): `RANK(POW(TS_CORR($close, SEQUENCE(15), 15), 2)) * RANK(TS_MEAN(($high - $low) / ($volume + 1e-8), 15))`
+  - **Symbol Length (SL) Check FAILED: Expression length ({{ symbol_length }}) exceeds HARD LIMIT ({{ symbol_length_threshold }} characters)**
+    - **🚨 OVERFITTING ALERT**: This factor expression is TOO COMPLEX and will almost certainly OVERFIT.
+    - **Root Cause**: Complex expressions with many nested functions, conditional branches, and parameters fit noise in training data rather than true market patterns.
+    - **Action Required**: Generate a FUNDAMENTALLY SIMPLER expression. Do NOT just remove a few characters - redesign the factor from scratch.
+    - **Target Length**: 50-150 characters for optimal generalization. Anything over 200 is suspicious.
+    - **Example of GOOD** (~50 chars): `RANK(TS_MEAN($return, 20))`
+    - **Example of ACCEPTABLE** (~100 chars): `RANK(TS_CORR($close, $volume, 10)) * SIGN(TS_MEAN($return, 5))`
+    - **Example of BAD** (> 200 chars): Any expression with multiple nested functions, complex conditionals, or many arithmetic operations.
+    - **REMEMBER**: A simple factor with IC=0.03 that generalizes is FAR more valuable than a complex factor with IC=0.06 that overfits.
   {% endif %}
   {% if num_base_features > base_features_threshold %}
   - **Base Features Count (ER) Check Failed: Number of base features ({{ num_base_features }}) exceeds threshold ({{ base_features_threshold }})**

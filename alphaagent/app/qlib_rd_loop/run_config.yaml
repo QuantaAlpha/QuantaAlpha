@@ -77,10 +77,32 @@ evolution:
   # 启用时，将覆盖传统的规划+并行执行模式
   enabled: true
   
+  # Enable mutation phase
+  # When true: include mutation rounds in the evolution cycle
+  # When false: skip mutation rounds entirely (only original and crossover)
+  # 启用变异阶段
+  # 当为true时：在进化循环中包含变异轮
+  # 当为false时：完全跳过变异轮（仅原始轮和交叉轮）
+  mutation_enabled: true
+  
+  # Enable crossover phase
+  # When true: include crossover rounds in the evolution cycle
+  # When false: skip crossover rounds entirely (only original and mutation)
+  # 启用交叉阶段
+  # 当为true时：在进化循环中包含交叉轮
+  # 当为false时：完全跳过交叉轮（仅原始轮和变异轮）
+  crossover_enabled: true
+  
   # Maximum evolution rounds (including original, mutation, and crossover rounds)
-  # Flow: round 0 = original, round 1 = mutation, round 2 = crossover, ...
+  # Flow depends on enabled phases:
+  # - Both enabled: round 0 = original, round 1 = mutation, round 2 = crossover, ...
+  # - Only mutation: round 0 = original, round 1+ = mutation, mutation, ...
+  # - Only crossover: round 0 = original, round 1+ = crossover, crossover, ...
   # 最大进化轮数（包括原始轮、变异轮和交叉轮）
-  # 流程：轮次0=原始轮，轮次1=变异轮，轮次2=交叉轮，...
+  # 流程取决于启用的阶段：
+  # - 两者都启用：轮次0=原始轮，轮次1=变异轮，轮次2=交叉轮，...
+  # - 仅启用变异：轮次0=原始轮，轮次1+=变异，变异，...
+  # - 仅启用交叉：轮次0=原始轮，轮次1+=交叉，交叉，...
   max_rounds: 11  #超参
   
   # Crossover operation parameters
@@ -174,9 +196,10 @@ factor:
   # Factor complexity constraints
   # 因子复杂度约束
   complexity:
-    # Maximum symbol length for factor expressions
-    # 因子表达式的最大符号长度
-    symbol_length_threshold: 300
+    # Maximum symbol length for factor expressions (CRITICAL for preventing overfitting)
+    # 因子表达式的最大符号长度（防止过拟合的关键参数）
+    # 过于复杂的因子表达式容易过拟合，建议保持在 250 字符以内
+    symbol_length_threshold: 250
     # Maximum number of distinct base features ($close, $open, etc.)
     # 不同基础特征的最大数量（$close, $open等）
     base_features_threshold: 6
