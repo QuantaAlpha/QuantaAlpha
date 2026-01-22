@@ -1,0 +1,26 @@
+{
+  "experiment_name": "RANKIC_desc_150_QA_round11_best_deepseek_aliyun_no_planning_csi300",
+  "factor_source": "custom",
+  "num_factors": 133,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
+  "metrics": {
+    "IC": 0.036495510654174994,
+    "ICIR": 0.21619993116672556,
+    "Rank IC": 0.034984864424326016,
+    "Rank ICIR": 0.2084495129654086,
+    "annualized_return": 0.049778703063052876,
+    "information_ratio": 0.7173351113552637,
+    "max_drawdown": -0.1036462574062913,
+    "calmar_ratio": 0.4802749690027044
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 208.62329030036926
+}

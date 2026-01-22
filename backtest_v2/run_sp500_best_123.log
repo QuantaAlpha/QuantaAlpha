@@ -1,0 +1,1064 @@
+✓ 已加载环境变量: /home/tjxy/quantagent/AlphaAgent/.env
+2026-01-22 22:54:07,121 - INFO - Note: detected 112 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-01-22 22:54:07,121 - INFO - Note: NumExpr detected 112 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2026-01-22 22:54:07,121 - INFO - NumExpr defaulting to 8 threads.
+2026-01-22 22:54:07,241 - INFO - ✓ 加载配置文件: /home/tjxy/quantagent/AlphaAgent/backtest_v2/config_sp500_best_123.yaml
+[3886766:MainThread](2026-01-22 22:54:07,738) INFO - qlib.Initialization - [config.py:420] - default_conf: client.
+[3886766:MainThread](2026-01-22 22:54:08,612) INFO - qlib.Initialization - [__init__.py:74] - qlib successfully initialized based on client settings.
+[3886766:MainThread](2026-01-22 22:54:08,612) INFO - qlib.Initialization - [__init__.py:76] - data_path={'__DEFAULT_FREQ': PosixPath('/home/tjxy/.qlib/qlib_data/us_data')}
+2026-01-22 22:54:08,612 - INFO - ✓ Qlib 初始化完成: /home/tjxy/.qlib/qlib_data/us_data
+2026-01-22 22:54:08,612 - WARNING - 未找到测试时间段配置: default，使用默认配置
+
+======================================================================
+🚀 开始回测: backtest_v2_sp500_best_123
+📅 测试时间段: default
+======================================================================
+
+📊 第一步：加载因子...
+2026-01-22 22:54:08,612 - INFO - 📊 加载因子源: custom
+2026-01-22 22:54:08,626 - INFO -   ✓ 加载自定义因子: 333 个 (使用自定义计算器)
+[3886766:MainThread](2026-01-22 22:54:08,627) INFO - qlib.Initialization - [config.py:420] - default_conf: client.
+[3886766:MainThread](2026-01-22 22:54:08,628) INFO - qlib.Initialization - [__init__.py:74] - qlib successfully initialized based on client settings.
+[3886766:MainThread](2026-01-22 22:54:08,628) INFO - qlib.Initialization - [__init__.py:76] - data_path={'__DEFAULT_FREQ': PosixPath('/home/tjxy/.qlib/qlib_data/us_data')}
+  ✓ Qlib 兼容因子: 0 个
+  ✓ 需要计算的自定义因子: 333 个
+
+🔧 第二步：计算自定义因子...
+  获取股票数据...
+2026-01-22 22:54:09,728 - INFO - ✓ 加载股票数据: 1382870 行
+2026-01-22 22:54:09,728 - INFO -   ✓ 加载股票数据: 1382870 条记录
+2026-01-22 22:54:09,966 - INFO - 数据准备完成: 1382870 行, 列: ['$open', '$high', '$low', '$close', '$volume', '$vwap', '$return']
+2026-01-22 22:54:09,966 - INFO - 开始处理 333 个因子 (并行度: 1)...
+2026-01-22 22:54:12,701 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:12,719 - INFO -     计算: TrendStability_SupportFailure_10D
+2026-01-22 22:54:13.348 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.100 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.167 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.195 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.198 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.202 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.208 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.222 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.225 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.230 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.231 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.234 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.250 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.256 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.258 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.264 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.264 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.265 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.267 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.281 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.289 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.299 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.305 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.310 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.312 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.313 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.316 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.327 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.331 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.332 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.338 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.343 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.345 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.347 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.351 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.352 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.354 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.355 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.357 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.362 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.363 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.363 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.366 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.371 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.377 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.379 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.380 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.390 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.391 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.393 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.402 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.404 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.405 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.406 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.410 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.417 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.419 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.420 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.422 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.423 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.425 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.426 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.427 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.428 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.429 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.430 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.432 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.434 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.436 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.441 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.442 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.447 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.449 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.449 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.456 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.456 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.457 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.465 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.467 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.467 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.468 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.470 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.473 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.477 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.477 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.478 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.479 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.480 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.482 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.484 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.484 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.485 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.487 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.487 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.490 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.499 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.499 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.511 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.513 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.519 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.521 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.521 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.523 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.523 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.526 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.526 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.528 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.539 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.573 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.612 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.747 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.751 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:16.812 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 22:54:21,828 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:21,843 - INFO -     计算: TrendStability_SupportFailure_ZScore_10D
+2026-01-22 22:54:27,413 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:27,428 - INFO -     计算: TrendStability_SupportFailure_Rank_10D
+2026-01-22 22:54:32,712 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:32,727 - INFO -     计算: ROC60_CORR20_Interaction_Factor
+2026-01-22 22:54:37,441 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:37,455 - INFO -     计算: Volume_Weighted_Reversal_Factor_60D
+2026-01-22 22:54:41,408 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:41,422 - INFO -     计算: Reversal_Correlation_Regime_Factor
+2026-01-22 22:54:46,112 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:46,124 - INFO -     计算: Residual_Volatility_Interaction_5D
+2026-01-22 22:54:49,217 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:49,230 - INFO -     计算: Residual_Volatility_ZScore_5D
+2026-01-22 22:54:52,376 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:52,391 - INFO -     计算: LowVol_LargeResidual_Indicator_5D
+2026-01-22 22:54:57,575 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:54:57,590 - INFO -     计算: MultiVol_Interaction_5D
+2026-01-22 22:55:00,926 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:00,940 - INFO -     计算: Vol_Composite_ZScore_10D
+2026-01-22 22:55:05,492 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:05,505 - INFO -     计算: Volatility_Regime_Indicator_5D
+2026-01-22 22:55:09,825 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:09,839 - INFO -     计算: TrendVolumeDivergence_10_5
+2026-01-22 22:55:15,906 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:15,923 - INFO -     计算: StableTrendUnstableVolume_10_5
+2026-01-22 22:55:22,250 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:22,266 - INFO -     计算: PriceVolumeConviction_10_5
+2026-01-22 22:55:29,046 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:29,062 - INFO -     计算: ROC60_CORR20_Interaction_Factor
+2026-01-22 22:55:33,205 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:33,219 - INFO -     计算: Volume_Weighted_Reversal_Factor_60D
+2026-01-22 22:55:37,539 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:37,556 - INFO -     计算: Correlation_Filtered_Reversal_Factor
+2026-01-22 22:55:41,801 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:41,814 - INFO -     计算: Intraday_Pressure_Ratio_5D
+2026-01-22 22:55:44,961 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:44,973 - INFO -     计算: Volatility_Filtered_Pressure_20D
+2026-01-22 22:55:48,837 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:48,850 - INFO -     计算: Pressure_Volatility_Interaction_10D
+2026-01-22 22:55:51,617 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:51,631 - INFO -     计算: Residual_Volatility_Ratio_5D
+2026-01-22 22:55:57,075 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:55:57,088 - INFO -     计算: Residual_Volatility_Interaction_5D
+2026-01-22 22:56:03,032 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:56:03,048 - INFO -     计算: Volatility_Adjusted_Residual_Rank_5D
+2026-01-22 22:56:09,401 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:56:09,417 - INFO -     计算: Volume_Weighted_Volatility_Stability_Ratio_5D
+2026-01-22 22:56:12,382 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:56:12,396 - INFO -     计算: Normalized_Volatility_Volume_Dispersion_5D
+2026-01-22 22:56:16,446 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:56:16,460 - INFO -     计算: Volume_Stability_Adjusted_Volatility_5D
+2026-01-22 22:56:19,860 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:56:19,874 - INFO -     计算: Triple_Timeframe_Misalignment_Factor
+2026-01-22 22:56:26,771 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:56:26,789 - INFO -     计算: Multi_Horizon_Reversion_Score
+2026-01-22 22:57:04,686 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:04,703 - INFO -     计算: Timeframe_Conflict_Indicator
+2026-01-22 22:57:11,756 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:11,770 - INFO -     计算: Concentration_Volume_Spike_Factor_10D
+2026-01-22 22:57:14,753 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:14,766 - INFO -     计算: LowVol_Volume_Momentum_Factor_20D
+2026-01-22 22:57:17,637 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:17,651 - INFO -     计算: Ownership_Volume_Correlation_Factor_15D
+2026-01-22 22:57:21,115 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:21,130 - INFO -     计算: Momentum_OrderFlow_Acceleration_5_10
+2026-01-22 22:57:24,330 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:24,356 - INFO -     计算: Volume_Accelerated_Momentum_Rank_5_10
+2026-01-22 22:57:25,495 - INFO -     计算: Momentum_Volume_Correlation_Acceleration_5_10
+2026-01-22 22:57:30,605 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:30,617 - INFO -     计算: Persistent_Buy_Volume_Ratio_5D
+2026-01-22 22:57:33,942 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:33,954 - INFO -     计算: Buy_Volume_Persistence_ZScore_5D
+2026-01-22 22:57:34,791 - INFO -     计算: Volume_Imbalance_Momentum_5D
+2026-01-22 22:57:37,834 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:37,846 - INFO -     计算: OrderBook_Imbalance_Proxy_5D
+2026-01-22 22:57:40,768 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:40,780 - INFO -     计算: Market_Depth_Resilience_10D
+2026-01-22 22:57:43,417 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:43,431 - INFO -     计算: Institutional_Flow_Persistence_15D
+2026-01-22 22:57:46,802 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:46,817 - INFO -     计算: Normalized_Range_Position_20D
+2026-01-22 22:57:50,069 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:50,082 - INFO -     计算: Volume_Price_Divergence_5D
+2026-01-22 22:57:53,659 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:53,674 - INFO -     计算: Range_Exhaustion_Signal_20D_5D
+2026-01-22 22:57:56,102 - INFO -     计算: Momentum_Volume_Imbalance_5D
+2026-01-22 22:57:59,361 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:57:59,373 - INFO -     计算: Price_Volume_Convergence_10D
+2026-01-22 22:58:03,791 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:03,804 - INFO -     计算: Momentum_Volume_Ratio_5D
+2026-01-22 22:58:07,847 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:07,859 - INFO -     计算: Volume_Weighted_High_Proximity_5D
+2026-01-22 22:58:10,778 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:10,790 - INFO -     计算: Compressed_Range_Acceleration_Factor
+2026-01-22 22:58:13,977 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:13,990 - INFO -     计算: Normalized_High_Low_Position_Ratio_5D
+2026-01-22 22:58:17,347 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:17,362 - INFO -     计算: Retail_Institutional_Volume_Divergence_5D
+2026-01-22 22:58:21,128 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:21,143 - INFO -     计算: Volume_Spike_Block_Trade_Ratio_10D
+2026-01-22 22:58:22,297 - INFO -     计算: Volume_Volatility_Trend_Alignment_15D
+2026-01-22 22:58:25,549 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:25,563 - INFO -     计算: High_Liquidity_Momentum_20D
+2026-01-22 22:58:29,733 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:29,746 - INFO -     计算: Low_Liquidity_Momentum_20D
+2026-01-22 22:58:33,833 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:33,847 - INFO -     计算: Liquidity_Regime_Momentum_Divergence_20D
+2026-01-22 22:58:39,949 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:39,963 - INFO -     计算: Cap_Tier_Momentum_Decay_Slope_20D
+2026-01-22 22:58:45,418 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:45,432 - INFO -     计算: Cross_Sectional_Momentum_Dispersion_15D
+2026-01-22 22:58:49,009 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:49,024 - INFO -     计算: Momentum_Fractal_Scaling_Residual_30D
+2026-01-22 22:58:55,176 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:58:55,191 - INFO -     计算: Hybrid_Reversal_Convergence_Factor_60_10_20_5
+2026-01-22 22:59:03,180 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:03,210 - INFO -     计算: Normalized_Range_Flow_Exhaustion_Factor_20_5
+2026-01-22 22:59:08,408 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:08,421 - INFO -     计算: Trend_Breakdown_Range_Position_Factor_10_20
+2026-01-22 22:59:14,848 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:14,866 - INFO -     计算: Composite_Reversal_Volume_Range_60D
+2026-01-22 22:59:20,080 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:20,095 - INFO -     计算: Normalized_Range_Volume_Reversal_20D
+2026-01-22 22:59:24,722 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:24,736 - INFO -     计算: Volume_Weighted_Range_Reversal_60D
+2026-01-22 22:59:29,595 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:29,610 - INFO -     计算: TripleTimeframeMisalignment_20D
+2026-01-22 22:59:38,296 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:38,309 - INFO -     计算: LiquidityMomentumDivergence_20D
+2026-01-22 22:59:42,853 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:42,867 - INFO -     计算: MultiDimensionalDisequilibrium_20D
+2026-01-22 22:59:56,314 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 22:59:56,335 - INFO -     计算: Conditional_Reversal_VolumeCorr_Factor
+2026-01-22 23:00:01,842 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:01,860 - INFO -     计算: VolumeCorr_Enhanced_Reversal_Factor
+2026-01-22 23:00:06,474 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:06,494 - INFO -     计算: LiquidityDivergence_Reversal_Factor
+2026-01-22 23:00:12,709 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:12,725 - INFO -     计算: Volume_Confirmed_Reversal_60D
+2026-01-22 23:00:18,614 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:18,629 - INFO -     计算: Tier_Adjusted_Momentum_Residual_20D
+2026-01-22 23:00:25,150 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:25,172 - INFO -     计算: Enhanced_Reversal_Signal_60D
+2026-01-22 23:00:31,663 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:31,685 - INFO -     计算: Volatility_Regime_Normalized_Range_5D_20D
+2026-01-22 23:00:36,100 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:36,119 - INFO -     计算: Volume_Price_Divergence_5D
+2026-01-22 23:00:41,261 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:41,281 - INFO -     计算: Hybrid_Volatility_Range_Volume_5D_20D
+2026-01-22 23:00:47,306 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:47,326 - INFO -     计算: Intraday_Pressure_Ratio_5D
+2026-01-22 23:00:51,792 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:51,812 - INFO -     计算: Volatility_Normalized_Range_Position_20D
+2026-01-22 23:00:55,970 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:55,989 - INFO -     计算: Volume_Price_Divergence_10D
+2026-01-22 23:00:59,651 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:00:59,669 - INFO -     计算: Volatility_Normalized_Range_Position_20D
+2026-01-22 23:01:03,636 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:01:03,654 - INFO -     计算: Volume_Price_Correlation_Trend_20D
+2026-01-22 23:01:08,680 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:01:08,705 - INFO -     计算: Long_Term_Reversal_Enhanced_60D
+2026-01-22 23:01:14,197 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:01:14,210 - INFO -     计算: Volume_Regime_Divergence_10D
+2026-01-22 23:01:19,090 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:01:19,105 - INFO -     计算: Price_MultiHorizon_Misalignment_60D
+2026-01-22 23:01:57,800 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:01:57,818 - INFO -     计算: Composite_Reversal_Signal_60D
+2026-01-22 23:02:39,100 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:02:39,119 - INFO -     计算: Volatility_Momentum_Divergence_Interaction_20D
+2026-01-22 23:02:44,643 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:02:44,660 - INFO -     计算: Institutional_Retail_Momentum_Volatility_15D
+2026-01-22 23:02:54,913 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:02:54,927 - INFO -     计算: Volatility_Regime_Momentum_Divergence_10D
+2026-01-22 23:03:00,061 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:03:00,074 - INFO -     计算: CrossSectional_Momentum_Spillover_20D
+2026-01-22 23:03:01,304 - INFO -     计算: Economic_Linkage_Momentum_Gap_15D
+2026-01-22 23:03:06,471 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:03:06,486 - INFO -     计算: Momentum_Convergence_Signal_10D
+2026-01-22 23:03:12,895 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:03:12,911 - INFO -     计算: Overnight_Momentum_Intraday_Reversal_5D
+2026-01-22 23:03:52,464 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:03:52,479 - INFO -     计算: Opening_Volume_Concentration_Overnight_Momentum_5D
+2026-01-22 23:03:58,120 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:03:58,136 - INFO -     计算: Overnight_Intraday_Divergence_Volume_5D
+2026-01-22 23:04:04,032 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:04,046 - INFO -     计算: Intraday_Flow_Imbalance_5D
+2026-01-22 23:04:09,987 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:10,005 - INFO -     计算: Price_Impact_Asymmetry_10D
+2026-01-22 23:04:17,722 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:17,737 - INFO -     计算: Limit_Book_Resilience_15D
+2026-01-22 23:04:22,636 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:22,654 - INFO -     计算: Earnings_Quality_Acceleration_Interaction_5D
+2026-01-22 23:04:28,114 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:28,133 - INFO -     计算: Accruals_Quality_Momentum_Composite_10D
+2026-01-22 23:04:31,531 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:31,549 - INFO -     计算: Cash_Flow_Persistence_Momentum_20D
+2026-01-22 23:04:35,166 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:35,184 - INFO -     计算: Volatility_Institutional_Alignment_5D
+2026-01-22 23:04:38,969 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:38,989 - INFO -     计算: Volatility_Consensus_Dispersion_30D
+2026-01-22 23:04:41,890 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:41,908 - INFO -     计算: Informed_Volatility_Composite_20D
+2026-01-22 23:04:46,208 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:46,226 - INFO -     计算: Acceleration_Liquidity_Alignment_3D
+2026-01-22 23:04:51,629 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:51,646 - INFO -     计算: Institutional_Footprint_Concentration_5D
+2026-01-22 23:04:54,986 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:04:55,004 - INFO -     计算: Trend_Reliability_Filter_10D
+2026-01-22 23:04:59,046 - INFO -     计算: Analyst_Revision_Persistence_Factor_15D
+2026-01-22 23:05:02,744 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:02,759 - INFO -     计算: Institutional_Flow_Persistence_Factor_20D
+2026-01-22 23:05:06,768 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:06,783 - INFO -     计算: Earnings_Surprise_Momentum_Factor_10D
+2026-01-22 23:05:10,559 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:10,573 - INFO -     计算: Institutional_Concentration_Price_Impact_20D
+2026-01-22 23:05:15,132 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:15,145 - INFO -     计算: Analyst_Forecast_Coherence_Proxy_15D
+2026-01-22 23:05:18,877 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:18,890 - INFO -     计算: Order_Flow_Imbalance_Momentum_10D
+2026-01-22 23:05:22,725 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:22,738 - INFO -     计算: CrossCap_OrderFlow_Asymmetry_5D
+2026-01-22 23:05:26,768 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:26,782 - INFO -     计算: Liquidity_Weighted_Flow_Imbalance_10D
+2026-01-22 23:05:31,673 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:31,686 - INFO -     计算: MarketCap_Segmented_Flow_Momentum_20D
+2026-01-22 23:05:36,438 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:36,451 - INFO -     计算: Governance_Attention_Interaction_15D
+2026-01-22 23:05:41,892 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:41,905 - INFO -     计算: Earnings_Timing_Volatility_Signal_20D
+2026-01-22 23:05:46,125 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:46,138 - INFO -     计算: Governance_Quality_Return_Persistence_10D
+2026-01-22 23:05:48,112 - INFO -     计算: Earnings_Quality_Trend_Modulated_Momentum_60D
+2026-01-22 23:05:54,913 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:54,927 - INFO -     计算: Range_Position_Volume_Acceleration_20D
+2026-01-22 23:05:59,681 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:05:59,695 - INFO -     计算: Quality_Stabilized_Momentum_Range_Composite
+2026-01-22 23:06:08,580 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:08,597 - INFO -     计算: EarningsQualityMomentum_20D
+2026-01-22 23:06:14,530 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:14,548 - INFO -     计算: RangeExhaustionVolumeDiv_10D
+2026-01-22 23:06:21,108 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:21,127 - INFO -     计算: HybridEarningsRangeMomentum_15D
+2026-01-22 23:06:27,701 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:27,717 - INFO -     计算: Earnings_Quality_Volume_Confirmation_20D
+2026-01-22 23:06:35,492 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:35,511 - INFO -     计算: Multi_Horizon_Momentum_Volume_Composite_5D_20D
+2026-01-22 23:06:39,582 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:39,601 - INFO -     计算: Volatility_Adaptive_Momentum_Quality_10D
+2026-01-22 23:06:45,181 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:45,195 - INFO -     计算: Microstructure_Resilience_Trend_Fusion_10D
+2026-01-22 23:06:52,331 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:52,345 - INFO -     计算: Liquidity_Range_Position_Convergence_20D
+2026-01-22 23:06:56,704 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:06:56,719 - INFO -     计算: Regime_Microstructure_Convergence_15D
+2026-01-22 23:07:03,035 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:07:03,057 - INFO -     计算: Governance_Enhanced_Trend_Breakdown_20D
+2026-01-22 23:07:42,472 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:07:42,493 - INFO -     计算: Attention_Filtered_Trend_Stability_15D
+2026-01-22 23:07:49,684 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:07:49,705 - INFO -     计算: Governance_Attention_Trend_Convergence_10D
+2026-01-22 23:07:55,015 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:07:55,034 - INFO -     计算: Intraday_Flow_Reversal_Factor_10D
+2026-01-22 23:08:00,029 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:00,047 - INFO -     计算: Liquidity_Modulated_Reversal_Factor_15D
+2026-01-22 23:08:02,116 - INFO -     计算: Volume_Confirmed_Asymmetry_Factor_20D
+2026-01-22 23:08:05,961 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:05,980 - INFO -     计算: Microstructure_Flow_Imbalance_5D
+2026-01-22 23:08:09,499 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:09,517 - INFO -     计算: Volatility_Normalized_Range_Position_20D
+2026-01-22 23:08:12,836 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:12,852 - INFO -     计算: Volume_Price_Divergence_Confirmation_10D
+2026-01-22 23:08:19,153 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:19,172 - INFO -     计算: OFI_VCPR_Fusion_10D_30D
+2026-01-22 23:08:26,322 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:26,339 - INFO -     计算: LOBR_MR_Resilience_15D_40D
+2026-01-22 23:08:35,115 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:35,134 - INFO -     计算: Dynamic_Volatility_Weighted_Fusion_20D
+2026-01-22 23:08:42,845 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:42,881 - INFO -     计算: Hybrid_Acceleration_Liquidity_3D
+2026-01-22 23:08:48,594 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:48,615 - INFO -     计算: Institutional_Footprint_Concentration_5D
+2026-01-22 23:08:52,892 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:08:52,912 - INFO -     计算: MultiTimeframe_Trend_Reversal_60D_10D
+2026-01-22 23:09:00,298 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:00,319 - INFO -     计算: Reversal_Volume_Correlation_Filtered_60D
+2026-01-22 23:09:06,034 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:06,055 - INFO -     计算: Liquidity_Divergence_Reversal_60D
+2026-01-22 23:09:10,063 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:10,082 - INFO -     计算: Attention_Governance_Reversal_60D
+2026-01-22 23:09:13,671 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:13,692 - INFO -     计算: ETF_Constituent_Flow_Divergence_5D
+2026-01-22 23:09:16,948 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:16,970 - INFO -     计算: Volatility_Skew_Proxy_20D
+2026-01-22 23:09:18,274 - INFO -     计算: Arbitrage_Pressure_Composite_5D_20D
+2026-01-22 23:09:23,206 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:23,225 - INFO -     计算: CrossAsset_Residual_Volatility_20D
+2026-01-22 23:09:29,193 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:29,211 - INFO -     计算: Normalized_Residual_Correlation_15D
+2026-01-22 23:09:39,003 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:39,019 - INFO -     计算: Residual_Momentum_Divergence_25D
+2026-01-22 23:09:45,531 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:45,545 - INFO -     计算: OrderFlow_Volume_Imbalance_5D
+2026-01-22 23:09:49,086 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:49,105 - INFO -     计算: Liquidity_Provision_Signal_10D
+2026-01-22 23:09:51,931 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:51,950 - INFO -     计算: Intraday_Microstructure_Pressure_15D
+2026-01-22 23:09:55,271 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:55,290 - INFO -     计算: Fundamental_Momentum_Positioning_Divergence_20D
+2026-01-22 23:09:59,458 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:09:59,478 - INFO -     计算: Price_Range_Institutional_Participation_40D
+2026-01-22 23:10:02,868 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:02,887 - INFO -     计算: Momentum_Volume_Divergence_ZScore_30D
+2026-01-22 23:10:06,548 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:06,570 - INFO -     计算: SupplyChain_Volatility_Resilience_20D
+2026-01-22 23:10:10,416 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:10,436 - INFO -     计算: Institutional_Concentration_Divergence_15D
+2026-01-22 23:10:15,523 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:15,542 - INFO -     计算: Stress_Resilience_Divergence_10D
+2026-01-22 23:10:18,450 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:18,469 - INFO -     计算: Index_Volatility_Divergence_Factor_20D
+2026-01-22 23:10:22,064 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:22,083 - INFO -     计算: Volatility_Spillover_Momentum_Factor_15D
+2026-01-22 23:10:24,962 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:24,981 - INFO -     计算: Hedging_Flow_Proxy_Factor_10D
+2026-01-22 23:10:27,955 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:27,976 - INFO -     计算: Institutional_Flow_Proxy_20D
+2026-01-22 23:10:31,663 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:31,681 - INFO -     计算: Smart_Money_Positioning_10D
+2026-01-22 23:10:35,014 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:35,033 - INFO -     计算: Flow_Range_Divergence_15D
+2026-01-22 23:10:38,320 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:38,339 - INFO -     计算: CrossAsset_VolCorr_5D
+2026-01-22 23:10:41,783 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:41,802 - INFO -     计算: ETF_Flow_Divergence_10D
+2026-01-22 23:10:44,973 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:44,992 - INFO -     计算: OptionSurface_TermStructure_20D
+2026-01-22 23:10:48,326 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:48,346 - INFO -     计算: Volume_Weighted_Volatility_Stability_5D
+2026-01-22 23:10:51,341 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:51,360 - INFO -     计算: Volume_Volatility_Correlation_Resonance_5D
+2026-01-22 23:10:55,046 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:55,064 - INFO -     计算: Normalized_Volume_Volatility_Interaction_5D
+2026-01-22 23:10:58,347 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:10:58,365 - INFO -     计算: Industry_Relative_Momentum_60D
+2026-01-22 23:11:01,171 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:01,188 - INFO -     计算: Volume_Stability_Network_Centrality_20D
+2026-01-22 23:11:03,980 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:04,001 - INFO -     计算: Earnings_Surprise_Consistency_Proxy_30D
+2026-01-22 23:11:06,965 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:06,982 - INFO -     计算: Industry_Momentum_Earnings_Filter_60D
+2026-01-22 23:11:08,481 - INFO -     计算: Order_Flow_Imbalance_Volume_Confirmation_10D
+2026-01-22 23:11:12,717 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:12,734 - INFO -     计算: Volatility_Weighted_Momentum_Residual_20D
+2026-01-22 23:11:16,378 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:16,395 - INFO -     计算: Industry_Momentum_OrderFlow_Composite_60_5
+2026-01-22 23:11:18,404 - INFO -     计算: Range_Confirmed_Momentum_60_20
+2026-01-22 23:11:22,011 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:22,029 - INFO -     计算: MultiTimeframe_Flow_Momentum_60_5_10
+2026-01-22 23:11:26,436 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:26,454 - INFO -     计算: CrossAsset_Intraday_Resilience_Factor_20D
+2026-01-22 23:11:30,193 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:30,209 - INFO -     计算: Regime_Volume_Momentum_Factor_15D
+2026-01-22 23:11:33,980 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:33,996 - INFO -     计算: Microstructure_Resilience_Factor_10D
+2026-01-22 23:11:36,810 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:36,827 - INFO -     计算: Industry_Momentum_Flow_Reversal_10D
+2026-01-22 23:11:39,834 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:39,851 - INFO -     计算: Liquidity_Earnings_Conditioned_Momentum_20D
+2026-01-22 23:11:44,247 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:44,264 - INFO -     计算: MultiTimeframe_Flow_Momentum_15D
+2026-01-22 23:11:46,121 - INFO -     计算: Industry_Relative_Momentum_20D
+2026-01-22 23:11:49,263 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:49,279 - INFO -     计算: Earnings_Quality_Volume_Ratio_30D
+2026-01-22 23:11:52,725 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:52,741 - INFO -     计算: Volume_Stability_Confidence_15D
+2026-01-22 23:11:55,704 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:11:55,720 - INFO -     计算: Industry_Relative_Momentum_60D
+2026-01-22 23:11:56,280 - INFO -     计算: Microstructure_Resilience_10D
+2026-01-22 23:12:00,136 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:00,153 - INFO -     计算: Regime_Convergence_20D
+2026-01-22 23:12:03,327 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:03,344 - INFO -     计算: Fundamental_Liquidity_Divergence_30D
+2026-01-22 23:12:07,690 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:07,706 - INFO -     计算: Volatility_Adaptive_Positioning_Flow_25D
+2026-01-22 23:12:10,225 - INFO -     计算: Regime_Switching_Divergence_Flow_20D
+2026-01-22 23:12:15,056 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:15,070 - INFO -     计算: Industry_Relative_Momentum_20D
+2026-01-22 23:12:18,110 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:18,127 - INFO -     计算: Earnings_Quality_Volume_Validation_15D
+2026-01-22 23:12:22,121 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:22,135 - INFO -     计算: Volume_Stability_Regime_Filter_10D
+2026-01-22 23:12:25,064 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:25,078 - INFO -     计算: HighFreq_OrderFlow_Imbalance_5D
+2026-01-22 23:12:28,634 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:28,649 - INFO -     计算: MediumTerm_VolumeConfirmed_Reversal_30D
+2026-01-22 23:12:32,659 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:32,674 - INFO -     计算: Liquidity_Filtered_Composite_10D
+2026-01-22 23:12:38,108 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:38,123 - INFO -     计算: Volatility_Microstructure_Fusion_20D
+2026-01-22 23:12:41,905 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:41,920 - INFO -     计算: Volume_Weighted_Volatility_Resilience_15D
+2026-01-22 23:12:46,158 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:46,173 - INFO -     计算: Microstructure_Volatility_Divergence_20D
+2026-01-22 23:12:50,873 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:50,887 - INFO -     计算: Institutional_Retail_Attention_Divergence_20D
+2026-01-22 23:12:54,686 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:12:54,701 - INFO -     计算: Uncertainty_Amplified_Sentiment_Skew_15D
+2026-01-22 23:25:41,656 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:25:41,675 - INFO -     计算: Analyst_Clustering_Proxy_10D
+2026-01-22 23:25:46,044 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:25:46,065 - INFO -     计算: Undervaluation_Volatility_Divergence_20D
+2026-01-22 23:25:49,212 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:25:49,232 - INFO -     计算: Earnings_Quality_Speculative_Activity_30D
+2026-01-22 23:25:53,093 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:25:53,112 - INFO -     计算: Valuation_Momentum_Attention_40D
+2026-01-22 23:25:56,652 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:25:56,672 - INFO -     计算: Institutional_Ownership_Stability_Proxy_20D
+2026-01-22 23:25:59,272 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:25:59,292 - INFO -     计算: Governance_Quality_Proxy_Volume_Stability_15D
+2026-01-22 23:26:02,167 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:02,188 - INFO -     计算: Retail_Sentiment_Divergence_10D
+2026-01-22 23:26:05,811 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:05,831 - INFO -     计算: Institutional_Pressure_Reversal_5D
+2026-01-22 23:26:08,954 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:08,973 - INFO -     计算: Index_Rebalancing_Flow_Proxy_10D
+2026-01-22 23:26:13,718 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:13,737 - INFO -     计算: Constraint_Driven_Distortion_15D
+2026-01-22 23:26:17,287 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:17,306 - INFO -     计算: Asymmetric_Reaction_Ratio_10D
+Error calculating Asymmetric_Reaction_Ratio_10D: ufunc 'sign' did not contain a loop with signature matching types <class 'numpy.dtypes.BoolDType'> -> None
+Traceback (most recent call last):
+  File "/home/tjxy/quantagent/AlphaAgent/backtest_v2/custom_factor_calculator.py", line 492, in _process_single_factor
+    result = eval(expr, exec_globals)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+  File "/home/tjxy/quantagent/AlphaAgent/alphaagent/components/coder/factor_coder/function_lib.py", line 33, in wrapper
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/home/tjxy/quantagent/AlphaAgent/alphaagent/components/coder/factor_coder/function_lib.py", line 316, in SIGN
+    return np.sign(df)
+           ^^^^^^^^^^^
+  File "/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/generic.py", line 2171, in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/arraylike.py", line 399, in array_ufunc
+    result = getattr(ufunc, method)(*inputs, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+numpy.core._exceptions._UFuncNoLoopError: ufunc 'sign' did not contain a loop with signature matching types <class 'numpy.dtypes.BoolDType'> -> None
+
+2026-01-22 23:26:19,630 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:19,648 - INFO -     计算: Negative_Event_Reversal_15D
+Error calculating Negative_Event_Reversal_15D: ufunc 'sign' did not contain a loop with signature matching types <class 'numpy.dtypes.BoolDType'> -> None
+Traceback (most recent call last):
+  File "/home/tjxy/quantagent/AlphaAgent/backtest_v2/custom_factor_calculator.py", line 492, in _process_single_factor
+    result = eval(expr, exec_globals)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+  File "/home/tjxy/quantagent/AlphaAgent/alphaagent/components/coder/factor_coder/function_lib.py", line 33, in wrapper
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/home/tjxy/quantagent/AlphaAgent/alphaagent/components/coder/factor_coder/function_lib.py", line 316, in SIGN
+    return np.sign(df)
+           ^^^^^^^^^^^
+  File "/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/generic.py", line 2171, in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/arraylike.py", line 399, in array_ufunc
+    result = getattr(ufunc, method)(*inputs, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+numpy.core._exceptions._UFuncNoLoopError: ufunc 'sign' did not contain a loop with signature matching types <class 'numpy.dtypes.BoolDType'> -> None
+
+2026-01-22 23:26:21,708 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:21,726 - INFO -     计算: Volume_Amplified_Asymmetry_20D
+Error calculating Volume_Amplified_Asymmetry_20D: ufunc 'sign' did not contain a loop with signature matching types <class 'numpy.dtypes.BoolDType'> -> None
+Traceback (most recent call last):
+  File "/home/tjxy/quantagent/AlphaAgent/backtest_v2/custom_factor_calculator.py", line 492, in _process_single_factor
+    result = eval(expr, exec_globals)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+  File "/home/tjxy/quantagent/AlphaAgent/alphaagent/components/coder/factor_coder/function_lib.py", line 33, in wrapper
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/home/tjxy/quantagent/AlphaAgent/alphaagent/components/coder/factor_coder/function_lib.py", line 316, in SIGN
+    return np.sign(df)
+           ^^^^^^^^^^^
+  File "/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/generic.py", line 2171, in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/arraylike.py", line 399, in array_ufunc
+    result = getattr(ufunc, method)(*inputs, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+numpy.core._exceptions._UFuncNoLoopError: ufunc 'sign' did not contain a loop with signature matching types <class 'numpy.dtypes.BoolDType'> -> None
+
+2026-01-22 23:26:23,777 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:23,795 - INFO -     计算: ShortTerm_Reversal_LongTerm_MeanReversion_Divergence_5D_120D
+2026-01-22 23:26:24,488 - INFO -     计算: Price_Range_Reversal_Convergence_3D_60D
+2026-01-22 23:26:28,624 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:28,642 - INFO -     计算: Volume_Amplified_Reversion_Tension_2D_90D
+2026-01-22 23:26:31,904 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:31,922 - INFO -     计算: Analyst_Dispersion_Proxy_15D
+2026-01-22 23:26:35,727 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:35,745 - INFO -     计算: Institutional_Flow_Proxy_30D
+2026-01-22 23:26:36,309 - INFO -     计算: Volatility_Skew_Proxy_20D
+2026-01-22 23:26:37,316 - INFO -     计算: Institutional_Accumulation_During_Declines_20D
+2026-01-22 23:26:40,838 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:40,856 - INFO -     计算: Fundamental_Price_Decoupling_15D
+2026-01-22 23:26:43,460 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:43,478 - INFO -     计算: Reversal_Potential_Indicator_10D
+2026-01-22 23:26:48,155 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:48,174 - INFO -     计算: Options_Sentiment_Momentum_Divergence_20D
+2026-01-22 23:26:52,065 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:52,083 - INFO -     计算: Event_Conditioned_Volatility_Skew_Proxy_15D
+2026-01-22 23:26:55,044 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:55,062 - INFO -     计算: Momentum_Volume_Divergence_ZScore_10D
+2026-01-22 23:26:58,904 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:26:58,923 - INFO -     计算: Fundamental_Price_Momentum_Divergence_20D
+2026-01-22 23:27:02,209 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:02,228 - INFO -     计算: Attention_Adjusted_Momentum_Divergence_60D
+2026-01-22 23:27:06,340 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:06,359 - INFO -     计算: Multi_Horizon_Momentum_Dispersion_120D
+2026-01-22 23:27:07,579 - INFO -     计算: Earnings_Quality_Adjusted_Value_Momentum_20D
+2026-01-22 23:27:11,416 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:11,435 - INFO -     计算: Volatility_Suppressed_Industry_Momentum_15D
+2026-01-22 23:27:14,700 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:14,719 - INFO -     计算: Quality_Validated_Convergence_Factor_25D
+2026-01-22 23:27:18,991 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:19,010 - INFO -     计算: Undervaluation_EarningsQuality_Ratio_20D
+2026-01-22 23:27:22,226 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:22,245 - INFO -     计算: Industry_Momentum_EarningsFilter_60D
+2026-01-22 23:27:24,769 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:24,790 - INFO -     计算: OrderFlow_Sentiment_Divergence_5D_10D
+2026-01-22 23:27:28,993 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:29,011 - INFO -     计算: Earnings_Quality_Volatility_Compression_20D
+2026-01-22 23:27:32,152 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:32,170 - INFO -     计算: Industry_Relative_Momentum_Volume_Stability_30D
+2026-01-22 23:27:35,259 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:27:35,278 - INFO -     计算: Regime_Adaptive_Momentum_Convergence_40D
+2026-01-22 23:28:11.482 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.396 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.464 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.488 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.519 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.533 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.534 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.539 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.547 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.548 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.554 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.567 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.578 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.579 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.579 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.583 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.584 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.588 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.595 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.608 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.611 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.613 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.620 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.621 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.624 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.630 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.642 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.643 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.659 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.662 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.663 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.673 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.679 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.698 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.700 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.702 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.707 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.707 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.707 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.708 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.709 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.709 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.709 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.710 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.711 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.712 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.714 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.715 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.715 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.719 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.721 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.725 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.725 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.733 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.736 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.737 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.737 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.737 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.738 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.737 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.739 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.743 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.744 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.744 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.749 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.754 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.757 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.758 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.762 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.768 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.769 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.771 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.771 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.773 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.773 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.774 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.775 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.776 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.777 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.783 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.785 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.786 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.793 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.796 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.802 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.805 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.805 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.810 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.811 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.812 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.816 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.820 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.820 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.824 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.827 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.827 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.830 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.837 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.840 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.844 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.845 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.849 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.852 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.857 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.860 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.863 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.876 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.887 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.888 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.892 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:14.899 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:15.087 | WARNING  | alphaagent.oai.llm_utils:<module>:152 - llama is not installed.
+2026-01-22 23:28:22,650 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:28:22,671 - INFO -     计算: Fundamental_Volatility_Suppression_Factor_20D
+2026-01-22 23:28:28,183 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:28:28,203 - INFO -     计算: Microstructure_Resilience_Factor_15D
+2026-01-22 23:28:34,750 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:28:34,768 - INFO -     计算: Composite_Alpha_Signal_10D
+2026-01-22 23:28:36,572 - INFO -     计算: Undervaluation_Volatility_Divergence_20D
+2026-01-22 23:29:13,305 - INFO -     计算: Industry_Relative_Momentum_15D
+2026-01-22 23:29:18,555 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:18,572 - INFO -     计算: Microstructure_Resilience_10D
+2026-01-22 23:29:22,762 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:22,781 - INFO -     计算: MultiHorizon_Momentum_Divergence_20D_120D
+2026-01-22 23:29:27,482 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:27,500 - INFO -     计算: Industry_Relative_Momentum_Quality_60D
+2026-01-22 23:29:28,981 - INFO -     计算: Volume_Stability_Weighted_Combination
+2026-01-22 23:29:33,355 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:33,376 - INFO -     计算: Analyst_Price_Divergence_20D
+2026-01-22 23:29:37,516 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:37,534 - INFO -     计算: Momentum_Quality_Validation_15D
+2026-01-22 23:29:40,832 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:40,851 - INFO -     计算: Volume_Stability_Skew_Factor_25D
+2026-01-22 23:29:45,872 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:45,891 - INFO -     计算: Fundamental_Liquidity_Adaptive_30D_20D
+2026-01-22 23:29:50,655 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:50,673 - INFO -     计算: Volatility_Regime_Blended_40D_10D
+2026-01-22 23:29:55,561 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:29:55,581 - INFO -     计算: Adaptive_Quality_Flow_25D_15D
+2026-01-22 23:30:00,783 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:00,802 - INFO -     计算: Fundamental_Technical_Divergence_30D
+2026-01-22 23:30:04,215 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:04,234 - INFO -     计算: Regime_Volume_Momentum_15D
+2026-01-22 23:30:07,743 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:07,762 - INFO -     计算: Microstructure_Resilience_10D
+2026-01-22 23:30:10,416 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:10,437 - INFO -     计算: Momentum_Divergence_Volatility_Weighted_20D_120D
+2026-01-22 23:30:13,491 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:13,510 - INFO -     计算: Volume_Weighted_Order_Flow_Imbalance_10D
+2026-01-22 23:30:16,530 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:16,549 - INFO -     计算: Attention_Constrained_Volatility_Regime_Adjustment
+2026-01-22 23:30:19,554 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:19,573 - INFO -     计算: Intraday_Range_Compression_5D
+2026-01-22 23:30:22,550 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:22,568 - INFO -     计算: Fundamental_Value_Momentum_20D
+2026-01-22 23:30:26,648 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:26,668 - INFO -     计算: Range_Momentum_Divergence_5_20
+2026-01-22 23:30:31,353 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:31,372 - INFO -     计算: Liquidity_Stability_Composite_20D
+2026-01-22 23:30:35,313 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:35,333 - INFO -     计算: Ownership_Flow_Resilience_30D
+2026-01-22 23:30:40,278 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:40,296 - INFO -     计算: Stress_Liquidity_Premium_15D
+2026-01-22 23:30:43,826 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:43,845 - INFO -     计算: Underreaction_Volatility_Response_5D
+2026-01-22 23:30:46,821 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:46,840 - INFO -     计算: Liquidity_Constraint_Volume_Ratio_10D
+2026-01-22 23:30:49,464 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:49,486 - INFO -     计算: Delayed_Response_Momentum_8D
+2026-01-22 23:30:53,126 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:53,144 - INFO -     计算: Event_Overreaction_Return_Reversal_5D
+2026-01-22 23:30:56,627 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:30:56,645 - INFO -     计算: Event_Volume_Spike_Reversal_10D
+2026-01-22 23:31:00,313 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:00,331 - INFO -     计算: Event_Volatility_Expansion_Reversal_15D
+2026-01-22 23:31:03,619 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:03,637 - INFO -     计算: Attention_Decay_Reversal_5D
+2026-01-22 23:31:40,925 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:40,943 - INFO -     计算: Event_Intensity_Residual_10D
+2026-01-22 23:31:46,786 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:46,803 - INFO -     计算: Volume_Spike_Decay_Reversal_8D
+2026-01-22 23:31:49,657 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:49,674 - INFO -     计算: Liquidity_Convergence_Volatility_Regime_10D
+2026-01-22 23:31:54,015 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:54,029 - INFO -     计算: Ownership_Stability_Liquidity_Shock_15D
+2026-01-22 23:31:57,897 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:31:57,910 - INFO -     计算: Volatility_Regime_Adjusted_Convergence_20D
+2026-01-22 23:32:03,260 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:03,274 - INFO -     计算: DarkPool_Volume_Imbalance_10D
+2026-01-22 23:32:06,747 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:06,760 - INFO -     计算: Social_Media_Amplification_5D
+2026-01-22 23:32:09,685 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:09,698 - INFO -     计算: News_Sentiment_CoMovement_15D
+2026-01-22 23:32:10,998 - INFO -     计算: Positive_Negative_Response_Asymmetry_15D
+2026-01-22 23:32:12,316 - INFO -     计算: Cross_Channel_Consistency_20D
+2026-01-22 23:32:18,020 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:18,034 - INFO -     计算: Asymmetric_Speed_Ratio_10D
+2026-01-22 23:32:21,478 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:21,492 - INFO -     计算: Order_Flow_Imbalance_Proxy_5D
+2026-01-22 23:32:25,955 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:25,969 - INFO -     计算: Limit_Order_Book_Depth_Asymmetry_10D
+2026-01-22 23:32:27,185 - INFO -     计算: Tick_Level_Price_Impact_Residual_15D
+2026-01-22 23:32:33,238 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:33,254 - INFO -     计算: Governance_Proxy_Price_Stability_20D
+2026-01-22 23:32:36,636 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:36,653 - INFO -     计算: Institutional_Proxy_Volume_Consistency_30D
+2026-01-22 23:32:41,181 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:41,199 - INFO -     计算: Governance_Ownership_Composite_25D
+2026-01-22 23:32:44,893 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:44,909 - INFO -     计算: Intraday_Compression_Momentum_Divergence_5_20
+2026-01-22 23:32:48,328 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:48,344 - INFO -     计算: Undervaluation_Volatility_Suppression_10_20
+2026-01-22 23:32:51,866 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:51,881 - INFO -     计算: Microstructure_Resilience_Stress_5_10
+2026-01-22 23:32:56,092 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:32:56,108 - INFO -     计算: MultiResolution_Divergence_5D_20D
+2026-01-22 23:32:57,308 - INFO -     计算: CrossHorizon_Momentum_Alignment_20D_120D
+2026-01-22 23:33:01,573 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:01,590 - INFO -     计算: Volume_Stability_Weighted_Divergence_20D
+2026-01-22 23:33:05,807 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:05,822 - INFO -     计算: Microstructure_Compression_Divergence_5D_30D
+2026-01-22 23:33:07,245 - INFO -     计算: Volatility_Adaptive_Divergence_5D_30D_60D
+2026-01-22 23:33:13,157 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:13,173 - INFO -     计算: Quality_Flow_Enhanced_Divergence_5D_30D_20D
+2026-01-22 23:33:18,807 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:18,823 - INFO -     计算: Microstructure_Compression_5D
+2026-01-22 23:33:22,499 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:22,514 - INFO -     计算: Fundamental_Momentum_20D
+2026-01-22 23:33:26,340 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:26,355 - INFO -     计算: Industry_Momentum_Filter_60D
+2026-01-22 23:33:30,943 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:30,958 - INFO -     计算: Regime_Adaptive_Volatility_Filter_20D
+2026-01-22 23:33:34,793 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:34,808 - INFO -     计算: Liquidity_Ownership_Convergence_10D_60D
+2026-01-22 23:33:39,151 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:39,167 - INFO -     计算: Microstructure_Resilience_Correlation_15D
+2026-01-22 23:33:43,008 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:43,023 - INFO -     计算: Liquidity_Stability_Factor_20D
+2026-01-22 23:33:46,945 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:46,960 - INFO -     计算: Fundamental_Undervaluation_Factor_15D
+2026-01-22 23:33:50,939 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:50,954 - INFO -     计算: Volatility_Suppression_Factor_10D
+2026-01-22 23:33:54,706 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:54,720 - INFO -     计算: Microstructure_Compression_Factor_5D
+2026-01-22 23:33:58,737 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:33:58,752 - INFO -     计算: Earnings_Adjusted_Momentum_Factor_20D
+2026-01-22 23:34:03,891 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:03,906 - INFO -     计算: Industry_Relative_Momentum_Factor_15D
+2026-01-22 23:34:07,921 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:07,936 - INFO -     计算: Microstructure_Compression_Divergence_5D_20D
+2026-01-22 23:34:12,342 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:12,357 - INFO -     计算: Volatility_Weighted_Momentum_Divergence_20D_120D
+2026-01-22 23:34:16,584 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:16,600 - INFO -     计算: Volume_Weighted_Order_Flow_Correlation_10D
+2026-01-22 23:34:22,023 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:22,037 - INFO -     计算: Microstructure_Compression_5D
+2026-01-22 23:34:26,163 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:26,177 - INFO -     计算: Fundamental_Quality_Volatility_20D
+2026-01-22 23:34:30,543 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:30,557 - INFO -     计算: Regime_Adaptive_Momentum_40D
+2026-01-22 23:34:34,183 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:34,197 - INFO -     计算: Structural_Undervaluation_Volatility_20D
+2026-01-22 23:34:37,922 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:37,935 - INFO -     计算: Microstructure_Resilience_15D
+2026-01-22 23:34:42,511 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:42,529 - INFO -     计算: Event_Attention_Decay_5D
+2026-01-22 23:34:46,410 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:46,425 - INFO -     计算: Institutional_Block_Volume_Divergence_10D
+2026-01-22 23:34:47,697 - INFO -     计算: Retail_Sentiment_Momentum_Divergence_15D
+2026-01-22 23:34:51,628 - WARNING -     ⚠ 缓存索引匹配率过低 (0/1382870), 将重新计算
+2026-01-22 23:34:51,643 - INFO -     计算: Attention_Gap_Volume_Compression_20D
+2026-01-22 23:34:56,757 - INFO - 因子处理完成: 成功 330, 失败 3
+2026-01-22 23:34:56,757 - INFO -   统计: {'cache_location': 0, 'md5_cache': 0, 'computed': 330, 'failed': 3, 'empty_expr': 0}
+2026-01-22 23:35:04,010 - INFO -   结果 DataFrame: (1382870, 315)
+2026-01-22 23:35:04,010 - INFO -   ✓ 因子计算完成: 315 个因子, 1382870 行数据
+  ✓ 成功计算 315 个因子
+
+📈 第三步：创建数据集...
+2026-01-22 23:35:04,014 - INFO -   检测到预计算因子: 315 个因子, 1382870 行数据
+  使用自定义因子模式 (预计算因子值)...
+  计算因子数量: 315
+  计算标签...
+  标签表达式: Ref($close, -2) / Ref($close, -1) - 1
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[3886766:MainThread](2026-01-22 23:40:12,257) WARNING - qlib.workflow - [expm.py:231] - No valid experiment found. Create a new experiment with name backtest_v2_sp500_best_123.
+[3886766:MainThread](2026-01-22 23:40:12,270) INFO - qlib.workflow - [exp.py:258] - Experiment 606854413812059559 starts running ...
+[3886766:MainThread](2026-01-22 23:40:12,333) INFO - qlib.workflow - [recorder.py:345] - Recorder 151fdc5a7ba448e8b6fac1589733462d starts running under Experiment 606854413812059559 ...
+[3886766:MainThread](2026-01-22 23:40:26,990) INFO - qlib.workflow - [record_temp.py:198] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 606854413812059559
+  标签数据行数: 1382870
+  总因子数量: 315
+  数据行数: 1382870
+  应用数据预处理...
+  预处理后数据行数: 1367763
+  训练集: ['2016-01-01', '2020-12-31']
+  验证集: ['2021-01-01', '2021-12-31']
+  测试集: ['2022-01-01', '2025-12-26']
+
+🤖 第四步：训练模型并执行回测...
+  训练 LightGBM 模型...
+Training until validation scores don't improve for 50 rounds
+[20]	train's l2: 0.0831421	valid's l2: 0.0833462
+[40]	train's l2: 0.0830166	valid's l2: 0.0833679
+  ✓ 模型训练完成 (耗时: 12.69秒)
+  生成预测...
+  ✓ 预测数据形状: (568131,)
+'The following are prediction results of the LGBModel model.'
+                          score
+instrument datetime            
+a          2022-01-03  0.001487
+           2022-01-04  0.001334
+           2022-01-05  0.001334
+           2022-01-06  0.001334
+           2022-01-07  0.001334
+  计算 IC 指标...
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 227.21it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 221.45it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 162.88it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 160.38it/s]
+/home/tjxy/anaconda3/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+{'IC': 0.0036238026439160556,
+ 'ICIR': 0.0272654305326176,
+ 'Rank IC': 0.003201013491926578,
+ 'Rank ICIR': 0.025271731512597397}
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 1094.55it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 998.17it/s] 
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 3949.44it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 2014.56it/s]
+  ✓ IC=0.003624, ICIR=0.027265
+  ✓ Rank IC=0.003201, Rank ICIR=0.025272
+  执行组合回测...
+  ✓ 股票数量: 575
+  检查并过滤价格异常数据...
+[3886766:MainThread](2026-01-22 23:40:35,993) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+  ⚠️ 发现 2985 条价格为0/NaN的记录
+[3886766:MainThread](2026-01-22 23:40:43,887) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[3886766:MainThread](2026-01-22 23:40:43,888) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[3886766:MainThread](2026-01-22 23:40:46,340) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[3886766:MainThread](2026-01-22 23:40:46,340) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[3886766:MainThread](2026-01-22 23:40:46,347) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x7f2be09cc620>
+backtest loop:   0%|          | 0/1004 [00:00<?, ?it/s]/home/tjxy/anaconda3/lib/python3.12/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+backtest loop:   1%|          | 10/1004 [00:00<00:11, 90.11it/s]backtest loop:   2%|▏         | 20/1004 [00:00<00:10, 90.75it/s]backtest loop:   3%|▎         | 30/1004 [00:00<00:10, 91.37it/s]backtest loop:   4%|▍         | 40/1004 [00:00<00:10, 91.47it/s]backtest loop:   5%|▍         | 50/1004 [00:00<00:10, 91.73it/s]backtest loop:   6%|▌         | 60/1004 [00:00<00:10, 91.62it/s]backtest loop:   7%|▋         | 70/1004 [00:00<00:10, 91.81it/s]/home/tjxy/anaconda3/lib/python3.12/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+backtest loop:   8%|▊         | 82/1004 [00:00<00:09, 98.14it/s]backtest loop:   9%|▉         | 92/1004 [00:00<00:09, 95.56it/s]backtest loop:  10%|█         | 102/1004 [00:01<00:09, 94.06it/s]backtest loop:  11%|█         | 112/1004 [00:01<00:10, 88.97it/s]backtest loop:  12%|█▏        | 121/1004 [00:01<00:10, 88.22it/s]backtest loop:  13%|█▎        | 130/1004 [00:01<00:10, 82.83it/s]backtest loop:  14%|█▍        | 140/1004 [00:01<00:10, 85.70it/s]backtest loop:  15%|█▍        | 150/1004 [00:01<00:09, 88.56it/s]backtest loop:  16%|█▌        | 160/1004 [00:01<00:09, 90.02it/s]backtest loop:  17%|█▋        | 170/1004 [00:01<00:09, 91.27it/s]backtest loop:  18%|█▊        | 180/1004 [00:01<00:08, 92.19it/s]backtest loop:  19%|█▉        | 190/1004 [00:02<00:08, 93.33it/s]backtest loop:  20%|█▉        | 200/1004 [00:02<00:08, 94.02it/s]backtest loop:  21%|██        | 210/1004 [00:02<00:08, 94.45it/s]backtest loop:  22%|██▏       | 220/1004 [00:02<00:08, 95.18it/s]backtest loop:  23%|██▎       | 230/1004 [00:02<00:08, 91.44it/s]backtest loop:  24%|██▍       | 240/1004 [00:02<00:08, 92.69it/s]backtest loop:  25%|██▍       | 250/1004 [00:02<00:08, 93.63it/s]backtest loop:  26%|██▌       | 260/1004 [00:02<00:07, 94.04it/s]backtest loop:  27%|██▋       | 270/1004 [00:02<00:08, 90.57it/s]backtest loop:  28%|██▊       | 280/1004 [00:03<00:07, 91.85it/s]backtest loop:  29%|██▉       | 290/1004 [00:03<00:07, 92.73it/s]backtest loop:  30%|██▉       | 300/1004 [00:03<00:07, 93.62it/s]backtest loop:  31%|███       | 310/1004 [00:03<00:07, 92.35it/s]/home/tjxy/anaconda3/lib/python3.12/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+backtest loop:  32%|███▏      | 322/1004 [00:03<00:06, 98.93it/s]backtest loop:  33%|███▎      | 332/1004 [00:03<00:06, 97.54it/s]backtest loop:  34%|███▍      | 342/1004 [00:03<00:06, 96.84it/s]backtest loop:  35%|███▌      | 352/1004 [00:03<00:06, 95.92it/s]backtest loop:  36%|███▌      | 362/1004 [00:03<00:06, 95.49it/s]backtest loop:  37%|███▋      | 372/1004 [00:04<00:06, 90.86it/s]backtest loop:  38%|███▊      | 382/1004 [00:04<00:07, 83.32it/s]backtest loop:  39%|███▉      | 391/1004 [00:04<00:07, 83.12it/s]backtest loop:  40%|███▉      | 401/1004 [00:04<00:07, 86.11it/s]backtest loop:  41%|████      | 411/1004 [00:04<00:06, 88.68it/s]backtest loop:  42%|████▏     | 421/1004 [00:04<00:06, 90.40it/s]backtest loop:  43%|████▎     | 431/1004 [00:04<00:06, 91.66it/s]backtest loop:  44%|████▍     | 441/1004 [00:04<00:06, 92.64it/s]backtest loop:  45%|████▍     | 451/1004 [00:04<00:05, 93.10it/s]backtest loop:  46%|████▌     | 461/1004 [00:05<00:05, 93.63it/s]backtest loop:  47%|████▋     | 471/1004 [00:05<00:05, 94.09it/s]backtest loop:  48%|████▊     | 481/1004 [00:05<00:05, 90.00it/s]backtest loop:  49%|████▉     | 491/1004 [00:05<00:05, 91.20it/s]backtest loop:  50%|████▉     | 501/1004 [00:05<00:05, 90.33it/s]backtest loop:  51%|█████     | 511/1004 [00:05<00:05, 91.54it/s]backtest loop:  52%|█████▏    | 521/1004 [00:05<00:05, 88.38it/s]backtest loop:  53%|█████▎    | 531/1004 [00:05<00:05, 90.24it/s]backtest loop:  54%|█████▍    | 541/1004 [00:05<00:05, 91.15it/s]backtest loop:  55%|█████▍    | 551/1004 [00:06<00:04, 92.22it/s]backtest loop:  56%|█████▌    | 561/1004 [00:06<00:04, 92.43it/s]/home/tjxy/anaconda3/lib/python3.12/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+backtest loop:  57%|█████▋    | 573/1004 [00:06<00:04, 98.94it/s]backtest loop:  58%|█████▊    | 583/1004 [00:06<00:04, 97.85it/s]backtest loop:  59%|█████▉    | 593/1004 [00:06<00:04, 96.98it/s]backtest loop:  60%|██████    | 603/1004 [00:06<00:04, 95.60it/s]backtest loop:  61%|██████    | 613/1004 [00:06<00:04, 94.81it/s]backtest loop:  62%|██████▏   | 623/1004 [00:06<00:04, 87.32it/s]backtest loop:  63%|██████▎   | 632/1004 [00:06<00:04, 84.34it/s]backtest loop:  64%|██████▍   | 642/1004 [00:07<00:04, 87.10it/s]backtest loop:  65%|██████▍   | 652/1004 [00:07<00:03, 89.26it/s]backtest loop:  66%|██████▌   | 662/1004 [00:07<00:03, 90.87it/s]backtest loop:  67%|██████▋   | 672/1004 [00:07<00:03, 92.08it/s]backtest loop:  68%|██████▊   | 682/1004 [00:07<00:03, 92.97it/s]backtest loop:  69%|██████▉   | 692/1004 [00:07<00:03, 93.12it/s]backtest loop:  70%|██████▉   | 702/1004 [00:07<00:03, 93.57it/s]backtest loop:  71%|███████   | 712/1004 [00:07<00:03, 93.54it/s]backtest loop:  72%|███████▏  | 722/1004 [00:07<00:02, 94.04it/s]backtest loop:  73%|███████▎  | 732/1004 [00:07<00:02, 94.33it/s]backtest loop:  74%|███████▍  | 742/1004 [00:08<00:02, 90.62it/s]backtest loop:  75%|███████▍  | 752/1004 [00:08<00:02, 88.18it/s]backtest loop:  76%|███████▌  | 761/1004 [00:08<00:02, 85.88it/s]/home/tjxy/anaconda3/lib/python3.12/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+backtest loop:  77%|███████▋  | 771/1004 [00:08<00:02, 89.02it/s]backtest loop:  78%|███████▊  | 780/1004 [00:08<00:02, 87.58it/s]backtest loop:  79%|███████▊  | 790/1004 [00:08<00:02, 89.76it/s]backtest loop:  80%|███████▉  | 800/1004 [00:08<00:02, 91.03it/s]backtest loop:  81%|████████  | 810/1004 [00:08<00:02, 92.03it/s]backtest loop:  82%|████████▏ | 820/1004 [00:08<00:01, 93.05it/s]backtest loop:  83%|████████▎ | 830/1004 [00:09<00:01, 94.56it/s]/home/tjxy/anaconda3/lib/python3.12/site-packages/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+backtest loop:  84%|████████▍ | 841/1004 [00:09<00:01, 95.57it/s]backtest loop:  85%|████████▍ | 851/1004 [00:09<00:01, 95.39it/s]backtest loop:  86%|████████▌ | 861/1004 [00:09<00:01, 95.01it/s]backtest loop:  87%|████████▋ | 871/1004 [00:09<00:01, 94.98it/s]backtest loop:  88%|████████▊ | 881/1004 [00:09<00:01, 91.12it/s]backtest loop:  89%|████████▊ | 891/1004 [00:09<00:01, 92.38it/s]backtest loop:  90%|████████▉ | 901/1004 [00:09<00:01, 93.12it/s]backtest loop:  91%|█████████ | 911/1004 [00:09<00:00, 93.69it/s]backtest loop:  92%|█████████▏| 921/1004 [00:10<00:00, 94.14it/s]backtest loop:  93%|█████████▎| 931/1004 [00:10<00:00, 94.50it/s]backtest loop:  94%|█████████▎| 941/1004 [00:10<00:00, 94.57it/s]backtest loop:  95%|█████████▍| 951/1004 [00:10<00:00, 94.96it/s]backtest loop:  96%|█████████▌| 961/1004 [00:10<00:00, 94.87it/s]backtest loop:  97%|█████████▋| 971/1004 [00:10<00:00, 95.12it/s]backtest loop:  98%|█████████▊| 981/1004 [00:10<00:00, 95.15it/s]backtest loop:  99%|█████████▊| 991/1004 [00:10<00:00, 87.55it/s]backtest loop: 100%|█████████▉| 1001/1004 [00:10<00:00, 89.56it/s]backtest loop: 100%|██████████| 1004/1004 [00:10<00:00, 91.89it/s]
+[3886766:MainThread](2026-01-22 23:40:57,331) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
+  ✓ 组合回测完成 (耗时: 29.10秒)
+  ✓ 提取了组合策略指标
+
+======================================================================
+📈 回测结果:
+======================================================================
+
+【IC 指标】
+  IC:               0.003624
+  ICIR:             0.027265
+  Rank IC:          0.003201
+  Rank ICIR:        0.025272
+
+【策略指标】
+  年化收益:         -0.0204
+  信息比率:         -0.1401
+  最大回撤:         -0.3132
+  卡尔玛比率:       -0.0650
+
+⏱️  总耗时: 2810.12 秒
+======================================================================
+
+✓ 结果已保存到: backtest_v2_results_sp500_best_123/backtest_metrics.json
+
+✓ 已追加到汇总: backtest_v2_results_sp500_best_123/batch_summary.json

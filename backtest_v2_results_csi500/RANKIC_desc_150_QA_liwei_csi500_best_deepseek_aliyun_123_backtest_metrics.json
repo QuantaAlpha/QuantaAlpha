@@ -1,0 +1,26 @@
+{
+  "experiment_name": "all_factors_library_QA_liwei_csi500_best_deepseek_aliyun_123",
+  "factor_source": "custom",
+  "num_factors": 150,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
+  "metrics": {
+    "IC": 0.15536732249274648,
+    "ICIR": 1.1865985771820962,
+    "Rank IC": 0.15055868561688585,
+    "Rank ICIR": 1.148594024057385,
+    "annualized_return": 0.060374227349984724,
+    "information_ratio": 0.17679506607388537,
+    "max_drawdown": -0.6803048255583082,
+    "calmar_ratio": 0.08874584609985266
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi500",
+    "benchmark": "SZ000905"
+  },
+  "elapsed_seconds": 616.4679934978485
+}

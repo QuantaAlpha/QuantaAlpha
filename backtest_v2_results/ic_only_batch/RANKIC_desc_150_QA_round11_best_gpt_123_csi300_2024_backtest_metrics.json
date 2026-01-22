@@ -1,0 +1,22 @@
+{
+  "experiment_name": "RANKIC_desc_150_QA_round11_best_gpt_123_csi300_2024",
+  "factor_source": "custom",
+  "num_factors": 150,
+  "test_period": "2024",
+  "test_period_name": "2024年全年",
+  "ic_only": true,
+  "metrics": {
+    "IC": 0.04296932717811137,
+    "ICIR": 0.2157455045462043,
+    "Rank IC": 0.041783034972743965,
+    "Rank ICIR": 0.2088033545311229
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2024-01-01 ~ 2024-12-31",
+    "backtest_range": "2024-01-01 ~ 2024-12-31",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 278.36803674697876
+}

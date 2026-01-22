@@ -1,16 +1,19 @@
 {
   "experiment_name": "backtest_v2_experiment",
-  "factor_source": "alpha158_20",
-  "num_factors": 20,
+  "factor_source": "alpha360",
+  "num_factors": 360,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
   "metrics": {
-    "IC": 0.0050717335809745915,
-    "ICIR": 0.03287938627233082,
-    "Rank IC": 0.01838526953812549,
-    "Rank ICIR": 0.11770777250034052,
-    "annualized_return": 0.046299283295780674,
-    "information_ratio": 0.5043710541234943,
-    "max_drawdown": -0.22189582921109496,
-    "calmar_ratio": 0.20865323814507133
+    "IC": 0.003818284923497764,
+    "ICIR": 0.0241068757968068,
+    "Rank IC": 0.023642529653072432,
+    "Rank ICIR": 0.14681537138071488,
+    "annualized_return": -0.023177264252301207,
+    "information_ratio": -0.2997695580238195,
+    "max_drawdown": -0.23041943864462966,
+    "calmar_ratio": -0.1005872785240439
   },
   "config": {
     "data_range": "2016-01-01 ~ 2025-12-26",
@@ -19,5 +22,5 @@
     "market": "csi300",
     "benchmark": "SH000300"
   },
-  "elapsed_seconds": 30.96972918510437
+  "elapsed_seconds": 215.1396951675415
 }

@@ -1,0 +1,179 @@
+{
+  "metadata": {
+    "created_at": "2026-01-22T01:08:37.455645",
+    "last_updated": "2026-01-22T13:20:21.824925",
+    "total_factors": 3,
+    "version": "1.0",
+    "iteration": "iter6"
+  },
+  "factors": {
+    "3a18609abaafdcd0": {
+      "factor_id": "3a18609abaafdcd0",
+      "factor_name": "Complexity_Volume_Reversal_5D",
+      "factor_expression": "TS_CORR($high - $low, $volume, 5) * SIGN(TS_MEAN($return, 3))",
+      "factor_implementation_code": "",
+      "factor_description": "This factor captures the interaction between price volatility (as a proxy for complexity) and retail trading activity by measuring the correlation between intraday price range and volume over 5 days, then combining it with short-term return reversal. High complexity (volatility) combined with high volume suggests retail cognitive overload leading to short-term reversals.",
+      "factor_formulation": "CVR_{5D} = \\text{TS_CORR}(\\text{high} - \\text{low}, \\text{volume}, 5) \\times \\text{SIGN}(\\text{TS_MEAN}(\\text{return}, 3))",
+      "cache_location": {
+        "experiment_id": "exp_20260122_010307",
+        "env_workspace_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307",
+        "factor_workspace_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307/2a9f988406334fdbbb294a5195446f82",
+        "factor_dir": "2a9f988406334fdbbb294a5195446f82",
+        "result_h5_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307/2a9f988406334fdbbb294a5195446f82/result.h5",
+        "pickle_cache_path": "/mnt/DATA/quantagent/AlphaAgent/pickle_cache_exp_20260122_010307"
+      },
+      "metadata": {
+        "experiment_id": "2026-01-21_17-03-07-626150",
+        "round_number": 11,
+        "evolution_phase": "mutation",
+        "trajectory_id": "a4dba601d299",
+        "parent_trajectory_ids": [
+          "f1c20f0e65b7"
+        ],
+        "hypothesis": "Hypothesis: Stocks with high textual complexity in corporate communications (e.g., low readability in SEC filings) combined with high retail trading activity exhibit stronger short-term price reversals than those with similar complexity but dominated by institutional trading, due to cognitive overload among retail investors.\n                Concise Observation: Parent strategy uses price/volume technicals and multi-timeframe convergence; mutation requires orthogonal data (text complexity, investor-type segmentation) and targets cognitive limitations rather than signal alignment.\n                Concise Justification: Behavioral finance suggests retail investors are more prone to cognitive biases under information complexity; divergence in trading response between investor types creates exploitable, short-lived pricing anomalies.\n                Concise Knowledge: If corporate disclosures are complex (low readability), retail investors process information less efficiently than institutions; when retail trading volume is high relative to total volume, this inefficiency creates temporary mispricing that corrects over short horizons.\n                concise Specification: Hypothesis tests within stocks having above-median textual complexity (e.g., Flesch-Kincaid score < 30 from 10-K filings) and retail volume ratio > 0.5 over 5 days; expected negative correlation between complexity-retail interaction and next 3-day returns.\n                ",
+        "initial_direction": "Explore the interaction between WVMA5 (5-day volume-weighted volatility) and VSTD5 (5-day volume stability) to test if high volatility with unstable capital flows predicts stronger mean reversion than high volatility with stable flows.",
+        "planning_direction": "Explore the interaction between WVMA5 (5-day volume-weighted volatility) and VSTD5 (5-day volume stability) to test if high volatility with unstable capital flows predicts stronger mean reversion than high volatility with stable flows.",
+        "created_at": "2026-01-22T13:20:21.809487"
+      },
+      "backtest_results": {
+        "1day.excess_return_with_cost.max_drawdown": -0.1181475672661261,
+        "ICIR": 0.0571574623360265,
+        "1day.excess_return_without_cost.std": 0.0044609641718067,
+        "1day.excess_return_with_cost.annualized_return": 0.0168601650348485,
+        "1day.ffr": 1.0,
+        "1day.excess_return_without_cost.mean": 0.0002691551283329,
+        "1day.excess_return_without_cost.annualized_return": 0.0640589205432423,
+        "1day.excess_return_with_cost.std": 0.0044627000959804,
+        "Rank IC": 0.0233396784921649,
+        "IC": 0.0075831848228519,
+        "1day.excess_return_without_cost.max_drawdown": -0.0762901012181799,
+        "1day.pos": 0.0,
+        "1day.excess_return_without_cost.information_ratio": 0.9308129189938036,
+        "1day.pa": 0.0,
+        "l2.valid": 0.9964835053454312,
+        "Rank ICIR": 0.1803860944191868,
+        "l2.train": 0.9937029575025972,
+        "1day.excess_return_with_cost.information_ratio": 0.2448925879006856,
+        "1day.excess_return_with_cost.mean": 7.084102955818735e-05
+      },
+      "feedback": {
+        "observations": "The current experiment tested two factors (Retail_Overload_Reversal_10D and Cognitive_Stress_Indicator_7D) derived from the hypothesis about textual complexity and retail trading activity. The combined results show mixed performance compared to SOTA: while annualized return (0.064059 vs 0.052010) and IC (0.007583 vs 0.005798) improved, information ratio (0.930813 vs 0.972561) and max drawdown (-0.076290 vs -0.072585) deteriorated. The hypothesis appears partially supported but requires refinement in factor construction to achieve more consistent improvements across all metrics.",
+        "hypothesis_evaluation": "The hypothesis receives partial support from the experimental results. The improved annualized return and IC suggest that the core idea - combining complexity proxies with retail activity indicators - has merit for predicting short-term reversals. However, the deterioration in information ratio and max drawdown indicates that the current factor implementations may not adequately manage risk or may be capturing noise alongside signal. The Cognitive_Stress_Indicator_7D factor (which showed better performance in preliminary analysis) aligns more closely with the cognitive overload mechanism by measuring divergence between price and volume momentum, while Retail_Overload_Reversal_10D's simpler ratio-based approach may be less effective.",
+        "decision": true,
+        "reason": "The Cognitive_Stress_Indicator_7D factor performed better than Retail_Overload_Reversal_10D in the experiment, suggesting that momentum divergence may be a more effective measure of cognitive stress than volume ratios. However, both factors could be improved by: 1) Using normalized volatility instead of raw price range to better capture complexity, 2) Incorporating mean reversion signals more directly, 3) Simplifying the mathematical expressions to reduce overfitting risk. The next iteration should focus on creating simpler, more interpretable factors that maintain the core divergence concept while using fewer parameters and operations."
+      }
+    },
+    "cd8e4240bc69f444": {
+      "factor_id": "cd8e4240bc69f444",
+      "factor_name": "Retail_Overload_Reversal_10D",
+      "factor_expression": "RANK(TS_MEAN($volume, 5) / (TS_MEAN($volume, 20) + 1e-8)) * (($high - $low) / (TS_STD($close, 10) + 1e-8))",
+      "factor_implementation_code": "File: factor.py\n\nimport pandas as pd\nimport numpy as np\nimport os\nfrom alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol\nfrom alphaagent.components.coder.factor_coder.function_lib import *\n\n\ndef calculate_factor(expr: str, name: str):\n    # stock dataframe\n    df = pd.read_hdf('./daily_pv.h5', key='data')\n    \n    expr = parse_symbol(expr, df.columns)\n    expr = parse_expression(expr)\n\n    # replace '$var' by 'df['var'] to extract var's actual values\n    for col in df.columns:\n        expr = expr.replace(col[1:], f\"df[\\'{col}\\']\")\n\n    df[name] = eval(expr)\n    result = df[name].astype(np.float64)\n\n    if os.path.exists('result.h5'):\n        os.remove('result.h5')\n    result.to_hdf('result.h5', key='data')\n\nif __name__ == '__main__':\n    # Input factor expression. Do NOT use the variable format like \"df['$xxx']\" in factor expressions. Instead, you should use \"$xxx\". \n    expr = \"RANK(TS_MEAN($volume, 5) / (TS_MEAN($volume, 20) + 1e-8)) * (($high - $low) / (TS_STD($close, 10) + 1e-8))\" # Your output factor expression will be filled in here\n    name = \"Retail_Overload_Reversal_10D\" # Your output factor name will be filled in here\n    calculate_factor(expr, name)\n",
+      "factor_description": "This factor identifies stocks where high volume persistence (proxy for retail activity) coincides with price range expansion (proxy for complexity), creating conditions for cognitive overload. It uses the ratio of recent volume to historical volume combined with normalized price range to predict short-term reversals.",
+      "factor_formulation": "ROR_{10D} = \\text{RANK}\\left(\\frac{\\text{TS_MEAN}(\\text{volume}, 5)}{\\text{TS_MEAN}(\\text{volume}, 20) + 1e-8}\\right) \\times \\frac{\\text{high} - \\text{low}}{\\text{TS_STD}(\\text{close}, 10) + 1e-8}",
+      "cache_location": {
+        "experiment_id": "exp_20260122_010307",
+        "env_workspace_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307",
+        "factor_workspace_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307/d42ad660058c4b8fbbd7b064a011c703",
+        "factor_dir": "d42ad660058c4b8fbbd7b064a011c703",
+        "result_h5_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307/d42ad660058c4b8fbbd7b064a011c703/result.h5",
+        "pickle_cache_path": "/mnt/DATA/quantagent/AlphaAgent/pickle_cache_exp_20260122_010307"
+      },
+      "metadata": {
+        "experiment_id": "2026-01-21_17-03-07-626150",
+        "round_number": 11,
+        "evolution_phase": "mutation",
+        "trajectory_id": "a4dba601d299",
+        "parent_trajectory_ids": [
+          "f1c20f0e65b7"
+        ],
+        "hypothesis": "Hypothesis: Stocks with high textual complexity in corporate communications (e.g., low readability in SEC filings) combined with high retail trading activity exhibit stronger short-term price reversals than those with similar complexity but dominated by institutional trading, due to cognitive overload among retail investors.\n                Concise Observation: Parent strategy uses price/volume technicals and multi-timeframe convergence; mutation requires orthogonal data (text complexity, investor-type segmentation) and targets cognitive limitations rather than signal alignment.\n                Concise Justification: Behavioral finance suggests retail investors are more prone to cognitive biases under information complexity; divergence in trading response between investor types creates exploitable, short-lived pricing anomalies.\n                Concise Knowledge: If corporate disclosures are complex (low readability), retail investors process information less efficiently than institutions; when retail trading volume is high relative to total volume, this inefficiency creates temporary mispricing that corrects over short horizons.\n                concise Specification: Hypothesis tests within stocks having above-median textual complexity (e.g., Flesch-Kincaid score < 30 from 10-K filings) and retail volume ratio > 0.5 over 5 days; expected negative correlation between complexity-retail interaction and next 3-day returns.\n                ",
+        "initial_direction": "Explore the interaction between WVMA5 (5-day volume-weighted volatility) and VSTD5 (5-day volume stability) to test if high volatility with unstable capital flows predicts stronger mean reversion than high volatility with stable flows.",
+        "planning_direction": "Explore the interaction between WVMA5 (5-day volume-weighted volatility) and VSTD5 (5-day volume stability) to test if high volatility with unstable capital flows predicts stronger mean reversion than high volatility with stable flows.",
+        "created_at": "2026-01-22T13:20:21.809487"
+      },
+      "backtest_results": {
+        "1day.excess_return_with_cost.max_drawdown": -0.1181475672661261,
+        "ICIR": 0.0571574623360265,
+        "1day.excess_return_without_cost.std": 0.0044609641718067,
+        "1day.excess_return_with_cost.annualized_return": 0.0168601650348485,
+        "1day.ffr": 1.0,
+        "1day.excess_return_without_cost.mean": 0.0002691551283329,
+        "1day.excess_return_without_cost.annualized_return": 0.0640589205432423,
+        "1day.excess_return_with_cost.std": 0.0044627000959804,
+        "Rank IC": 0.0233396784921649,
+        "IC": 0.0075831848228519,
+        "1day.excess_return_without_cost.max_drawdown": -0.0762901012181799,
+        "1day.pos": 0.0,
+        "1day.excess_return_without_cost.information_ratio": 0.9308129189938036,
+        "1day.pa": 0.0,
+        "l2.valid": 0.9964835053454312,
+        "Rank ICIR": 0.1803860944191868,
+        "l2.train": 0.9937029575025972,
+        "1day.excess_return_with_cost.information_ratio": 0.2448925879006856,
+        "1day.excess_return_with_cost.mean": 7.084102955818735e-05
+      },
+      "feedback": {
+        "observations": "The current experiment tested two factors (Retail_Overload_Reversal_10D and Cognitive_Stress_Indicator_7D) derived from the hypothesis about textual complexity and retail trading activity. The combined results show mixed performance compared to SOTA: while annualized return (0.064059 vs 0.052010) and IC (0.007583 vs 0.005798) improved, information ratio (0.930813 vs 0.972561) and max drawdown (-0.076290 vs -0.072585) deteriorated. The hypothesis appears partially supported but requires refinement in factor construction to achieve more consistent improvements across all metrics.",
+        "hypothesis_evaluation": "The hypothesis receives partial support from the experimental results. The improved annualized return and IC suggest that the core idea - combining complexity proxies with retail activity indicators - has merit for predicting short-term reversals. However, the deterioration in information ratio and max drawdown indicates that the current factor implementations may not adequately manage risk or may be capturing noise alongside signal. The Cognitive_Stress_Indicator_7D factor (which showed better performance in preliminary analysis) aligns more closely with the cognitive overload mechanism by measuring divergence between price and volume momentum, while Retail_Overload_Reversal_10D's simpler ratio-based approach may be less effective.",
+        "decision": true,
+        "reason": "The Cognitive_Stress_Indicator_7D factor performed better than Retail_Overload_Reversal_10D in the experiment, suggesting that momentum divergence may be a more effective measure of cognitive stress than volume ratios. However, both factors could be improved by: 1) Using normalized volatility instead of raw price range to better capture complexity, 2) Incorporating mean reversion signals more directly, 3) Simplifying the mathematical expressions to reduce overfitting risk. The next iteration should focus on creating simpler, more interpretable factors that maintain the core divergence concept while using fewer parameters and operations."
+      }
+    },
+    "440d74ef5404d8ed": {
+      "factor_id": "440d74ef5404d8ed",
+      "factor_name": "Cognitive_Stress_Indicator_7D",
+      "factor_expression": "TS_CORR(TS_PCTCHANGE($close, 3), TS_PCTCHANGE($volume, 3), 7) * SIGN(TS_PCTCHANGE($close, 1))",
+      "factor_implementation_code": "File: factor.py\n\nimport pandas as pd\nimport numpy as np\nimport os\nfrom alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol\nfrom alphaagent.components.coder.factor_coder.function_lib import *\n\n\ndef calculate_factor(expr: str, name: str):\n    # stock dataframe\n    df = pd.read_hdf('./daily_pv.h5', key='data')\n    \n    expr = parse_symbol(expr, df.columns)\n    expr = parse_expression(expr)\n\n    # replace '$var' by 'df['var'] to extract var's actual values\n    for col in df.columns:\n        expr = expr.replace(col[1:], f\"df[\\'{col}\\']\")\n\n    df[name] = eval(expr)\n    result = df[name].astype(np.float64)\n\n    if os.path.exists('result.h5'):\n        os.remove('result.h5')\n    result.to_hdf('result.h5', key='data')\n\nif __name__ == '__main__':\n    # Input factor expression. Do NOT use the variable format like \"df['$xxx']\" in factor expressions. Instead, you should use \"$xxx\". \n    expr = \"TS_CORR(TS_PCTCHANGE($close, 3), TS_PCTCHANGE($volume, 3), 7) * SIGN(TS_PCTCHANGE($close, 1))\" # Your output factor expression will be filled in here\n    name = \"Cognitive_Stress_Indicator_7D\" # Your output factor name will be filled in here\n    calculate_factor(expr, name)\n",
+      "factor_description": "This factor measures the divergence between price momentum and volume momentum as an indicator of cognitive stress. When prices are trending but volume is declining (or vice versa), it suggests retail investors may be overwhelmed by complex information, leading to potential reversals.",
+      "factor_formulation": "CSI_{7D} = \\text{TS_CORR}(\\text{TS_PCTCHANGE}(\\text{close}, 3), \\text{TS_PCTCHANGE}(\\text{volume}, 3), 7) \\times \\text{SIGN}(\\text{TS_PCTCHANGE}(\\text{close}, 1))",
+      "cache_location": {
+        "experiment_id": "exp_20260122_010307",
+        "env_workspace_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307",
+        "factor_workspace_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307/671bcebd4a0e4c548ac9e9d9fe05f712",
+        "factor_dir": "671bcebd4a0e4c548ac9e9d9fe05f712",
+        "result_h5_path": "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_exp_20260122_010307/671bcebd4a0e4c548ac9e9d9fe05f712/result.h5",
+        "pickle_cache_path": "/mnt/DATA/quantagent/AlphaAgent/pickle_cache_exp_20260122_010307"
+      },
+      "metadata": {
+        "experiment_id": "2026-01-21_17-03-07-626150",
+        "round_number": 11,
+        "evolution_phase": "mutation",
+        "trajectory_id": "a4dba601d299",
+        "parent_trajectory_ids": [
+          "f1c20f0e65b7"
+        ],
+        "hypothesis": "Hypothesis: Stocks with high textual complexity in corporate communications (e.g., low readability in SEC filings) combined with high retail trading activity exhibit stronger short-term price reversals than those with similar complexity but dominated by institutional trading, due to cognitive overload among retail investors.\n                Concise Observation: Parent strategy uses price/volume technicals and multi-timeframe convergence; mutation requires orthogonal data (text complexity, investor-type segmentation) and targets cognitive limitations rather than signal alignment.\n                Concise Justification: Behavioral finance suggests retail investors are more prone to cognitive biases under information complexity; divergence in trading response between investor types creates exploitable, short-lived pricing anomalies.\n                Concise Knowledge: If corporate disclosures are complex (low readability), retail investors process information less efficiently than institutions; when retail trading volume is high relative to total volume, this inefficiency creates temporary mispricing that corrects over short horizons.\n                concise Specification: Hypothesis tests within stocks having above-median textual complexity (e.g., Flesch-Kincaid score < 30 from 10-K filings) and retail volume ratio > 0.5 over 5 days; expected negative correlation between complexity-retail interaction and next 3-day returns.\n                ",
+        "initial_direction": "Explore the interaction between WVMA5 (5-day volume-weighted volatility) and VSTD5 (5-day volume stability) to test if high volatility with unstable capital flows predicts stronger mean reversion than high volatility with stable flows.",
+        "planning_direction": "Explore the interaction between WVMA5 (5-day volume-weighted volatility) and VSTD5 (5-day volume stability) to test if high volatility with unstable capital flows predicts stronger mean reversion than high volatility with stable flows.",
+        "created_at": "2026-01-22T13:20:21.809487"
+      },
+      "backtest_results": {
+        "1day.excess_return_with_cost.max_drawdown": -0.1181475672661261,
+        "ICIR": 0.0571574623360265,
+        "1day.excess_return_without_cost.std": 0.0044609641718067,
+        "1day.excess_return_with_cost.annualized_return": 0.0168601650348485,
+        "1day.ffr": 1.0,
+        "1day.excess_return_without_cost.mean": 0.0002691551283329,
+        "1day.excess_return_without_cost.annualized_return": 0.0640589205432423,
+        "1day.excess_return_with_cost.std": 0.0044627000959804,
+        "Rank IC": 0.0233396784921649,
+        "IC": 0.0075831848228519,
+        "1day.excess_return_without_cost.max_drawdown": -0.0762901012181799,
+        "1day.pos": 0.0,
+        "1day.excess_return_without_cost.information_ratio": 0.9308129189938036,
+        "1day.pa": 0.0,
+        "l2.valid": 0.9964835053454312,
+        "Rank ICIR": 0.1803860944191868,
+        "l2.train": 0.9937029575025972,
+        "1day.excess_return_with_cost.information_ratio": 0.2448925879006856,
+        "1day.excess_return_with_cost.mean": 7.084102955818735e-05
+      },
+      "feedback": {
+        "observations": "The current experiment tested two factors (Retail_Overload_Reversal_10D and Cognitive_Stress_Indicator_7D) derived from the hypothesis about textual complexity and retail trading activity. The combined results show mixed performance compared to SOTA: while annualized return (0.064059 vs 0.052010) and IC (0.007583 vs 0.005798) improved, information ratio (0.930813 vs 0.972561) and max drawdown (-0.076290 vs -0.072585) deteriorated. The hypothesis appears partially supported but requires refinement in factor construction to achieve more consistent improvements across all metrics.",
+        "hypothesis_evaluation": "The hypothesis receives partial support from the experimental results. The improved annualized return and IC suggest that the core idea - combining complexity proxies with retail activity indicators - has merit for predicting short-term reversals. However, the deterioration in information ratio and max drawdown indicates that the current factor implementations may not adequately manage risk or may be capturing noise alongside signal. The Cognitive_Stress_Indicator_7D factor (which showed better performance in preliminary analysis) aligns more closely with the cognitive overload mechanism by measuring divergence between price and volume momentum, while Retail_Overload_Reversal_10D's simpler ratio-based approach may be less effective.",
+        "decision": true,
+        "reason": "The Cognitive_Stress_Indicator_7D factor performed better than Retail_Overload_Reversal_10D in the experiment, suggesting that momentum divergence may be a more effective measure of cognitive stress than volume ratios. However, both factors could be improved by: 1) Using normalized volatility instead of raw price range to better capture complexity, 2) Incorporating mean reversion signals more directly, 3) Simplifying the mathematical expressions to reduce overfitting risk. The next iteration should focus on creating simpler, more interpretable factors that maintain the core divergence concept while using fewer parameters and operations."
+      }
+    }
+  }
+}

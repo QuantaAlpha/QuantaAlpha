@@ -1,0 +1,22 @@
+{
+  "experiment_name": "iter5_round_9_10",
+  "factor_source": "custom",
+  "num_factors": 52,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": true,
+  "metrics": {
+    "IC": 0.025967131609546595,
+    "ICIR": 0.15673372922813114,
+    "Rank IC": 0.023952911771204774,
+    "Rank ICIR": 0.14595472802185785
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 253.37214612960815
+}

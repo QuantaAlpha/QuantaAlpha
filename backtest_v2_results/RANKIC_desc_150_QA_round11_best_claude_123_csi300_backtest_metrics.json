@@ -1,16 +1,19 @@
 {
   "experiment_name": "RANKIC_desc_150_QA_round11_best_claude_123_csi300",
-  "factor_source": "custom",
-  "num_factors": 150,
+  "factor_source": "combined",
+  "num_factors": 106,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
   "metrics": {
-    "IC": 0.11107819200811474,
-    "ICIR": 0.6374387921349768,
-    "Rank IC": 0.10771248460250757,
-    "Rank ICIR": 0.6211221112654549,
-    "annualized_return": 0.22699822470425365,
-    "information_ratio": 2.6459230952544157,
-    "max_drawdown": -0.0695941899705258,
-    "calmar_ratio": 3.2617410275252987
+    "IC": 0.03969606244349514,
+    "ICIR": 0.22150879403068394,
+    "Rank IC": 0.037748624326514116,
+    "Rank ICIR": 0.2118347510611756,
+    "annualized_return": 0.040163724895179276,
+    "information_ratio": 0.5174250454662258,
+    "max_drawdown": -0.12878189428197623,
+    "calmar_ratio": 0.311874003089582
   },
   "config": {
     "data_range": "2016-01-01 ~ 2025-12-26",
@@ -19,5 +22,5 @@
     "market": "csi300",
     "benchmark": "SH000300"
   },
-  "elapsed_seconds": 427.85600233078003
+  "elapsed_seconds": 153.83963584899902
 }

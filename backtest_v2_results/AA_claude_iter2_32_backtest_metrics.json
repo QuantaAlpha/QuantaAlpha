@@ -1,0 +1,26 @@
+{
+  "experiment_name": "AA_claude_iter2",
+  "factor_source": "custom",
+  "num_factors": 24,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
+  "metrics": {
+    "IC": 0.01165611063516924,
+    "ICIR": 0.0698241639638263,
+    "Rank IC": 0.010743058610767678,
+    "Rank ICIR": 0.06442430424528386,
+    "annualized_return": -0.017544961146924245,
+    "information_ratio": -0.20930975591292525,
+    "max_drawdown": -0.23300291655001515,
+    "calmar_ratio": -0.07529931988279699
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 70.94846153259277
+}

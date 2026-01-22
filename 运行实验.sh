@@ -10,12 +10,12 @@
 #   bash 运行实验.sh "价量因子挖掘" "QA_exp1"        # → all_factors_library_QA_exp1.json
 #
 # 指定模型运行：
-#   MODEL_PRESET=gemini bash 运行实验.sh "方向"      # 使用 Gemini (默认)
-#   MODEL_PRESET=deepseek bash 运行实验.sh "方向"    # 使用 DeepSeek V3.2 (OpenRouter)
-#   MODEL_PRESET=deepseek_aliyun bash 运行实验.sh "方向"  # 使用 DeepSeek V3.2 (阿里云 DashScope)
-#   MODEL_PRESET=claude bash 运行实验.sh "方向"      # 使用 Claude Sonnet 4.5
-#   MODEL_PRESET=gpt bash 运行实验.sh "方向"         # 使用 GPT-5.2
-#   MODEL_PRESET=qwen bash 运行实验.sh "方向"        # 使用 Qwen3-235B (阿里云 DashScope)
+#   MODEL_PRESET=gemini bash 运行实验.sh "方向"          # 使用 Gemini (默认)
+#   MODEL_PRESET=deepseek bash 运行实验.sh "方向"        # 使用 DeepSeek V3.2 (OpenRouter)
+#   MODEL_PRESET=deepseek_aliyun bash 运行实验.sh "方向" # 使用 DeepSeek V3.2 (阿里云 DashScope)
+#   MODEL_PRESET=claude bash 运行实验.sh "方向"          # 使用 Claude Sonnet 4.5
+#   MODEL_PRESET=gpt bash 运行实验.sh "方向"             # 使用 GPT-5.2
+#   MODEL_PRESET=qwen bash 运行实验.sh "方向"            # 使用 Qwen3-235B
 #
 # 或直接指定模型名称：
 #   REASONING_MODEL=deepseek/deepseek-v3.2 CHAT_MODEL=deepseek/deepseek-v3.2 bash 运行实验.sh "方向"
@@ -60,9 +60,9 @@ MODEL_PRESET=${MODEL_PRESET:-""}
 if [ -n "${MODEL_PRESET}" ]; then
     case "${MODEL_PRESET}" in
         gemini)
-            export REASONING_MODEL="google/gemini-3-pro-preview"
-            export CHAT_MODEL="google/gemini-3-pro-preview"
-            echo "🤖 模型预设: Gemini 3 Pro Preview"
+            export REASONING_MODEL="google/gemini-3-flash-preview"
+            export CHAT_MODEL="google/gemini-3-flash-preview"
+            echo "🤖 模型预设: Gemini 3 Flash Preview"
             ;;
         deepseek)
             export REASONING_MODEL="deepseek/deepseek-v3.2"
@@ -115,6 +115,7 @@ echo ""
 # 运行实验
 # 默认从配置文件读取参数：alphaagent/app/qlib_rd_loop/run_config.yaml
 CONFIG_PATH=${CONFIG_PATH:-"alphaagent/app/qlib_rd_loop/run_config.yaml"}
+export CONFIG_PATH  # 导出为环境变量，供 Python 子进程读取质量门控配置
 STEP_N=${STEP_N:-""}
 
 # 实验隔离配置 - 每次实验自动生成独立的工作空间和缓存目录
@@ -124,8 +125,6 @@ if [ -z "${EXPERIMENT_ID}" ]; then
     # 自动生成基于时间戳的实验ID: exp_YYYYMMDD_HHMMSS
     EXPERIMENT_ID="exp_$(date +%Y%m%d_%H%M%S)"
 fi
-# 导出 EXPERIMENT_ID 供 Python 子进程使用（用于因子缓存路径记录）
-export EXPERIMENT_ID
 
 if [ "${EXPERIMENT_ID}" != "shared" ]; then
     export WORKSPACE_PATH="/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_${EXPERIMENT_ID}"
@@ -154,11 +153,12 @@ else
 fi
 
 # 回测配置说明
-# 数据时间范围: 2016-01-01 ~ 2025-12-31
+# 数据时间范围: 2016-01-01 ~ 2025-12-26
 # 训练集: 2016-01-01 ~ 2020-12-31
 # 验证集: 2021-01-01 ~ 2021-12-31
-# 测试集: 2022-01-01 ~ 2025-12-31
-# 回测时间: 2022-01-01 ~ 2025-12-31 (在测试集上进行回测)
+# 测试集: 2022-01-01 ~ 2025-12-26
+# 小回测时间: 2021-01-01 ~ 2021-12-31 (在验证集上进行快速评估)
+# 注：单独的回测框架 (backtest_v2) 使用测试集 2022-01-01 ~ 2025-12-26
 # 配置文件位置:
 #   - alphaagent/scenarios/qlib/experiment/factor_template/conf.yaml
 #   - alphaagent/scenarios/qlib/experiment/factor_template/conf_cn_combined_kdd_ver.yaml
@@ -166,7 +166,7 @@ fi
 echo "🚀 开始运行实验..."
 echo "📄 配置文件: ${CONFIG_PATH}"
 echo "📂 因子库输出: ${LIBRARY_FILE}"
-echo "📅 回测时间: 2022-01-01 ~ 2025-12-31"
+echo "📅 小回测时间: 2021-01-01 ~ 2021-12-31 (验证集)"
 echo "----------------------------------------"
 if [ -n "${STEP_N}" ]; then
   alphaagent mine --direction "${DIRECTION}" --step_n "${STEP_N}" --config_path "${CONFIG_PATH}"

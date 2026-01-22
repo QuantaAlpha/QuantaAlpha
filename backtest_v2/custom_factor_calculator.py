@@ -273,9 +273,12 @@ class CustomFactorCalculator:
                         exec_globals[name] = obj
             
             # 使用线程后端进行计算，避免子进程导入 LLM 模块
-            with parallel_backend('threading', n_jobs=1):
-                # 计算因子值
-                result = eval(expr, exec_globals)
+            # 注意：在loky多进程后端中，这里嵌套使用 threading 是安全的
+            # from joblib import parallel_backend
+            # with parallel_backend('threading', n_jobs=1):
+            #     # 计算因子值
+            #     result = eval(expr, exec_globals)
+            result = eval(expr, exec_globals)
             
             if isinstance(result, pd.DataFrame):
                 result = result.iloc[:, 0]
@@ -347,109 +350,169 @@ class CustomFactorCalculator:
             return pd.DataFrame(results)
         return pd.DataFrame()
     
-    def calculate_factors_batch(self, factors: List[Dict], use_cache: bool = True) -> pd.DataFrame:
+    def calculate_factors_batch(self, factors: List[Dict], use_cache: bool = True, n_jobs: int = 1) -> pd.DataFrame:
         """
-        批量计算因子
-        
-        优先级:
-        1. cache_location 字段（直接从 result.h5 读取）
-        2. MD5 缓存（factor_cache 目录）
-        3. 使用 factor_expression 重新计算
-        
-        Args:
-            factors: 因子列表，每个因子是 dict，包含:
-                - factor_name: 因子名称
-                - factor_expression: 因子表达式
-                - cache_location (可选): 缓存位置信息
-            use_cache: 是否使用缓存 (默认 True)
-            
-        Returns:
-            pd.DataFrame: 计算得到的因子值
+        批量计算因子 (全并行优化版)
         """
-        # 自动从主程序日志中提取缓存（如果启用且尚未执行）
         if use_cache and self.auto_extract_cache:
             self._auto_extract_cache_from_logs()
+        
+        logger.info(f"开始处理 {len(factors)} 个因子 (并行度: {n_jobs})...")
+        
+        from joblib import Parallel, delayed
+        
+        # 并行执行所有任务 (缓存检查 + 计算)
+        # 使用 loky 后端 (多进程) 以避免 Python GIL 导致的性能瓶颈
+        # 注意: 需要将内部函数改为类方法以便 pickling
+        parallel_results = Parallel(n_jobs=n_jobs, backend='loky')(
+            delayed(self._process_single_factor)(info, use_cache) for info in factors
+        )
         
         results = {}
         success_count = 0
         fail_count = 0
-        cache_hit_count = 0
-        cache_location_hit_count = 0
-        total = len(factors)
+        stats = {"cache_location": 0, "md5_cache": 0, "computed": 0, "failed": 0, "empty_expr": 0}
         
-        for i, factor_info in enumerate(factors):
-            factor_name = factor_info.get('factor_name', 'unknown')
-            factor_expr = factor_info.get('factor_expression', '')
-            cache_location = factor_info.get('cache_location')  # 新增: 缓存位置字段
-            
-            if not factor_expr:
-                fail_count += 1
-                continue
-            
-            logger.info(f"  计算因子 [{i+1}/{total}]: {factor_name}")
-            
-            result = None
-            
-            # 1. 优先检查 cache_location (从 result.h5 直接读取)
-            if use_cache and cache_location:
-                result = self._load_from_cache_location(cache_location)
-                if result is not None:
-                    cache_location_hit_count += 1
-                    result = self._validate_and_align_result(result, factor_name)
-                    if result is not None:
-                        results[factor_name] = result
-                        success_count += 1
-                        valid_count = (~result.isna()).sum()
-                        logger.info(f"    ✓ 从 cache_location 加载 (有效数据: {valid_count}/{len(result)})")
-                        continue
-            
-            # 2. 检查 MD5 缓存
-            if use_cache:
-                result = self._load_from_cache(factor_expr)
-                if result is not None:
-                    cache_hit_count += 1
-                    result = self._validate_and_align_result(result, factor_name)
-                    if result is not None:
-                        results[factor_name] = result
-                        success_count += 1
-                        valid_count = (~result.isna()).sum()
-                        logger.info(f"    ✓ 从 MD5 缓存加载 (有效数据: {valid_count}/{len(result)})")
-                        continue
-            
-            # 3. 缓存未命中，使用 factor_expression 进行计算
-            result = self.calculate_factor(factor_name, factor_expr)
+        for name, expr, result, source in parallel_results:
+            stats[source] = stats.get(source, 0) + 1
             
             if result is not None and len(result) > 0:
-                # 确保结果是有效的 Series
                 if not result.isna().all():
-                    results[factor_name] = result
+                    results[name] = result
                     success_count += 1
-                    logger.info(f"    ✓ 计算成功 (有效数据: {(~result.isna()).sum()}/{len(result)})")
-                    # 保存到 MD5 缓存
-                    if use_cache:
-                        self._save_to_cache(factor_expr, result)
+                    # 如果是新计算的，保存到缓存
+                    if source == "computed" and use_cache:
+                        self._save_to_cache(expr, result)
                 else:
                     fail_count += 1
-                    logger.warning(f"    ✗ 因子 {factor_name} 全为 NaN")
-            else:
+                    logger.warning(f"    ✗ 因子 {name} 全为 NaN")
+            elif source != "empty_expr":
                 fail_count += 1
-                logger.warning(f"    ✗ 因子 {factor_name} 计算失败或为空")
+                if source == "computed":
+                    logger.warning(f"    ✗ 因子 {name} 计算失败")
         
-        logger.info(f"  因子计算完成: 成功 {success_count}, 失败 {fail_count}")
-        logger.info(f"    - cache_location 命中: {cache_location_hit_count}")
-        logger.info(f"    - MD5 缓存命中: {cache_hit_count}")
-        logger.info(f"    - 重新计算: {success_count - cache_location_hit_count - cache_hit_count}")
+        logger.info(f"因子处理完成: 成功 {success_count}, 失败 {fail_count}")
+        logger.info(f"  统计: {stats}")
         
         if results:
-            # 创建 DataFrame，使用原始数据的索引
             result_df = pd.DataFrame(results, index=self.data_df.index)
-            
-            # 验证 DataFrame
-            logger.info(f"  结果 DataFrame: {result_df.shape}, 索引类型: {type(result_df.index).__name__}")
-            
+            logger.info(f"  结果 DataFrame: {result_df.shape}")
             return result_df
         
         return pd.DataFrame()
+
+    def _process_single_factor(self, factor_info, use_cache):
+        """处理单个因子 (支持并行调用)"""
+        import logging
+        import sys
+        
+        # 配置简单的 logger，输出到 stderr
+        logging.basicConfig(level=logging.INFO, stream=sys.stderr, format='%(asctime)s - %(message)s')
+        logger = logging.getLogger(f"worker_{os.getpid()}")
+        
+        factor_name = factor_info.get('factor_name', 'unknown')
+        factor_expr = factor_info.get('factor_expression', '')
+        cache_location = factor_info.get('cache_location')
+        
+        if not factor_expr:
+            return factor_name, factor_expr, None, "empty_expr"
+        
+        # 1. 优先检查 cache_location
+        if use_cache and cache_location:
+            try:
+                result = self._load_from_cache_location(cache_location)
+                if result is not None:
+                    result = self._validate_and_align_result(result, factor_name)
+                    if result is not None:
+                        return factor_name, factor_expr, result, "cache_location"
+            except Exception:
+                pass
+        
+        # 2. 检查 MD5 缓存
+        if use_cache:
+            try:
+                result = self._load_from_cache(factor_expr)
+                if result is not None:
+                    result = self._validate_and_align_result(result, factor_name)
+                    if result is not None:
+                        return factor_name, factor_expr, result, "md5_cache"
+            except Exception:
+                pass
+        
+        # 3. 计算因子
+        logger.info(f"    计算: {factor_name}")
+        try:
+            # 重新导入必要的模块以确保在子进程中可用
+            import numpy as np
+            import pandas as pd
+            import alphaagent.components.coder.factor_coder.function_lib as func_lib
+            
+            # 使用 eval 计算，不使用 self.calculate_factor 因为它包含了可能无法序列化的对象
+            
+            # 复制数据
+            df = self.data_df.copy()
+            
+            # 导入表达式解析器
+            from alphaagent.components.coder.factor_coder.expr_parser import (
+                parse_expression, parse_symbol
+            )
+            import io
+            import sys as _sys
+            
+            # 解析表达式
+            expr = parse_symbol(factor_expr, df.columns)
+            
+            # 静默解析
+            old_stdout = _sys.stdout
+            _sys.stdout = io.StringIO()
+            try:
+                expr = parse_expression(expr)
+            finally:
+                _sys.stdout = old_stdout
+            
+            # 替换变量为 DataFrame 列引用
+            for col in df.columns:
+                if col.startswith('$'):
+                    expr = expr.replace(col[1:], f"df['{col}']")
+            
+            # 构建执行环境
+            exec_globals = {
+                'df': df,
+                'np': np,
+                'pd': pd,
+            }
+            
+            # 添加所有函数库中的函数
+            for name in dir(func_lib):
+                if not name.startswith('_'):
+                    obj = getattr(func_lib, name)
+                    if callable(obj):
+                        exec_globals[name] = obj
+            
+            result = eval(expr, exec_globals)
+            
+            if isinstance(result, pd.DataFrame):
+                result = result.iloc[:, 0]
+            
+            if isinstance(result, pd.Series):
+                result.name = factor_name
+                # 确保结果与原始数据有相同的索引
+                if not result.index.equals(df.index):
+                    result = result.reindex(df.index)
+                result = result.astype(np.float64)
+            else:
+                # 如果结果是标量或数组，转换为 Series
+                result = pd.Series(result, index=df.index, name=factor_name).astype(np.float64)
+            
+            return factor_name, factor_expr, result, "computed"
+        except Exception as e:
+            # 记录详细错误信息
+            import traceback
+            error_msg = f"{str(e)}\n{traceback.format_exc()}"
+            # logger 在子进程中可能无法正常工作，打印到标准错误
+            import sys
+            print(f"Error calculating {factor_name}: {error_msg}", file=sys.stderr)
+            return factor_name, factor_expr, None, "failed"
     
     def _validate_and_align_result(self, result: pd.Series, factor_name: str) -> Optional[pd.Series]:
         """

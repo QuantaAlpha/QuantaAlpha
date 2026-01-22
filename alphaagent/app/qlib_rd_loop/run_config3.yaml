@@ -137,7 +137,7 @@ evolution:
   #                          评价前30%一定被选中，剩余位置从后70%随机填充
   #                          适合平衡开发(exploitation)与探索(exploration)
   # ─────────────────────────────────────────────────────────────
-  parent_selection_strategy: best
+  parent_selection_strategy: random
   
   # Top percent threshold (only used when parent_selection_strategy = "top_percent_plus_random")
   # 前百分比阈值（仅当 parent_selection_strategy = "top_percent_plus_random" 时生效）
@@ -158,6 +158,48 @@ evolution:
   # true: 删除轨迹池文件以节省磁盘空间
   # false: 保留轨迹池文件供后续分析
   cleanup_on_finish: false
+
+
+# ============================================================
+# QUALITY GATE CONFIGURATION
+# Controls factor quality checks before backtesting
+# 质量门控配置
+# 控制进入回测前的因子质量检查
+# ============================================================
+quality_gate:
+  # Enable consistency check (假设-描述-表达式 一致性检验)
+  # When enabled, uses LLM to verify logical consistency between:
+  #   - Hypothesis → Description
+  #   - Description → Formulation
+  #   - Formulation → Expression
+  # If inconsistencies found, attempts to correct the expression
+  # 启用一致性检验（假设-描述-表达式的逻辑一致性）
+  # 启用后，使用LLM验证以下内容之间的逻辑一致性：
+  #   - 假设 → 描述
+  #   - 描述 → 公式
+  #   - 公式 → 表达式
+  # 如果发现不一致，尝试修正表达式
+  consistency_enabled: false  # 默认关闭，因为会增加LLM调用成本
+  
+  # Enable complexity check (复杂度检验)
+  # Checks if factor expression complexity is within acceptable limits:
+  #   - Symbol length (SL): Max characters in expression
+  #   - Base features (ER): Max number of distinct raw features
+  #   - Free args ratio: Max ratio of numeric constants to total nodes
+  # 启用复杂度检验
+  # 检查因子表达式复杂度是否在可接受范围内：
+  #   - 符号长度 (SL): 表达式最大字符数
+  #   - 基础特征 (ER): 不同原始特征的最大数量
+  #   - 自由参数比例: 数值常量占总节点数的最大比例
+  complexity_enabled: true
+  
+  # Enable redundancy check (冗余度检验)
+  # Checks if factor expression is too similar to existing factors
+  # Uses AST-based subtree matching against factor zoo
+  # 启用冗余度检验
+  # 检查因子表达式是否与已有因子过于相似
+  # 使用基于AST的子树匹配与因子库进行比对
+  redundancy_enabled: true
 
 
 # ============================================================

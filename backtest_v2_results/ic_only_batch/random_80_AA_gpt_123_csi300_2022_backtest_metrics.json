@@ -1,0 +1,22 @@
+{
+  "experiment_name": "random_80_AA_gpt_123_csi300_2022",
+  "factor_source": "custom",
+  "num_factors": 80,
+  "test_period": "2022",
+  "test_period_name": "2022年全年",
+  "ic_only": true,
+  "metrics": {
+    "IC": 0.03302092469027083,
+    "ICIR": 0.21061673583060703,
+    "Rank IC": 0.03012840177694552,
+    "Rank ICIR": 0.18886407812002765
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2022-12-31",
+    "backtest_range": "2022-01-01 ~ 2022-12-31",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 189.49564218521118
+}

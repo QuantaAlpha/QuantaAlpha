@@ -1,0 +1,98 @@
+backtest:
+  backtest:
+    account: 100000000
+    benchmark: sh000905
+    end_time: '2025-12-26'
+    exchange_kwargs:
+      close_cost: 0.0015
+      deal_price: open
+      limit_threshold: 0.095
+      min_cost: 5
+      open_cost: 0.0005
+    start_time: '2022-01-01'
+  strategy:
+    class: TopkDropoutStrategy
+    kwargs:
+      n_drop: 5
+      signal: <PRED>
+      topk: 50
+    module_path: qlib.contrib.strategy
+data:
+  end_time: '2025-12-26'
+  market: csi500
+  provider_uri: /home/tjxy/.qlib/qlib_data/cn_data
+  start_time: '2016-01-01'
+dataset:
+  infer_processors:
+  - class: Fillna
+    kwargs:
+      fields_group: feature
+  - class: ProcessInf
+  - class: CSRankNorm
+    kwargs:
+      fields_group: feature
+  - class: CSRankNorm
+    kwargs:
+      fields_group: label
+  label: Ref($close, -2) / Ref($close, -1) - 1
+  learn_processors:
+  - class: Fillna
+    kwargs:
+      fields_group: feature
+  - class: ProcessInf
+  - class: DropnaLabel
+  - class: CSRankNorm
+    kwargs:
+      fields_group: feature
+  - class: CSRankNorm
+    kwargs:
+      fields_group: label
+  segments:
+    test:
+    - '2022-01-01'
+    - '2025-12-26'
+    train:
+    - '2016-01-01'
+    - '2020-12-31'
+    valid:
+    - '2021-01-01'
+    - '2021-12-31'
+experiment:
+  name: backtest_v2_csi500_alpha360
+  output_dir: backtest_v2_results_csi500_alpha360
+  output_metrics_file: backtest_metrics.json
+  recorder: backtest_v2_csi500_recorder
+factor_calculation:
+  data_file: null
+  n_jobs: 16
+  output_dir: /mnt/DATA/quantagent/AlphaAgent/computed_factors_csi500_alpha360
+  save_intermediate: true
+factor_source:
+  type: alpha360
+llm:
+  auto_extract_cache: false
+  cache_dir: /mnt/DATA/quantagent/AlphaAgent/factor_cache_csi500_alpha360
+  cache_results: true
+  debug: false
+  enabled: true
+  max_retries: 3
+  timeout: 300
+model:
+  params:
+    colsample_bytree: 0.8879
+    early_stopping_round: 50
+    feature_fraction_bynode: 0.8
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    learning_rate: 0.1
+    loss: mse
+    max_depth: 8
+    min_child_samples: 100
+    num_boost_round: 500
+    num_leaves: 210
+    num_threads: 20
+    random_state: 42
+    seed: 42
+    subsample: 0.8789
+  type: lgb
+random_seed: 42

@@ -1,0 +1,23 @@
+{
+  "experiment_name": "RANKIC_desc_250_QA_round11_best_claude_123_csi300",
+  "factor_source": "custom",
+  "num_factors": 250,
+  "metrics": {
+    "IC": 0.14391568206125,
+    "ICIR": 0.8595201893123218,
+    "Rank IC": 0.1396144959079483,
+    "Rank ICIR": 0.8351382489992832,
+    "annualized_return": 0.2915251098615762,
+    "information_ratio": 3.4239875800055484,
+    "max_drawdown": -0.0799912094185593,
+    "calmar_ratio": 3.6444643352765396
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 801.4019584655762
+}

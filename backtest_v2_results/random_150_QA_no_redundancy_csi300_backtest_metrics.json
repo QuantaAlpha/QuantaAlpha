@@ -1,0 +1,26 @@
+{
+  "experiment_name": "random_150_QA_no_redundancy_csi300",
+  "factor_source": "combined",
+  "num_factors": 150,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
+  "metrics": {
+    "IC": 0.034660034740281204,
+    "ICIR": 0.21178476398861928,
+    "Rank IC": 0.03277676861099322,
+    "Rank ICIR": 0.20227279126471462,
+    "annualized_return": 0.029082120562438602,
+    "information_ratio": 0.44290242283586345,
+    "max_drawdown": -0.08873992850737243,
+    "calmar_ratio": 0.32772305603133867
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 234.3460693359375
+}

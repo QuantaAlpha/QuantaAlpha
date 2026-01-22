@@ -1,0 +1,22 @@
+{
+  "experiment_name": "ic_only_batch_experiment",
+  "factor_source": "alpha360",
+  "num_factors": 360,
+  "test_period": "2025",
+  "test_period_name": "2025年全年",
+  "ic_only": true,
+  "metrics": {
+    "IC": 0.005576533880477523,
+    "ICIR": 0.03511942005566123,
+    "Rank IC": 0.031291361577443576,
+    "Rank ICIR": 0.1982477123366513
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2025-01-01 ~ 2025-12-26",
+    "backtest_range": "2025-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 175.12998485565186
+}

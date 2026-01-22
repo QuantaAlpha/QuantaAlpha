@@ -65,11 +65,41 @@ class BacktestRunner:
         self._qlib_initialized = True
         logger.info(f"✓ Qlib 初始化完成: {provider_uri}")
     
+    def _apply_test_period(self, test_period: str):
+        """
+        应用测试时间段配置
+        
+        Args:
+            test_period: 时间段标识 (default/2021/2022/2023/2024/2025/2022-2023/2024-2025)
+        """
+        test_periods = self.config.get('test_periods', {})
+        
+        if test_period not in test_periods:
+            logger.warning(f"未找到测试时间段配置: {test_period}，使用默认配置")
+            return
+        
+        period_config = test_periods[test_period]
+        
+        # 更新 dataset segments 中的 test
+        if 'test' in period_config:
+            self.config['dataset']['segments']['test'] = period_config['test']
+            logger.info(f"更新测试集时间: {period_config['test']}")
+        
+        # 更新 backtest 配置
+        if 'backtest_start' in period_config:
+            self.config['backtest']['backtest']['start_time'] = period_config['backtest_start']
+        if 'backtest_end' in period_config:
+            self.config['backtest']['backtest']['end_time'] = period_config['backtest_end']
+        
+        logger.info(f"应用测试时间段: {period_config.get('name', test_period)}")
+    
     def run(self, 
             factor_source: Optional[str] = None,
             factor_json: Optional[List[str]] = None,
             experiment_name: Optional[str] = None,
-            output_name: Optional[str] = None) -> Dict:
+            output_name: Optional[str] = None,
+            test_period: str = 'default',
+            ic_only: bool = False) -> Dict:
         """
         执行完整回测流程
         
@@ -78,6 +108,8 @@ class BacktestRunner:
             factor_json: 自定义因子 JSON 文件路径列表 (覆盖配置文件)
             experiment_name: 实验名称 (覆盖配置文件)
             output_name: 输出文件名前缀 (可选，默认使用因子库文件名)
+            test_period: 测试时间段 (default/2021/2022/2023/2024/2025/2022-2023/2024-2025)
+            ic_only: 是否仅计算 IC 指标，跳过策略组合回测
             
         Returns:
             Dict: 回测结果指标
@@ -93,18 +125,31 @@ class BacktestRunner:
         if factor_json:
             self.config['factor_source']['custom']['json_files'] = factor_json
         
+        # 应用测试时间段配置
+        self._apply_test_period(test_period)
+        
         # 自动从因子库文件名生成输出名称
         if output_name is None and factor_json:
             # 取第一个因子库文件名（去掉扩展名）
             output_name = Path(factor_json[0]).stem
         
+        # 如果指定了特定时间段，在输出名称中添加标识
+        if test_period != 'default' and output_name:
+            output_name = f"{output_name}_{test_period}"
+        
         exp_name = experiment_name or output_name or self.config['experiment']['name']
         rec_name = self.config['experiment']['recorder']
+        
+        # 获取时间段名称用于显示
+        period_name = self.config.get('test_periods', {}).get(test_period, {}).get('name', test_period)
         
         print(f"\n{'='*70}")
         print(f"🚀 开始回测: {exp_name}")
         if factor_json:
             print(f"📁 因子库: {factor_json[0]}")
+        print(f"📅 测试时间段: {period_name}")
+        if ic_only:
+            print(f"⚡ 模式: 仅计算 IC 指标（跳过策略回测）")
         print(f"{'='*70}\n")
         
         # 1. 加载因子
@@ -126,17 +171,20 @@ class BacktestRunner:
         dataset = self._create_dataset(factor_expressions, computed_factors)
         
         # 4. 训练模型并回测
-        print("\n🤖 第四步：训练模型并执行回测...")
-        metrics = self._train_and_backtest(dataset, exp_name, rec_name)
+        if ic_only:
+            print("\n🤖 第四步：训练模型并计算 IC 指标（跳过策略回测）...")
+        else:
+            print("\n🤖 第四步：训练模型并执行回测...")
+        metrics = self._train_and_backtest(dataset, exp_name, rec_name, ic_only=ic_only)
         
         # 5. 输出结果
         total_time = time.time() - start_time_total
-        self._print_results(metrics, total_time)
+        self._print_results(metrics, total_time, ic_only=ic_only)
         
         # 6. 保存结果
         self._save_results(metrics, exp_name, factor_source or self.config['factor_source']['type'], 
                           len(factor_expressions) + len(custom_factors), total_time,
-                          output_name=output_name)
+                          output_name=output_name, test_period=test_period, ic_only=ic_only)
         
         return metrics
     
@@ -174,12 +222,16 @@ class BacktestRunner:
         
         # 是否自动从主程序日志提取缓存
         auto_extract = llm_config.get('auto_extract_cache', True)
+
+        # 获取并行计算配置
+        factor_calc_config = self.config.get('factor_calculation', {})
+        n_jobs = factor_calc_config.get('n_jobs', 1)
         
         # 创建计算器 (传递缓存目录和自动提取配置)
         calculator = CustomFactorCalculator(data_df, cache_dir=cache_dir, auto_extract_cache=auto_extract)
         
         # 计算因子 (会优先检查缓存，缓存不存在会自动提取)
-        result_df = calculator.calculate_factors_batch(factors, use_cache=True)
+        result_df = calculator.calculate_factors_batch(factors, use_cache=True, n_jobs=n_jobs)
         
         # 验证结果
         if result_df is None:
@@ -405,19 +457,22 @@ class BacktestRunner:
                         result = self._data.copy()
                 
                 # 过滤日期范围
+                # selector 可能是 tuple, list, 或 slice 格式
                 if selector is not None:
-                    if isinstance(selector, tuple) and len(selector) == 2:
-                        start, end = selector
+                    start, end = None, None
+                    
+                    # 处理 tuple 或 list 格式: (start, end) 或 [start, end]
+                    if isinstance(selector, (tuple, list)) and len(selector) == 2:
+                        start, end = selector[0], selector[1]
+                    # 处理 slice 格式
+                    elif isinstance(selector, slice):
+                        start, end = selector.start, selector.stop
+                    
+                    # 执行日期过滤
+                    if start is not None and end is not None:
                         dates = result.index.get_level_values('datetime')
                         mask = (dates >= pd.Timestamp(start)) & (dates <= pd.Timestamp(end))
                         result = result.loc[mask]
-                    elif isinstance(selector, slice):
-                        dates = result.index.get_level_values('datetime')
-                        start = selector.start
-                        end = selector.stop
-                        if start is not None and end is not None:
-                            mask = (dates >= pd.Timestamp(start)) & (dates <= pd.Timestamp(end))
-                            result = result.loc[mask]
                 
                 if squeeze and result.shape[1] == 1:
                     result = result.iloc[:, 0]
@@ -506,8 +561,15 @@ class BacktestRunner:
             logger.warning(f"加载 Qlib 因子失败: {e}")
             return None
     
-    def _train_and_backtest(self, dataset, exp_name: str, rec_name: str) -> Dict:
-        """训练模型并执行回测"""
+    def _train_and_backtest(self, dataset, exp_name: str, rec_name: str, ic_only: bool = False) -> Dict:
+        """训练模型并执行回测
+        
+        Args:
+            dataset: Qlib 数据集
+            exp_name: 实验名称
+            rec_name: 记录器名称
+            ic_only: 是否仅计算 IC 指标，跳过策略组合回测
+        """
         from qlib.contrib.model.gbdt import LGBModel
         from qlib.data import D
         from qlib.workflow import R
@@ -568,6 +630,11 @@ class BacktestRunner:
                     logger.warning(f"无法读取 IC 结果: {e}")
             except Exception as e:
                 logger.warning(f"IC 分析失败: {e}")
+            
+            # 如果是 ic_only 模式，跳过策略组合回测
+            if ic_only:
+                print("  ⏩ 跳过策略组合回测 (--ic-only 模式)")
+                return metrics
             
             # 执行组合回测
             print("  执行组合回测...")
@@ -695,7 +762,7 @@ class BacktestRunner:
         
         return metrics
     
-    def _print_results(self, metrics: Dict, total_time: float):
+    def _print_results(self, metrics: Dict, total_time: float, ic_only: bool = False):
         """打印结果"""
         print(f"\n{'='*70}")
         print("📈 回测结果:")
@@ -707,18 +774,24 @@ class BacktestRunner:
         print(f"  Rank IC:          {metrics.get('Rank IC', 'N/A'):.6f}" if isinstance(metrics.get('Rank IC'), float) else f"  Rank IC:          {metrics.get('Rank IC', 'N/A')}")
         print(f"  Rank ICIR:        {metrics.get('Rank ICIR', 'N/A'):.6f}" if isinstance(metrics.get('Rank ICIR'), float) else f"  Rank ICIR:        {metrics.get('Rank ICIR', 'N/A')}")
         
-        print("\n【策略指标】")
-        print(f"  年化收益:         {metrics.get('annualized_return', 'N/A'):.4f}" if isinstance(metrics.get('annualized_return'), float) else f"  年化收益:         {metrics.get('annualized_return', 'N/A')}")
-        print(f"  信息比率:         {metrics.get('information_ratio', 'N/A'):.4f}" if isinstance(metrics.get('information_ratio'), float) else f"  信息比率:         {metrics.get('information_ratio', 'N/A')}")
-        print(f"  最大回撤:         {metrics.get('max_drawdown', 'N/A'):.4f}" if isinstance(metrics.get('max_drawdown'), float) else f"  最大回撤:         {metrics.get('max_drawdown', 'N/A')}")
-        print(f"  卡尔玛比率:       {metrics.get('calmar_ratio', 'N/A'):.4f}" if isinstance(metrics.get('calmar_ratio'), float) else f"  卡尔玛比率:       {metrics.get('calmar_ratio', 'N/A')}")
+        if ic_only:
+            print("\n【策略指标】")
+            print("  ⏩ 已跳过 (--ic-only 模式)")
+        else:
+            print("\n【策略指标】")
+            print(f"  年化收益:         {metrics.get('annualized_return', 'N/A'):.4f}" if isinstance(metrics.get('annualized_return'), float) else f"  年化收益:         {metrics.get('annualized_return', 'N/A')}")
+            print(f"  信息比率:         {metrics.get('information_ratio', 'N/A'):.4f}" if isinstance(metrics.get('information_ratio'), float) else f"  信息比率:         {metrics.get('information_ratio', 'N/A')}")
+            print(f"  最大回撤:         {metrics.get('max_drawdown', 'N/A'):.4f}" if isinstance(metrics.get('max_drawdown'), float) else f"  最大回撤:         {metrics.get('max_drawdown', 'N/A')}")
+            print(f"  卡尔玛比率:       {metrics.get('calmar_ratio', 'N/A'):.4f}" if isinstance(metrics.get('calmar_ratio'), float) else f"  卡尔玛比率:       {metrics.get('calmar_ratio', 'N/A')}")
         
         print(f"\n⏱️  总耗时: {total_time:.2f} 秒")
         print(f"{'='*70}\n")
     
     def _save_results(self, metrics: Dict, exp_name: str, 
                      factor_source: str, num_factors: int, elapsed: float,
-                     output_name: Optional[str] = None):
+                     output_name: Optional[str] = None,
+                     test_period: str = 'default',
+                     ic_only: bool = False):
         """保存结果"""
         output_dir = Path(self.config['experiment'].get('output_dir', './backtest_v2_results'))
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -730,10 +803,16 @@ class BacktestRunner:
             output_file = self.config['experiment']['output_metrics_file']
         output_path = output_dir / output_file
         
+        # 获取时间段名称
+        period_name = self.config.get('test_periods', {}).get(test_period, {}).get('name', test_period)
+        
         result_data = {
             "experiment_name": exp_name,
             "factor_source": factor_source,
             "num_factors": num_factors,
+            "test_period": test_period,
+            "test_period_name": period_name,
+            "ic_only": ic_only,
             "metrics": metrics,
             "config": {
                 "data_range": f"{self.config['data']['start_time']} ~ {self.config['data']['end_time']}",
@@ -769,15 +848,18 @@ class BacktestRunner:
         
         summary_entry = {
             "name": output_name or exp_name,
+            "test_period": test_period,
+            "test_period_name": period_name,
+            "ic_only": ic_only,
             "num_factors": num_factors,
             "IC": metrics.get('IC'),
             "ICIR": metrics.get('ICIR'),
             "Rank_IC": metrics.get('Rank IC'),
             "Rank_ICIR": metrics.get('Rank ICIR'),
-            "annualized_return": ann_ret,
-            "information_ratio": metrics.get('information_ratio'),
-            "max_drawdown": mdd,
-            "calmar_ratio": calmar_ratio,
+            "annualized_return": ann_ret if not ic_only else None,
+            "information_ratio": metrics.get('information_ratio') if not ic_only else None,
+            "max_drawdown": mdd if not ic_only else None,
+            "calmar_ratio": calmar_ratio if not ic_only else None,
             "elapsed_seconds": elapsed
         }
         summary_data.append(summary_entry)

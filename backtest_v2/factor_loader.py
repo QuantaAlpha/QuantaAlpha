@@ -9,10 +9,74 @@
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 
 logger = logging.getLogger(__name__)
+
+
+# 不规范表达式的模式 - 用于自动过滤不可回测的因子
+INVALID_EXPRESSION_PATTERNS = [
+    r'LET\s*\(',          # LET(...) 变量定义
+    r'\bIF\s*\(',         # IF(...) 条件语句
+    r'//',                # // 注释
+    r';\s*\n',            # 分号换行（多语句）
+    r'\b[a-z_]+\s*=\s*[^=]',  # 变量赋值 (如 roc60 = ...)
+    r'#\s+[A-Za-z]',      # # 注释
+    r'\bAND\b',           # AND 关键字
+    r'\bOR\b',            # OR 关键字
+    r'\bNULL\b',          # NULL 关键字
+    r'\$[a-z_]+_df',      # 不存在的 dataframe 引用 (如 $sector_etf_df)
+    r'\$[a-z_]+_[a-z]+_[a-z]+_df',  # 嵌套 dataframe 引用
+    r"df\['",             # pandas 风格引用 (如 df['$volume'])
+    r'\bsector\b',        # 不支持的 sector 变量
+    r'\bCORRELATION\b',   # 非标准函数名 (应该是 TS_CORR)
+    r'\bTS_DELTA\b',      # 非标准函数名 (应该是 DELTA)
+    r'\$accruals',        # 不存在的基本面数据
+    r'\$analyst',         # 不存在的分析师数据
+    r'\$disclosure',      # 不存在的披露数据
+]
+
+
+def is_valid_expression(expr: str) -> bool:
+    """
+    检查因子表达式是否规范（可解析）
+    
+    Args:
+        expr: 因子表达式
+        
+    Returns:
+        bool: 表达式是否有效
+    """
+    if not expr or not isinstance(expr, str):
+        return False
+    
+    for pattern in INVALID_EXPRESSION_PATTERNS:
+        if re.search(pattern, expr, re.MULTILINE | re.IGNORECASE):
+            return False
+    
+    return True
+
+
+def check_cache_exists(cache_location: dict) -> bool:
+    """
+    检查缓存文件是否存在
+    
+    Args:
+        cache_location: 缓存位置信息
+        
+    Returns:
+        bool: 缓存文件是否存在
+    """
+    if not cache_location:
+        return False
+    
+    h5_path = cache_location.get("result_h5_path", "")
+    if not h5_path:
+        return False
+    
+    return Path(h5_path).exists()
 
 
 class FactorLoader:
@@ -313,49 +377,50 @@ class FactorLoader:
     
     def _load_alpha360(self) -> Dict[str, str]:
         """
-        加载 Alpha360 因子
-        Alpha360 包含多时间窗口的价格和量价因子
+        加载 Qlib 官方 Alpha360 因子
+        
+        Alpha360 包含过去 60 天的原始价格数据序列，共 360 个因子：
+        - CLOSE0 ~ CLOSE59: 60个收盘价因子
+        - OPEN0 ~ OPEN59: 60个开盘价因子
+        - HIGH0 ~ HIGH59: 60个最高价因子
+        - LOW0 ~ LOW59: 60个最低价因子
+        - VWAP0 ~ VWAP59: 60个成交量加权平均价因子
+        - VOLUME0 ~ VOLUME59: 60个成交量因子
+        
+        所有价格因子都除以当日收盘价进行归一化，成交量因子除以当日成交量进行归一化。
+        参考 Qlib 源码: qlib/contrib/data/loader.py Alpha360DL.get_feature_config()
         """
         alpha360_factors = {}
         
-        # 基础价格因子 (不同时间窗口)
-        windows = [5, 10, 20, 30, 60]
-        for w in windows:
-            # 收益率
-            alpha360_factors[f"ROC{w}"] = f"Ref($close, {w})/$close"
-            # 均线
-            alpha360_factors[f"MA{w}"] = f"Mean($close, {w})/$close"
-            # 波动率
-            alpha360_factors[f"STD{w}"] = f"Std($close, {w})/$close"
-            # 最高价
-            alpha360_factors[f"MAX{w}"] = f"Max($high, {w})/$close"
-            # 最低价
-            alpha360_factors[f"MIN{w}"] = f"Min($low, {w})/$close"
-            # RSV
-            alpha360_factors[f"RSV{w}"] = f"($close-Min($low, {w}))/(Max($high, {w})-Min($low, {w})+1e-12)"
-            # 成交量均值
-            alpha360_factors[f"VMA{w}"] = f"Mean($volume, {w})/($volume+1e-12)"
-            # 成交量波动
-            alpha360_factors[f"VSTD{w}"] = f"Std($volume, {w})/($volume+1e-12)"
-            # 价量相关
-            alpha360_factors[f"CORR{w}"] = f"Corr($close, Log($volume+1), {w})"
+        # CLOSE: 过去60天的收盘价 (归一化)
+        for i in range(59, 0, -1):
+            alpha360_factors[f"CLOSE{i}"] = f"Ref($close, {i})/$close"
+        alpha360_factors["CLOSE0"] = "$close/$close"
         
-        # 添加更多时间窗口
-        extended_windows = [3, 7, 15, 40, 120]
-        for w in extended_windows:
-            alpha360_factors[f"ROC{w}"] = f"Ref($close, {w})/$close"
-            alpha360_factors[f"MA{w}"] = f"Mean($close, {w})/$close"
-            alpha360_factors[f"STD{w}"] = f"Std($close, {w})/$close"
+        # OPEN: 过去60天的开盘价 (归一化)
+        for i in range(59, 0, -1):
+            alpha360_factors[f"OPEN{i}"] = f"Ref($open, {i})/$close"
+        alpha360_factors["OPEN0"] = "$open/$close"
         
-        # K线形态因子
-        alpha360_factors.update({
-            "KMID": "($close-$open)/$open",
-            "KLEN": "($high-$low)/$open",
-            "KMID2": "($close-$open)/($high-$low+1e-12)",
-            "KUP": "($high-Greater($open, $close))/$open",
-            "KLOW": "(Less($open, $close)-$low)/$open",
-            "KSFT": "(2*$close-$high-$low)/$open",
-        })
+        # HIGH: 过去60天的最高价 (归一化)
+        for i in range(59, 0, -1):
+            alpha360_factors[f"HIGH{i}"] = f"Ref($high, {i})/$close"
+        alpha360_factors["HIGH0"] = "$high/$close"
+        
+        # LOW: 过去60天的最低价 (归一化)
+        for i in range(59, 0, -1):
+            alpha360_factors[f"LOW{i}"] = f"Ref($low, {i})/$close"
+        alpha360_factors["LOW0"] = "$low/$close"
+        
+        # VWAP: 过去60天的成交量加权平均价 (归一化)
+        for i in range(59, 0, -1):
+            alpha360_factors[f"VWAP{i}"] = f"Ref($vwap, {i})/$close"
+        alpha360_factors["VWAP0"] = "$vwap/$close"
+        
+        # VOLUME: 过去60天的成交量 (归一化)
+        for i in range(59, 0, -1):
+            alpha360_factors[f"VOLUME{i}"] = f"Ref($volume, {i})/($volume+1e-12)"
+        alpha360_factors["VOLUME0"] = "$volume/($volume+1e-12)"
         
         logger.info(f"  ✓ 加载 Alpha360 因子库: {len(alpha360_factors)} 个因子")
         return alpha360_factors
@@ -402,6 +467,8 @@ class FactorLoader:
         """
         解析 JSON 文件中的所有因子
         
+        自动过滤不可回测的因子（无缓存且表达式无效的因子会被跳过）
+        
         Args:
             file_path: JSON文件路径
             quality_filter: 质量过滤器
@@ -415,7 +482,17 @@ class FactorLoader:
         factors = data.get('factors', {})
         result = []
         
+        # 统计
+        stats = {
+            'total': 0,
+            'loaded': 0,
+            'skipped_invalid': 0,
+            'from_cache': 0,
+        }
+        
         for factor_id, factor_info in factors.items():
+            stats['total'] += 1
+            
             # 质量过滤
             if quality_filter:
                 factor_quality = factor_info.get('quality', '')
@@ -424,9 +501,21 @@ class FactorLoader:
             
             factor_name = factor_info.get('factor_name', factor_id)
             factor_expr = factor_info.get('factor_expression', '')
+            cache_location = factor_info.get('cache_location')
             
             if not factor_expr:
                 continue
+            
+            # 检查缓存是否存在
+            has_cache = check_cache_exists(cache_location)
+            
+            # 只使用有缓存的因子，跳过需要重新计算的
+            if not has_cache:
+                stats['skipped_invalid'] += 1
+                logger.debug(f"    跳过无缓存因子: {factor_name}")
+                continue
+            
+            stats['from_cache'] += 1
             
             factor_dict = {
                 'factor_id': factor_id,
@@ -435,12 +524,17 @@ class FactorLoader:
                 'factor_description': factor_info.get('factor_description', ''),
             }
             
-            # 新增: 包含 cache_location 字段（如果存在）
-            cache_location = factor_info.get('cache_location')
+            # 包含 cache_location 字段（如果存在）
             if cache_location:
                 factor_dict['cache_location'] = cache_location
             
             result.append(factor_dict)
+            stats['loaded'] += 1
+        
+        # 输出过滤统计
+        if stats['skipped_invalid'] > 0:
+            logger.info(f"    ⚠ 跳过 {stats['skipped_invalid']} 个无缓存因子")
+        logger.info(f"    📁 {stats['from_cache']} 个因子从缓存加载")
         
         return result
     

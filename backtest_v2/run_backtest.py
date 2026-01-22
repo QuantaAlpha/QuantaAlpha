@@ -19,6 +19,13 @@
     # 组合使用官方因子和自定义因子
     python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --factor-source combined \
         --factor-json /path/to/factors.json
+
+    # 指定测试时间段
+    python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --test-period 2023
+    # 可选时间段: default(2022-2025), 2021, 2022, 2023, 2024, 2025, 2022-2023, 2024-2025
+
+    # 仅计算 IC 指标（不运行策略组合回测，速度更快）
+    python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --ic-only
 """
 
 import argparse
@@ -58,11 +65,11 @@ def main():
   python run_backtest.py -c config.yaml --factor-source alpha158_20
   
   # 使用自定义因子库
-  python run_backtest.py -c config.yaml --factor-source custom \\
+  python run_backtest.py -c config.yaml --factor-source custom \
       --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_1.json
   
   # 使用组合因子（官方 + 自定义）
-  python run_backtest.py -c config.yaml --factor-source combined \\
+  python run_backtest.py -c config.yaml --factor-source combined \
       --factor-json /path/to/factors1.json --factor-json /path/to/factors2.json
         """
     )
@@ -98,6 +105,22 @@ def main():
         type=str,
         default=None,
         help='实验名称 (覆盖配置文件设置)'
+    )
+    
+    # 测试时间段参数
+    parser.add_argument(
+        '-t', '--test-period',
+        type=str,
+        choices=['default', '2021', '2022', '2023', '2024', '2025', '2022-2023', '2024-2025'],
+        default='default',
+        help='测试时间段 (默认: default=2022-2025全年)'
+    )
+    
+    # IC-only 模式
+    parser.add_argument(
+        '--ic-only',
+        action='store_true',
+        help='仅计算 IC/ICIR/RankIC/RankICIR 指标，跳过策略组合回测（速度更快）'
     )
     
     # 调试参数
@@ -167,11 +190,13 @@ def main():
                     if len(custom_factors) > 5:
                         print(f"    ... 还有 {len(custom_factors) - 5} 个因子")
         else:
-            # 执行完整回测
+            # 执行回测
             runner.run(
                 factor_source=args.factor_source,
                 factor_json=args.factor_json,
-                experiment_name=args.experiment
+                experiment_name=args.experiment,
+                test_period=args.test_period,
+                ic_only=args.ic_only
             )
             
     except KeyboardInterrupt:

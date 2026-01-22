@@ -1,0 +1,23 @@
+{
+  "experiment_name": "RANKIC_desc_150_QA_best_no_crossover_deepseek_aliyun_csi300",
+  "factor_source": "combined",
+  "num_factors": 170,
+  "metrics": {
+    "IC": 0.1487675498721422,
+    "ICIR": 0.8782057546627465,
+    "Rank IC": 0.1452450212149504,
+    "Rank ICIR": 0.8570146857253289,
+    "annualized_return": 0.252774065798291,
+    "information_ratio": 2.788548544701808,
+    "max_drawdown": -0.09146721086334708,
+    "calmar_ratio": 2.763548417103676
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 491.3659255504608
+}

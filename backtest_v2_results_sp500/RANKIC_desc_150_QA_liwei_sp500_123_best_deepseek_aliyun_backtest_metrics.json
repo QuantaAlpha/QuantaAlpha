@@ -1,0 +1,26 @@
+{
+  "experiment_name": "all_factors_library_QA_liwei_sp500_123_best_deepseek_aliyun",
+  "factor_source": "custom",
+  "num_factors": 150,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
+  "metrics": {
+    "IC": 0.005340994702785957,
+    "ICIR": 0.038900110364716606,
+    "Rank IC": 0.005338499295173927,
+    "Rank ICIR": 0.040369598996089495,
+    "annualized_return": 0.0432001110139754,
+    "information_ratio": 0.2863252116050651,
+    "max_drawdown": -0.19869779420471365,
+    "calmar_ratio": 0.21741615797439273
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-24",
+    "test_range": "2022-01-01 ~ 2025-12-24",
+    "backtest_range": "2022-01-01 ~ 2025-12-24",
+    "market": "sp500",
+    "benchmark": "spx"
+  },
+  "elapsed_seconds": 546.3237195014954
+}

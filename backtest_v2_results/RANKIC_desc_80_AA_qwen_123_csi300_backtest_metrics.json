@@ -1,0 +1,23 @@
+{
+  "experiment_name": "RANKIC_desc_80_AA_qwen_123_csi300",
+  "factor_source": "combined",
+  "num_factors": 100,
+  "metrics": {
+    "IC": 0.10520393275939664,
+    "ICIR": 0.6632090263728843,
+    "Rank IC": 0.1018550138756044,
+    "Rank ICIR": 0.6471059982370198,
+    "annualized_return": 0.19100919192854005,
+    "information_ratio": 2.3052956760698082,
+    "max_drawdown": -0.09470630509478084,
+    "calmar_ratio": 2.0168582412478298
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 1666.8108434677124
+}

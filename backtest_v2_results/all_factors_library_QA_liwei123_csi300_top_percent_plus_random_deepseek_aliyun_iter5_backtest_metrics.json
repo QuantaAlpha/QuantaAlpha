@@ -1,0 +1,23 @@
+{
+  "experiment_name": "backtest_all_factors_library_QA_liwei123_csi300_top_percent_plus_random_deepseek_aliyun_iter5",
+  "factor_source": "custom",
+  "num_factors": 60,
+  "metrics": {
+    "IC": 0.09422507410479657,
+    "ICIR": 0.6252082672314989,
+    "Rank IC": 0.09132184055907804,
+    "Rank ICIR": 0.6133586357315464,
+    "annualized_return": 0.12972051870515608,
+    "information_ratio": 1.6869134588516088,
+    "max_drawdown": -0.11677137540317944,
+    "calmar_ratio": 1.110893129906767
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 193.44455790519714
+}

@@ -1,0 +1,320 @@
+# ============================================================
+# AlphaAgent Run Configuration
+# All experiment parameters are consolidated here
+# AlphaAgent 运行配置
+# 所有实验参数统一在此配置
+# ============================================================
+
+# ============================================================
+# PLANNING CONFIGURATION
+# Controls parallel exploration direction generation
+# 规划配置
+# 控制并行探索方向的生成
+# ============================================================
+planning:
+  # Enable "parallel planning" feature: expand initial direction into N exploration directions
+  # 启用"并行规划"功能：将初始方向扩展为N个探索方向
+  enabled: true
+  # Number of parallel directions: planning generates this many exploration directions
+  # 并行方向数量：规划生成多少个探索方向
+  num_directions: 10  #超参
+  # Maximum retry attempts for planning: retries when LLM output doesn't match JSON format
+  # 规划最大重试次数：当LLM输出不符合JSON格式时重试
+  max_attempts: 5 
+  # Whether to use LLM to generate directions: true=call LLM; false=only use fallback
+  # 是否使用LLM生成方向：true=调用LLM；false=仅使用备用方案
+  use_llm: true
+  # Whether to allow fallback when LLM fails: true=use built-in direction templates
+  # 当LLM失败时是否允许回退：true=使用内置方向模板
+  allow_fallback: true
+  # Planning prompts file path: relative to qlib_rd_loop directory
+  # 规划提示词文件路径：相对于qlib_rd_loop目录
+  prompt_file: planning_prompts.yaml
+
+
+# ============================================================
+# EXECUTION CONFIGURATION
+# Controls main loop execution parameters
+# 执行配置
+# 控制主循环执行参数
+# ============================================================
+execution:
+  # Maximum loop iterations: multiplied with steps_per_loop to get step_n (when step_n not specified)
+  # 最大循环迭代次数：与steps_per_loop相乘得到step_n（当step_n未指定时）
+  max_loops: 11
+  # Steps per loop: fixed at 5 (propose/construct/calculate/backtest/feedback)
+  # 每循环步数：固定为5（提出假设/构建因子/计算/回测/反馈）
+  steps_per_loop: 5
+  # Total steps (highest priority): if set, overrides max_loops * steps_per_loop
+  # 总步数（最高优先级）：如果设置，将覆盖max_loops * steps_per_loop
+  step_n: null
+  # Whether to use local environment for backtest: true=local, false=Docker
+  # 是否使用本地环境进行回测：true=本地，false=Docker
+  use_local: true
+  # Whether to run branches in parallel using multiprocessing
+  # 是否使用多进程并行运行分支
+  parallel_execution: false
+  # Branch log root directory: effective only when parallel planning enabled with >1 branches
+  # 分支日志根目录：仅在启用并行规划且分支数>1时有效
+  branch_log_root: /mnt/DATA/quantagent/AlphaAgent/log
+  # Branch log prefix: log directory name format is {prefix}_{index}
+  # 分支日志前缀：日志目录名称格式为{prefix}_{index}
+  branch_log_prefix: branch
+
+
+# ============================================================
+# EVOLUTION CONFIGURATION
+# Controls evolutionary exploration (mutation and crossover)
+# Flow: Original → Mutation → Crossover → Mutation → Crossover → ...
+# 进化配置
+# 控制进化探索（变异和交叉）
+# 流程：原始轮 → 变异轮 → 交叉轮 → 变异轮 → 交叉轮 → ...
+# ============================================================
+evolution:
+  # Enable evolution mode
+  # When enabled, overrides traditional planning + parallel execution mode
+  # 启用进化模式
+  # 启用时，将覆盖传统的规划+并行执行模式
+  enabled: true
+  
+  # Maximum evolution rounds (including original, mutation, and crossover rounds)
+  # Flow: round 0 = original, round 1 = mutation, round 2 = crossover, ...
+  # 最大进化轮数（包括原始轮、变异轮和交叉轮）
+  # 流程：轮次0=原始轮，轮次1=变异轮，轮次2=交叉轮，...
+  max_rounds: 11  #超参
+  
+  # Crossover operation parameters
+  # crossover_size: Number of parents selected per crossover operation
+  # 交叉操作参数
+  # crossover_size: 每次交叉操作选择的父代数量
+  crossover_size: 2  #超参  or 3
+  # crossover_n: Number of combinations generated per crossover round (determines parallelism after crossover)
+  # crossover_n: 每轮交叉生成的组合数量（决定交叉后的并行度）
+  crossover_n: 10  #超参
+  
+  # Enable parallel execution within each evolution phase
+  # When true:
+  #   - Original round: all n directions run in parallel
+  #   - Mutation round: all mutation tasks run in parallel
+  #   - Crossover round: after selecting parent combinations, all combinations run in parallel
+  # When false: tasks run sequentially one by one
+  # 启用进化阶段内的并行执行
+  # 当为true时：
+  #   - 原始轮：所有n个方向并行运行
+  #   - 变异轮：所有变异任务并行运行
+  #   - 交叉轮：选择父代组合后，所有组合并行运行
+  # 当为false时：任务按顺序逐一运行
+  parallel_enabled: false
+  
+  # Whether to prefer diverse crossover combinations
+  # true: Prioritize combinations from different directions and phases
+  # false: Random parent combination selection
+  # 是否偏好多样化的交叉组合
+  # true: 优先选择来自不同方向和阶段的组合
+  # false: 随机选择父代组合
+  prefer_diverse_crossover: true
+  
+  # Evolution prompts file path: relative to qlib_rd_loop directory
+  # 进化提示词文件路径：相对于qlib_rd_loop目录
+  prompt_file: evolution_prompts.yaml
+  
+  # Parent selection strategy (父代选择策略)
+  # ─────────────────────────────────────────────────────────────
+  # best: Prioritize best-performing trajectories
+  #       优先选择表现最好的轨迹
+  # 
+  # random: Random selection
+  #         随机选择
+  # 
+  # weighted: Performance-weighted sampling (higher performance = higher weight)
+  #           性能加权采样（性能越高权重越高，评价高的被选中概率大）
+  # 
+  # weighted_inverse: Inverse performance-weighted sampling (lower performance = higher weight)
+  #                   逆性能加权采样（性能越低权重越高，鼓励探索差轨迹）
+  #                   参考 EvoControl 的 _weighted_select_labels 策略
+  # 
+  # top_percent_plus_random: Top 30% guaranteed + random from rest
+  #                          评价前30%一定被选中，剩余位置从后70%随机填充
+  #                          适合平衡开发(exploitation)与探索(exploration)
+  # ─────────────────────────────────────────────────────────────
+  parent_selection_strategy: best
+  
+  # Top percent threshold (only used when parent_selection_strategy = "top_percent_plus_random")
+  # 前百分比阈值（仅当 parent_selection_strategy = "top_percent_plus_random" 时生效）
+  top_percent_threshold: 0.3
+  
+  # Fresh start: whether to start with an empty trajectory pool
+  # true: Each experiment starts with a clean slate (recommended for independent experiments)
+  # false: Load existing trajectory pool if available (for resuming experiments)
+  # 是否从空轨迹池开始
+  # true: 每次实验从头开始，不加载历史数据（推荐用于独立实验）
+  # false: 如果存在历史数据则加载（用于恢复实验）
+  fresh_start: true
+  
+  # Cleanup on finish: whether to delete trajectory pool file after experiment completes
+  # true: Delete trajectory pool file to save disk space
+  # false: Keep trajectory pool file for later analysis
+  # 实验结束后是否清理轨迹池文件
+  # true: 删除轨迹池文件以节省磁盘空间
+  # false: 保留轨迹池文件供后续分析
+  cleanup_on_finish: false
+
+
+# ============================================================
+# QUALITY GATE CONFIGURATION
+# Controls factor quality checks before backtesting
+# 质量门控配置
+# 控制进入回测前的因子质量检查
+# ============================================================
+quality_gate:
+  # Enable consistency check (假设-描述-表达式 一致性检验)
+  # When enabled, uses LLM to verify logical consistency between:
+  #   - Hypothesis → Description
+  #   - Description → Formulation
+  #   - Formulation → Expression
+  # If inconsistencies found, attempts to correct the expression
+  # 启用一致性检验（假设-描述-表达式的逻辑一致性）
+  # 启用后，使用LLM验证以下内容之间的逻辑一致性：
+  #   - 假设 → 描述
+  #   - 描述 → 公式
+  #   - 公式 → 表达式
+  # 如果发现不一致，尝试修正表达式
+  consistency_enabled: false  # 默认关闭，因为会增加LLM调用成本
+  
+  # Enable complexity check (复杂度检验)
+  # Checks if factor expression complexity is within acceptable limits:
+  #   - Symbol length (SL): Max characters in expression
+  #   - Base features (ER): Max number of distinct raw features
+  #   - Free args ratio: Max ratio of numeric constants to total nodes
+  # 启用复杂度检验
+  # 检查因子表达式复杂度是否在可接受范围内：
+  #   - 符号长度 (SL): 表达式最大字符数
+  #   - 基础特征 (ER): 不同原始特征的最大数量
+  #   - 自由参数比例: 数值常量占总节点数的最大比例
+  complexity_enabled: true
+  
+  # Enable redundancy check (冗余度检验)
+  # Checks if factor expression is too similar to existing factors
+  # Uses AST-based subtree matching against factor zoo
+  # 启用冗余度检验
+  # 检查因子表达式是否与已有因子过于相似
+  # 使用基于AST的子树匹配与因子库进行比对
+  redundancy_enabled: true
+
+
+# ============================================================
+# FACTOR GENERATION CONFIGURATION
+# Controls factor proposal and expression generation
+# 因子生成配置
+# 控制因子提出和表达式生成
+# ============================================================
+factor:
+  # Number of factors to generate per hypothesis
+  # 每个假设生成的因子数量
+  factors_per_hypothesis: 3
+  
+  # Factor complexity constraints
+  # 因子复杂度约束
+  complexity:
+    # Maximum symbol length for factor expressions (CRITICAL for preventing overfitting)
+    # 因子表达式的最大符号长度（防止过拟合的关键参数）
+    symbol_length_threshold: 250
+    # Maximum number of distinct base features ($close, $open, etc.)
+    # 不同基础特征的最大数量（$close, $open等）
+    base_features_threshold: 6
+    # Maximum free arguments ratio (numeric constants / total nodes)
+    # 最大自由参数比例（数值常量/总节点数）
+    free_args_ratio_threshold: 0.5
+  
+  # Factor uniqueness/duplication checking
+  # 因子唯一性/重复性检查
+  duplication:
+    # Enable duplication checking against factor zoo
+    # 启用针对因子库的重复性检查
+    enabled: true
+    # Duplication subtree size threshold
+    # 重复子树大小阈值
+    threshold: 5
+    # Path to factor zoo file for duplication checking
+    # 用于重复性检查的因子库文件路径
+    factor_zoo_path: null  # Uses default if null  # 如果为null则使用默认值
+
+
+# ============================================================
+# BACKTEST CONFIGURATION
+# Controls factor backtesting parameters
+# 回测配置
+# 控制因子回测参数
+# ============================================================
+backtest:
+  # Backtest environment
+  # 回测环境
+  use_docker: false
+  # Timeout for each backtest run (seconds)
+  # 每次回测运行的超时时间（秒）
+  timeout: 800
+  
+  # Qlib configuration (only used when not using local environment)
+  # Qlib配置（仅在未使用本地环境时使用）
+  qlib:
+    config_name: /home/tjxy/quantagent/AlphaAgent/backtest_v2/config_csi500.yaml
+
+
+# ============================================================
+# LLM CONFIGURATION
+# Controls LLM API behavior
+# LLM配置
+# 控制LLM API行为
+# ============================================================
+llm:
+  # Factor mining timeout (seconds) - overall timeout for the mining process
+  # 因子挖掘超时时间（秒）- 挖掘过程的总体超时时间
+  factor_mining_timeout: 999999
+  
+  # Retry configuration
+  # 重试配置
+  max_retries: 3
+  retry_delay: 1.0
+  
+  # JSON mode strictness
+  # JSON模式严格性
+  json_mode_strict: true
+
+
+# ============================================================
+# LOGGING CONFIGURATION
+# Controls logging and output
+# 日志配置
+# 控制日志记录和输出
+# ============================================================
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  # 日志级别：DEBUG, INFO, WARNING, ERROR
+  level: INFO
+  # Save intermediate session snapshots
+  # 保存中间会话快照
+  save_snapshots: true
+  # Save trajectory pool to JSON
+  # 保存轨迹池到JSON文件
+  save_trajectory_pool: true
+
+
+# ============================================================
+# PROMPT FILES CONFIGURATION
+# Paths to all prompt configuration files (relative to qlib_rd_loop directory)
+# 提示词文件配置
+# 所有提示词配置文件的路径（相对于qlib_rd_loop目录）
+# ============================================================
+prompts:
+  # Planning phase prompts
+  # 规划阶段提示词
+  planning: planning_prompts.yaml
+  # Evolution (mutation & crossover) prompts
+  # 进化（变异和交叉）提示词
+  evolution: evolution_prompts.yaml
+  # Factor and hypothesis generation prompts are in:
+  # - alphaagent/scenarios/qlib/prompts_alphaagent.yaml (main prompts)
+  # - alphaagent/scenarios/qlib/prompts_rdagent.yaml (legacy prompts)
+  # 因子和假设生成提示词位于：
+  # - alphaagent/scenarios/qlib/prompts_alphaagent.yaml (主要提示词)
+  # - alphaagent/scenarios/qlib/prompts_rdagent.yaml (遗留提示词)

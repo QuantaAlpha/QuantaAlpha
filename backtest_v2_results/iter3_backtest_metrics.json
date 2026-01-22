@@ -1,0 +1,26 @@
+{
+  "experiment_name": "iter3_01-22",
+  "factor_source": "custom",
+  "num_factors": 60,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": false,
+  "metrics": {
+    "IC": 0.1028575300889896,
+    "ICIR": 0.6420874652148868,
+    "Rank IC": 0.10068321692602843,
+    "Rank ICIR": 0.6326925700299688,
+    "annualized_return": 0.1812831324548654,
+    "information_ratio": 2.1554164181480244,
+    "max_drawdown": -0.10679331815241722,
+    "calmar_ratio": 1.6975138107061631
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 212.59941840171814
+}

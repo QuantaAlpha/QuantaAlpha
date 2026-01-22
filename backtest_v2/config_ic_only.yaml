@@ -1,0 +1,204 @@
+######################################################################
+# IC-Only 批量回测配置文件
+# 用于批量计算因子库在不同年份的 IC/ICIR/RankIC/RankICIR 指标
+#
+# 使用方式：
+#   bash backtest_v2/batch_ic_backtest.sh
+######################################################################
+
+# 全局随机种子（确保结果可复现）
+random_seed: 42
+
+experiment:
+  name: "ic_only_batch_experiment"
+  recorder: "ic_only_recorder"
+  output_dir: "./backtest_v2_results/ic_only_batch"
+  output_metrics_file: "ic_metrics.json"
+
+######################################################################
+# 1. 因子源配置（factor_source）
+######################################################################
+
+factor_source:
+  # 类型将通过命令行参数覆盖
+  type: "alpha158_20"
+  
+  # 自定义因子库配置
+  custom:
+    json_files: []
+    quality_filter: null
+    max_factors: null
+    use_llm_for_incompatible: true
+  
+  # 组合模式配置
+  combined:
+    official_source: "alpha158_20"
+    include_custom: true
+
+######################################################################
+# 2. 数据与市场配置（data）
+######################################################################
+
+data:
+  # Qlib 数据源路径
+  provider_uri: "/home/tjxy/.qlib/qlib_data/cn_data"
+  
+  # 市场标的：csi300
+  market: "csi300"
+  
+  # 整个样本区间
+  start_time: "2016-01-01"
+  end_time: "2025-12-26"
+
+######################################################################
+# 3. 样本与预处理配置（dataset）
+######################################################################
+
+dataset:
+  # 标签定义
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  
+  # 训练阶段预处理
+  learn_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "DropnaLabel"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  # 推理阶段预处理
+  infer_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  # 数据集划分
+  segments:
+    train: ["2016-01-01", "2020-12-31"]
+    valid: ["2021-01-01", "2021-12-31"]
+    test:  ["2022-01-01", "2025-12-26"]
+
+######################################################################
+# 3.1 预设测试时间段
+######################################################################
+test_periods:
+  default:
+    name: "2022-2025全年"
+    test: ["2022-01-01", "2025-12-26"]
+    backtest_start: "2022-01-01"
+    backtest_end: "2025-12-26"
+  
+  "2021":
+    name: "2021年全年"
+    test: ["2021-01-01", "2021-12-31"]
+    backtest_start: "2021-01-01"
+    backtest_end: "2021-12-31"
+  
+  "2022":
+    name: "2022年全年"
+    test: ["2022-01-01", "2022-12-31"]
+    backtest_start: "2022-01-01"
+    backtest_end: "2022-12-31"
+  
+  "2023":
+    name: "2023年全年"
+    test: ["2023-01-01", "2023-12-31"]
+    backtest_start: "2023-01-01"
+    backtest_end: "2023-12-31"
+  
+  "2024":
+    name: "2024年全年"
+    test: ["2024-01-01", "2024-12-31"]
+    backtest_start: "2024-01-01"
+    backtest_end: "2024-12-31"
+  
+  "2025":
+    name: "2025年全年"
+    test: ["2025-01-01", "2025-12-26"]
+    backtest_start: "2025-01-01"
+    backtest_end: "2025-12-26"
+
+######################################################################
+# 4. 模型配置（model）
+######################################################################
+
+model:
+  type: "lgb"
+  params:
+    loss: "mse"
+    learning_rate: 0.1
+    max_depth: 8
+    num_leaves: 210
+    colsample_bytree: 0.8879
+    subsample: 0.8789
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    num_threads: 20
+    seed: 42
+    random_state: 42
+    early_stopping_round: 50
+    num_boost_round: 500
+    min_child_samples: 100
+    feature_fraction_bynode: 0.8
+
+######################################################################
+# 5. 回测与组合配置（backtest）
+######################################################################
+
+backtest:
+  strategy:
+    class: "TopkDropoutStrategy"
+    module_path: "qlib.contrib.strategy"
+    kwargs:
+      signal: "<PRED>"
+      topk: 50
+      n_drop: 5
+  
+  backtest:
+    start_time: "2022-01-01"
+    end_time: "2025-12-26"
+    account: 100000000
+    benchmark: "SH000300"
+    exchange_kwargs:
+      limit_threshold: 0.095
+      deal_price: "open"
+      open_cost: 0.0005
+      close_cost: 0.0015
+      min_cost: 5
+
+######################################################################
+# 6. LLM 配置
+######################################################################
+
+llm:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  cache_results: true
+  cache_dir: "/mnt/DATA/quantagent/AlphaAgent/factor_cache"
+  auto_extract_cache: false
+  debug: false
+
+######################################################################
+# 7. 因子计算配置
+######################################################################
+
+factor_calculation:
+  output_dir: "/mnt/DATA/quantagent/AlphaAgent/computed_factors"
+  save_intermediate: true
+  n_jobs: 4
+  data_file: null
+

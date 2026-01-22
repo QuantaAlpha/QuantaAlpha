@@ -1,0 +1,23 @@
+{
+  "experiment_name": "RANKIC_desc_150_QA_best_no_mutation_deepseek_aliyuolatilityn_csi300",
+  "factor_source": "combined",
+  "num_factors": 170,
+  "metrics": {
+    "IC": 0.12012158227813904,
+    "ICIR": 0.7703548520810173,
+    "Rank IC": 0.11742968781730614,
+    "Rank ICIR": 0.7555261411094853,
+    "annualized_return": 0.19175074038480702,
+    "information_ratio": 2.4109877367278423,
+    "max_drawdown": -0.09851339710639262,
+    "calmar_ratio": 1.9464432860610807
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 473.484406709671
+}

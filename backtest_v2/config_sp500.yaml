@@ -1,0 +1,131 @@
+######################################################################
+# 回测工具 V2 配置文件 (SP500)
+# 支持 Qlib 官方因子库（alpha158/alpha360）和自定义因子库（JSON格式）
+######################################################################
+
+# 全局随机种子（确保结果可复现）
+random_seed: 42
+
+experiment:
+  name: "backtest_v2_sp500"
+  recorder: "backtest_v2_sp500_recorder"
+  output_dir: "./backtest_v2_results_sp500"
+  output_metrics_file: "backtest_metrics.json"
+
+######################################################################
+# 1. 因子源配置（factor_source）
+######################################################################
+
+factor_source:
+  type: "custom"
+  
+  custom:
+    json_files: []
+    quality_filter: null
+    max_factors: null
+    use_llm_for_incompatible: true
+
+######################################################################
+# 2. 数据与市场配置（data）
+######################################################################
+
+data:
+  provider_uri: "/home/tjxy/.qlib/qlib_data/us_data"
+  market: "sp500"
+  start_time: "2016-01-01"
+  end_time: "2025-12-26"
+
+######################################################################
+# 3. 样本与预处理配置（dataset）
+######################################################################
+
+dataset:
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  
+  learn_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "DropnaLabel"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  infer_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  segments:
+    train: ["2016-01-01", "2020-12-31"]
+    valid: ["2021-01-01", "2021-12-31"]
+    test:  ["2022-01-01", "2025-12-26"]
+
+######################################################################
+# 4. 模型配置（model）
+######################################################################
+
+model:
+  type: "lgb"
+  params:
+    loss: "mse"
+    learning_rate: 0.1
+    max_depth: 8
+    num_leaves: 210
+    colsample_bytree: 0.8879
+    subsample: 0.8789
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    num_threads: 20
+    seed: 42
+    random_state: 42
+    early_stopping_round: 50
+    num_boost_round: 500
+    min_child_samples: 100
+    feature_fraction_bynode: 0.8
+
+######################################################################
+# 5. 回测与组合配置（backtest）
+######################################################################
+
+backtest:
+  strategy:
+    class: "TopkDropoutStrategy"
+    module_path: "qlib.contrib.strategy"
+    kwargs:
+      signal:
+        - "model_prediction"
+      topk: 50
+      n_drop: 5
+      hold_thresh: 1
+      
+  backtest:
+    start_time: "2022-01-01"
+    end_time: "2025-12-25"
+    account: 100000000
+    benchmark: "spx"
+    exchange_kwargs:
+      limit_threshold: 0.1
+      deal_price: "close"
+      open_cost: 0.0005
+      close_cost: 0.0015
+      min_cost: 5
+
+######################################################################
+# LLM Configuration
+######################################################################
+llm:
+  enabled: false
+  model: "gpt-4"
+  temperature: 0.0

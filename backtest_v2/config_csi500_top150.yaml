@@ -1,0 +1,148 @@
+######################################################################
+# 回测工具 V2 配置文件 (CSI500 Top150 Verified)
+# 基于 CSI300 配置 (config.yaml) 修改，仅变更市场和基准
+######################################################################
+
+# 全局随机种子
+random_seed: 42
+
+experiment:
+  name: "backtest_v2_csi500_top150"
+  recorder: "backtest_v2_csi500_top150_recorder"
+  output_dir: "./backtest_v2_results_csi500_top150"
+  output_metrics_file: "backtest_metrics.json"
+
+######################################################################
+# 1. 因子源配置
+######################################################################
+
+factor_source:
+  type: "custom"
+  
+  custom:
+    json_files:
+      - "/home/tjxy/quantagent/AlphaAgent/all_factors_library_QA_liwei_csi500_top150.json"
+    quality_filter: null
+    max_factors: null
+    use_llm_for_incompatible: true
+
+######################################################################
+# 2. 数据与市场配置
+######################################################################
+
+data:
+  provider_uri: "/home/tjxy/.qlib/qlib_data/cn_data"
+  # 修改为 CSI500
+  market: "csi500"
+  start_time: "2016-01-01"
+  end_time: "2025-12-26"
+
+######################################################################
+# 3. 样本与预处理配置 (保持与 CSI300 一致)
+######################################################################
+
+dataset:
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  
+  learn_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "DropnaLabel"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  infer_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  segments:
+    train: ["2016-01-01", "2020-12-31"]
+    valid: ["2021-01-01", "2021-12-31"]
+    test:  ["2022-01-01", "2025-12-26"]
+
+######################################################################
+# 4. 模型配置 (保持与 CSI300 一致)
+######################################################################
+
+model:
+  type: "lgb"
+  params:
+    loss: "mse"
+    learning_rate: 0.1
+    max_depth: 8
+    num_leaves: 210
+    colsample_bytree: 0.8879
+    subsample: 0.8789
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    num_threads: 20
+    seed: 42
+    random_state: 42
+    early_stopping_round: 50
+    num_boost_round: 500
+    min_child_samples: 100
+    feature_fraction_bynode: 0.8
+
+######################################################################
+# 5. 回测配置
+######################################################################
+
+backtest:
+  strategy:
+    class: "TopkDropoutStrategy"
+    module_path: "qlib.contrib.strategy"
+    kwargs:
+      signal: "<PRED>"
+      topk: 50
+      n_drop: 5
+  
+  backtest:
+    start_time: "2022-01-01"
+    end_time: "2025-12-26"
+    account: 100000000
+    # 修改为 sh000905
+    benchmark: "sh000905"
+    exchange_kwargs:
+      limit_threshold: 0.095
+      deal_price: "open"
+      open_cost: 0.0005
+      close_cost: 0.0015
+      min_cost: 5
+
+######################################################################
+# 6. LLM 配置 (缓存隔离)
+######################################################################
+
+llm:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  cache_results: true
+  # 使用独立的 CSI500 缓存目录，避免读取 CSI300 缓存
+  cache_dir: "/mnt/DATA/quantagent/AlphaAgent/factor_cache_csi500_top150_clean"
+  auto_extract_cache: false
+  debug: false
+
+######################################################################
+# 7. 因子计算配置
+######################################################################
+
+factor_calculation:
+  output_dir: "/mnt/DATA/quantagent/AlphaAgent/computed_factors_csi500_top150_clean"
+  save_intermediate: true
+  n_jobs: 16
+  data_file: null

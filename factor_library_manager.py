@@ -188,6 +188,7 @@ class FactorLibraryManager:
                     implementation_code = ""
                     factor_dir = ""
                     result_h5_path = ""
+                    full_workspace_path = ""
                     cache_location = None
                     
                     try:
@@ -196,31 +197,67 @@ class FactorLibraryManager:
                             # 获取实现代码
                             if hasattr(workspace, 'code'):
                                 implementation_code = workspace.code or ""
-                            # 获取因子目录路径（workspace_path 属性）
-                            if hasattr(workspace, 'workspace_path') and workspace.workspace_path:
+                            
+                            # 尝试多种方式获取 workspace_path
+                            ws_path = None
+                            
+                            # 方式1: 直接从 workspace.workspace_path 获取
+                            if hasattr(workspace, 'workspace_path'):
                                 try:
-                                    ws_path = Path(workspace.workspace_path) if not isinstance(workspace.workspace_path, Path) else workspace.workspace_path
-                                    factor_dir = ws_path.name
-                                    result_h5_path = str(ws_path / 'result.h5')
-                                except Exception as path_err:
-                                    print(f"Warning: Failed to parse workspace path: {path_err}")
+                                    ws_path_attr = workspace.workspace_path
+                                    if ws_path_attr is not None:
+                                        ws_path = Path(ws_path_attr) if not isinstance(ws_path_attr, Path) else ws_path_attr
+                                except Exception:
+                                    pass
+                            
+                            # 方式2: 尝试从 workspace 字符串表示中提取
+                            if ws_path is None:
+                                try:
+                                    ws_str = str(workspace)
+                                    if 'workspace_path=' in ws_str:
+                                        # 格式类似: Workspace[workspace_path=PosixPath('/path/to/workspace')]
+                                        import re
+                                        match = re.search(r"workspace_path=(?:PosixPath\('|Path\('|')([^']+)", ws_str)
+                                        if match:
+                                            ws_path = Path(match.group(1))
+                                except Exception:
+                                    pass
+                            
+                            # 如果成功获取到 workspace_path
+                            if ws_path is not None:
+                                factor_dir = ws_path.name
+                                full_workspace_path = str(ws_path)
+                                result_h5_path = str(ws_path / 'result.h5')
                         
-                        # 获取工作空间后缀（用于定位缓存）
+                        # 获取环境变量
                         workspace_suffix = os.environ.get('EXPERIMENT_ID', '')
                         pickle_cache_path = os.environ.get('PICKLE_CACHE_FOLDER_PATH_STR', '')
                         env_workspace_path = os.environ.get('WORKSPACE_PATH', '')
                         
-                        # 构建缓存位置信息（仅当有足够信息时）
-                        if workspace_suffix and factor_dir:
+                        # 调试日志：显示获取到的路径信息
+                        # print(f"[DEBUG] Factor {idx} cache info: workspace_suffix={workspace_suffix}, "
+                        #       f"full_workspace_path={full_workspace_path}, factor_dir={factor_dir}")
+                        
+                        # 构建缓存位置信息
+                        # 条件放宽：只要有 workspace_suffix 或者有 full_workspace_path 就尝试记录
+                        if workspace_suffix or full_workspace_path:
                             cache_location = {
-                                "workspace_suffix": workspace_suffix,
-                                "workspace_path": env_workspace_path,
+                                "experiment_id": workspace_suffix,
+                                "env_workspace_path": env_workspace_path,
+                                "factor_workspace_path": full_workspace_path,  # 完整的因子工作空间路径
                                 "factor_dir": factor_dir,
                                 "result_h5_path": result_h5_path,
+                                "pickle_cache_path": pickle_cache_path,
                             }
+                            # print(f"[DEBUG] Factor {idx} cache_location set: {cache_location}")
+                        else:
+                            print(f"[INFO] Factor {idx}: No cache location available "
+                                  f"(workspace_suffix={workspace_suffix!r}, full_workspace_path={full_workspace_path!r})")
                     except Exception as cache_err:
                         # 缓存位置获取失败不影响因子保存
                         print(f"Warning: Failed to get cache location for factor {idx}: {cache_err}")
+                        import traceback
+                        traceback.print_exc()
                         cache_location = None
                     
                     # 生成因子ID

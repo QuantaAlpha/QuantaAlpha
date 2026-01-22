@@ -16,6 +16,34 @@ import pandas as pd
 from alphaagent.log import logger
 from alphaagent.scenarios.qlib.regulator.factor_regulator import FactorRegulator
 
+# 默认历史记录数量和最小值
+DEFAULT_HISTORY_LIMIT = 6
+MIN_HISTORY_LIMIT = 1
+
+def render_hypothesis_and_feedback(prompt_dict, trace: Trace, history_limit: int = DEFAULT_HISTORY_LIMIT) -> str:
+    """渲染 hypothesis_and_feedback，支持动态调整历史记录数量"""
+    if len(trace.hist) > 0:
+        return (
+            Environment(undefined=StrictUndefined)
+            .from_string(prompt_dict["hypothesis_and_feedback"])
+            .render(trace=trace, history_limit=history_limit)
+        )
+    else:
+        return "No previous hypothesis and feedback available since it's the first round."
+
+def is_input_length_error(error_msg: str) -> bool:
+    """检查是否是输入长度超限错误"""
+    error_indicators = [
+        "input length",
+        "context length", 
+        "maximum context",
+        "token limit",
+        "InvalidParameter",
+        "Range of input length"
+    ]
+    error_str = str(error_msg).lower()
+    return any(indicator.lower() in error_str for indicator in error_indicators)
+
 QlibFactorHypothesis = Hypothesis
 alphaagent_prompt_dict = Prompts(file_path=Path(__file__).parent / "prompts_alphaagent.yaml")
 
@@ -57,15 +85,9 @@ class QlibFactorHypothesisGen(FactorHypothesisGen):
     def __init__(self, scen: Scenario) -> Tuple[dict, bool]:
         super().__init__(scen)
 
-    def prepare_context(self, trace: Trace) -> Tuple[dict, bool]:
-        hypothesis_and_feedback = (
-            (
-                Environment(undefined=StrictUndefined)
-                .from_string(rdagent_prompt_dict["hypothesis_and_feedback"])
-                .render(trace=trace)
-            )
-            if len(trace.hist) > 0
-            else "No previous hypothesis and feedback available since it's the first round."
+    def prepare_context(self, trace: Trace, history_limit: int = DEFAULT_HISTORY_LIMIT) -> Tuple[dict, bool]:
+        hypothesis_and_feedback = render_hypothesis_and_feedback(
+            rdagent_prompt_dict, trace, history_limit
         )
         context_dict = {
             "hypothesis_and_feedback": hypothesis_and_feedback,
@@ -89,18 +111,12 @@ class QlibFactorHypothesisGen(FactorHypothesisGen):
 
 
 class QlibFactorHypothesis2Experiment(FactorHypothesis2Experiment):
-    def prepare_context(self, hypothesis: Hypothesis, trace: Trace) -> Tuple[dict | bool]:
+    def prepare_context(self, hypothesis: Hypothesis, trace: Trace, history_limit: int = DEFAULT_HISTORY_LIMIT) -> Tuple[dict | bool]:
         scenario = trace.scen.get_scenario_all_desc()
         experiment_output_format = rdagent_prompt_dict["factor_experiment_output_format"]
 
-        hypothesis_and_feedback = (
-            (
-                Environment(undefined=StrictUndefined)
-                .from_string(rdagent_prompt_dict["hypothesis_and_feedback"])
-                .render(trace=trace)
-            )
-            if len(trace.hist) > 0
-            else "No previous hypothesis and feedback available since it's the first round."
+        hypothesis_and_feedback = render_hypothesis_and_feedback(
+            rdagent_prompt_dict, trace, history_limit
         )
 
         experiment_list: List[FactorExperiment] = [t[1] for t in trace.hist]
@@ -170,14 +186,12 @@ class AlphaAgentHypothesisGen(FactorHypothesisGen):
         super().__init__(scen)
         self.potential_direction = potential_direction
 
-    def prepare_context(self, trace: Trace) -> Tuple[dict, bool]:
+    def prepare_context(self, trace: Trace, history_limit: int = DEFAULT_HISTORY_LIMIT) -> Tuple[dict, bool]:
         
         if len(trace.hist) > 0:
-            hypothesis_and_feedback = (
-                    Environment(undefined=StrictUndefined)
-                    .from_string(alphaagent_prompt_dict["hypothesis_and_feedback"])
-                    .render(trace=trace)
-                )
+            hypothesis_and_feedback = render_hypothesis_and_feedback(
+                alphaagent_prompt_dict, trace, history_limit
+            )
             
         elif self.potential_direction is not None: 
             hypothesis_and_feedback = (
@@ -213,33 +227,43 @@ class AlphaAgentHypothesisGen(FactorHypothesisGen):
         return hypothesis
     
     def gen(self, trace: Trace) -> AlphaAgentHypothesis:
-        context_dict, json_flag = self.prepare_context(trace)
-        system_prompt = (
-            Environment(undefined=StrictUndefined)
-            .from_string(alphaagent_prompt_dict["hypothesis_gen"]["system_prompt"])
-            .render(
-                targets=self.targets,
-                scenario=self.scen.get_scenario_all_desc(filtered_tag="hypothesis_and_experiment"),
-                hypothesis_output_format=context_dict["hypothesis_output_format"],
-                hypothesis_specification=context_dict["hypothesis_specification"],
-            )
-        )
-        user_prompt = (
-            Environment(undefined=StrictUndefined)
-            .from_string(alphaagent_prompt_dict["hypothesis_gen"]["user_prompt"])
-            .render(
-                targets=self.targets,
-                hypothesis_and_feedback=context_dict["hypothesis_and_feedback"],
-                RAG=context_dict["RAG"],
-                round=len(trace.hist)
-            )
-        )
+        """生成假设，支持动态调整历史记录数量以应对输入长度超限"""
+        history_limit = DEFAULT_HISTORY_LIMIT
+        
+        while history_limit >= MIN_HISTORY_LIMIT:
+            try:
+                context_dict, json_flag = self.prepare_context(trace, history_limit)
+                system_prompt = (
+                    Environment(undefined=StrictUndefined)
+                    .from_string(alphaagent_prompt_dict["hypothesis_gen"]["system_prompt"])
+                    .render(
+                        targets=self.targets,
+                        scenario=self.scen.get_scenario_all_desc(filtered_tag="hypothesis_and_experiment"),
+                        hypothesis_output_format=context_dict["hypothesis_output_format"],
+                        hypothesis_specification=context_dict["hypothesis_specification"],
+                    )
+                )
+                user_prompt = (
+                    Environment(undefined=StrictUndefined)
+                    .from_string(alphaagent_prompt_dict["hypothesis_gen"]["user_prompt"])
+                    .render(
+                        targets=self.targets,
+                        hypothesis_and_feedback=context_dict["hypothesis_and_feedback"],
+                        RAG=context_dict["RAG"],
+                        round=len(trace.hist)
+                    )
+                )
 
-        resp = APIBackend().build_messages_and_create_chat_completion(user_prompt, system_prompt, json_mode=json_flag)
-
-        hypothesis = self.convert_response(resp)
-
-        return hypothesis
+                resp = APIBackend().build_messages_and_create_chat_completion(user_prompt, system_prompt, json_mode=json_flag)
+                hypothesis = self.convert_response(resp)
+                return hypothesis
+                
+            except Exception as e:
+                if is_input_length_error(str(e)) and history_limit > MIN_HISTORY_LIMIT:
+                    history_limit -= 1
+                    logger.warning(f"输入长度超限，减少历史记录数量到 {history_limit} 条后重试...")
+                else:
+                    raise
     
     
 
@@ -278,18 +302,12 @@ class AlphaAgentHypothesis2FactorExpression(FactorHypothesis2Experiment):
             duplication_threshold=FACTOR_COSTEER_SETTINGS.duplication_threshold
         )
         
-    def prepare_context(self, hypothesis: Hypothesis, trace: Trace) -> Tuple[dict | bool]:
+    def prepare_context(self, hypothesis: Hypothesis, trace: Trace, history_limit: int = DEFAULT_HISTORY_LIMIT) -> Tuple[dict | bool]:
         scenario = trace.scen.get_scenario_all_desc()
         experiment_output_format = alphaagent_prompt_dict["factor_experiment_output_format"]
         function_lib_description = alphaagent_prompt_dict['function_lib_description']
-        hypothesis_and_feedback = (
-            (
-                Environment(undefined=StrictUndefined)
-                .from_string(alphaagent_prompt_dict["hypothesis_and_feedback"])
-                .render(trace=trace)
-            )
-            if len(trace.hist) > 0
-            else "No previous hypothesis and feedback available since it's the first round."
+        hypothesis_and_feedback = render_hypothesis_and_feedback(
+            alphaagent_prompt_dict, trace, history_limit
         )
 
         experiment_list: List[FactorExperiment] = [t[1] for t in trace.hist]
@@ -309,7 +327,25 @@ class AlphaAgentHypothesis2FactorExpression(FactorHypothesis2Experiment):
         }, True
         
     def convert(self, hypothesis: Hypothesis, trace: Trace) -> Experiment:
-        context, json_flag = self.prepare_context(hypothesis, trace)
+        """转换假设为因子表达式，支持动态调整历史记录数量以应对输入长度超限"""
+        history_limit = DEFAULT_HISTORY_LIMIT
+        
+        while history_limit >= MIN_HISTORY_LIMIT:
+            try:
+                return self._convert_with_history_limit(hypothesis, trace, history_limit)
+            except Exception as e:
+                if is_input_length_error(str(e)) and history_limit > MIN_HISTORY_LIMIT:
+                    history_limit -= 1
+                    logger.warning(f"输入长度超限，减少历史记录数量到 {history_limit} 条后重试...")
+                else:
+                    raise
+        
+        # 如果所有重试都失败了，使用最小历史记录数量再尝试一次
+        return self._convert_with_history_limit(hypothesis, trace, MIN_HISTORY_LIMIT)
+    
+    def _convert_with_history_limit(self, hypothesis: Hypothesis, trace: Trace, history_limit: int) -> Experiment:
+        """使用指定历史记录数量进行转换"""
+        context, json_flag = self.prepare_context(hypothesis, trace, history_limit)
         system_prompt = (
             Environment(undefined=StrictUndefined)
             .from_string(alphaagent_prompt_dict["hypothesis2experiment"]["system_prompt"])

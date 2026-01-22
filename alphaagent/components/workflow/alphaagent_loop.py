@@ -3,9 +3,11 @@ Model workflow with session control
 It is from `rdagent/app/qlib_rd_loop/model.py` and try to replace `rdagent/app/qlib_rd_loop/RDAgent.py`
 """
 
+import os
 import time
+import yaml
 import pandas as pd
-from typing import Any
+from typing import Any, Dict
 
 from alphaagent.components.workflow.conf import BaseFacSetting
 from alphaagent.core.developer import Developer
@@ -36,6 +38,14 @@ from tqdm.auto import tqdm
 from alphaagent.core.exception import CoderError
 from alphaagent.log import logger
 from functools import wraps
+
+# 导入质量门控模块
+from alphaagent.scenarios.qlib.regulator.consistency_checker import (
+    FactorQualityGate,
+    FactorConsistencyChecker,
+    ComplexityChecker,
+    RedundancyChecker
+)
 
 # 定义装饰器：在函数调用前检查stop_event
 
@@ -118,9 +128,99 @@ class AlphaAgentLoop(LoopBase, metaclass=LoopMeta):
             logger.log_object(self.summarizer, tag="summarizer")
             self.trace = Trace(scen=scen)
             
+            # 初始化质量门控（从配置文件加载设置）
+            self.quality_gate = self._init_quality_gate()
+            
             global STOP_EVENT
             STOP_EVENT = stop_event
             super().__init__()
+    
+    def _init_quality_gate(self) -> FactorQualityGate:
+        """
+        从配置文件初始化质量门控
+        
+        读取配置文件中的开关设置：
+        - quality_gate.consistency_enabled: 是否启用一致性检验
+        - quality_gate.complexity_enabled: 是否启用复杂度检验
+        - quality_gate.redundancy_enabled: 是否启用冗余度检验
+        """
+        # 默认配置
+        consistency_enabled = False  # 默认关闭一致性检验
+        complexity_enabled = True    # 默认开启复杂度检验
+        redundancy_enabled = True    # 默认开启冗余度检验
+        
+        # 复杂度检验参数默认值
+        symbol_length_threshold = 250
+        base_features_threshold = 6
+        free_args_ratio_threshold = 0.5
+        
+        # 冗余度检验参数默认值
+        duplication_threshold = 5
+        factor_zoo_path = None
+        
+        # 尝试从环境变量读取配置文件路径
+        config_path_str = os.environ.get('CONFIG_PATH', '')
+        if config_path_str:
+            config_path = Path(config_path_str)
+        else:
+            # 使用默认配置文件
+            config_path = Path(__file__).parent.parent.parent / "app" / "qlib_rd_loop" / "run_config.yaml"
+        
+        # 加载配置文件
+        if config_path.exists():
+            try:
+                config = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+                
+                # 读取质量门控配置
+                qg_config = config.get("quality_gate", {})
+                consistency_enabled = bool(qg_config.get("consistency_enabled", False))
+                complexity_enabled = bool(qg_config.get("complexity_enabled", True))
+                redundancy_enabled = bool(qg_config.get("redundancy_enabled", True))
+                
+                # 读取因子复杂度配置
+                factor_config = config.get("factor", {})
+                complexity_config = factor_config.get("complexity", {})
+                symbol_length_threshold = int(complexity_config.get("symbol_length_threshold", 250))
+                base_features_threshold = int(complexity_config.get("base_features_threshold", 6))
+                free_args_ratio_threshold = float(complexity_config.get("free_args_ratio_threshold", 0.5))
+                
+                # 读取因子重复性配置
+                duplication_config = factor_config.get("duplication", {})
+                duplication_threshold = int(duplication_config.get("threshold", 5))
+                factor_zoo_path = duplication_config.get("factor_zoo_path")
+                
+                logger.info(f"质量门控配置: consistency={consistency_enabled}, complexity={complexity_enabled}, redundancy={redundancy_enabled}")
+                
+            except Exception as e:
+                logger.warning(f"加载质量门控配置失败: {e}，使用默认配置")
+        
+        # 创建各检验器
+        consistency_checker = FactorConsistencyChecker(
+            enabled=consistency_enabled,
+            max_correction_attempts=3
+        )
+        
+        complexity_checker = ComplexityChecker(
+            enabled=complexity_enabled,
+            symbol_length_threshold=symbol_length_threshold,
+            base_features_threshold=base_features_threshold,
+            free_args_ratio_threshold=free_args_ratio_threshold
+        )
+        
+        redundancy_checker = RedundancyChecker(
+            enabled=redundancy_enabled,
+            duplication_threshold=duplication_threshold,
+            factor_zoo_path=factor_zoo_path
+        )
+        
+        return FactorQualityGate(
+            consistency_checker=consistency_checker,
+            complexity_checker=complexity_checker,
+            redundancy_checker=redundancy_checker,
+            consistency_enabled=consistency_enabled,
+            complexity_enabled=complexity_enabled,
+            redundancy_enabled=redundancy_enabled
+        )
 
     @classmethod
     def load(cls, path, use_local: bool = True):
@@ -147,11 +247,73 @@ class AlphaAgentLoop(LoopBase, metaclass=LoopMeta):
     @stop_event_check
     def factor_construct(self, prev_out: dict[str, Any]):
         """
-        基于假设构造多个不同的因子
+        基于假设构造多个不同的因子，并进行质量门控检验
+        
+        质量门控包括：
+        1. 一致性检验：检验假设、描述、表达式之间的逻辑一致性
+        2. 复杂度检验：检验因子表达式的复杂度是否在合理范围
+        3. 冗余度检验：检验因子是否与已有因子重复
+        
+        如果检验不通过，尝试修正因子；如果修正失败，该因子将被标记但仍会继续流程。
         """
         with logger.tag("r"): 
             factor = self.factor_constructor.convert(prev_out["factor_propose"], self.trace)
             logger.log_object(factor.sub_tasks, tag="experiment generation")
+            
+            # 进行质量门控检验
+            if self.quality_gate and hasattr(factor, 'sub_tasks') and factor.sub_tasks:
+                hypothesis_text = str(prev_out["factor_propose"]) if prev_out.get("factor_propose") else ""
+                
+                quality_results = []
+                for task in factor.sub_tasks:
+                    # 获取因子信息
+                    factor_name = getattr(task, 'factor_name', 'Unknown')
+                    factor_description = getattr(task, 'factor_description', '')
+                    factor_formulation = getattr(task, 'factor_formulation', '')
+                    factor_expression = getattr(task, 'factor_expression', '')
+                    variables = getattr(task, 'variables', {})
+                    
+                    if not factor_expression:
+                        logger.warning(f"因子 {factor_name} 没有表达式，跳过质量门控")
+                        continue
+                    
+                    # 执行质量门控
+                    passed, feedback, results = self.quality_gate.evaluate(
+                        hypothesis=hypothesis_text,
+                        factor_name=factor_name,
+                        factor_description=factor_description,
+                        factor_formulation=factor_formulation,
+                        factor_expression=factor_expression,
+                        variables=variables
+                    )
+                    
+                    quality_results.append({
+                        "factor_name": factor_name,
+                        "passed": passed,
+                        "feedback": feedback,
+                        "results": results
+                    })
+                    
+                    # 如果有修正后的表达式，更新任务
+                    if results.get("corrected_expression") and results["corrected_expression"] != factor_expression:
+                        logger.info(f"更新因子 {factor_name} 的表达式")
+                        task.factor_expression = results["corrected_expression"]
+                    
+                    if results.get("corrected_description") and results["corrected_description"] != factor_description:
+                        logger.info(f"更新因子 {factor_name} 的描述")
+                        task.factor_description = results["corrected_description"]
+                    
+                    # 将质量检验结果保存到任务中
+                    task.quality_check_result = {
+                        "passed": passed,
+                        "feedback": feedback
+                    }
+                
+                # 记录质量门控汇总
+                passed_count = sum(1 for r in quality_results if r["passed"])
+                total_count = len(quality_results)
+                logger.info(f"质量门控完成: {passed_count}/{total_count} 因子通过检验")
+                
         return factor
 
     @measure_time

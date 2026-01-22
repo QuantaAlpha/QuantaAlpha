@@ -1,0 +1,22 @@
+{
+  "experiment_name": "all_factors_library_QA_round41_best_deepseek_aliyun_no_complexity_csi300",
+  "factor_source": "custom",
+  "num_factors": 261,
+  "test_period": "default",
+  "test_period_name": "2022-2025全年",
+  "ic_only": true,
+  "metrics": {
+    "IC": 0.03260684615838303,
+    "ICIR": 0.20265094934459696,
+    "Rank IC": 0.030601929536776488,
+    "Rank ICIR": 0.19215558699445753
+  },
+  "config": {
+    "data_range": "2016-01-01 ~ 2025-12-26",
+    "test_range": "2022-01-01 ~ 2025-12-26",
+    "backtest_range": "2022-01-01 ~ 2025-12-26",
+    "market": "csi300",
+    "benchmark": "SH000300"
+  },
+  "elapsed_seconds": 389.3394994735718
+}
