@@ -1,5 +1,5 @@
 """
-AlphaAgent 工具集
+QuantaAlpha 工具集
 
 该目录包含各种用于因子分析、数据处理的工具。
 

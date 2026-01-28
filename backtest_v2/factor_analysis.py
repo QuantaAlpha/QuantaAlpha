@@ -470,13 +470,13 @@ def main():
     parser.add_argument(
         '-i', '--input',
         type=str,
-        default='/home/tjxy/quantagent/AlphaAgent/all_factors_library.json',
+        default='/home/tjxy/quantagent/QuantaAlpha/all_factors_library.json',
         help='因子库 JSON 文件路径'
     )
     parser.add_argument(
         '-o', '--output',
         type=str,
-        default='/home/tjxy/quantagent/AlphaAgent/backtest_v2/factor_analysis_report.md',
+        default='/home/tjxy/quantagent/QuantaAlpha/backtest_v2/factor_analysis_report.md',
         help='输出报告文件路径'
     )
     parser.add_argument(

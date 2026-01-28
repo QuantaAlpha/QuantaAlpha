@@ -21,7 +21,7 @@ factor_source:
   
   custom:
     json_files:
-      - "/home/tjxy/quantagent/AlphaAgent/all_factors_library_QA_liwei_csi500_best_deepseek_aliyun_123.json"
+      - "/home/tjxy/quantagent/QuantaAlpha/all_factors_library_QA_liwei_csi500_best_deepseek_aliyun_123.json"
     quality_filter: null
     max_factors: null
     use_llm_for_incompatible: true
@@ -131,7 +131,7 @@ llm:
   max_retries: 3
   cache_results: true
   # CSI500 独立缓存目录
-  cache_dir: "/mnt/DATA/quantagent/AlphaAgent/factor_cache_csi500"
+  cache_dir: "/mnt/DATA/quantagent/QuantaAlpha/factor_cache_csi500"
   auto_extract_cache: false
   debug: false
 
@@ -140,7 +140,7 @@ llm:
 ######################################################################
 
 factor_calculation:
-  output_dir: "/mnt/DATA/quantagent/AlphaAgent/computed_factors_csi500"
+  output_dir: "/mnt/DATA/quantagent/QuantaAlpha/computed_factors_csi500"
   save_intermediate: true
   n_jobs: 16
   data_file: null

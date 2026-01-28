@@ -1,5 +1,5 @@
 #!/bin/bash
-# AlphaAgent 实验运行脚本
+# QuantaAlpha 实验运行脚本
 #
 # 用法：
 #   bash 运行实验.sh "初始方向"                      # 输出到 all_factors_library.json
@@ -32,21 +32,21 @@ cd /home/tjxy/quantagent
 echo "🔧 激活虚拟环境..."
 source venv/bin/activate
 
-# 检查 alphaagent 是否可用
-if ! command -v alphaagent &> /dev/null; then
-    echo "❌ 错误: alphaagent 命令未找到"
-    echo "请先安装 AlphaAgent:"
-    echo "  cd AlphaAgent && pip install -e ."
+# 检查 quantaalpha 是否可用
+if ! command -v quantaalpha &> /dev/null; then
+    echo "❌ 错误: quantaalpha 命令未找到"
+    echo "请先安装 QuantaAlpha:"
+    echo "  cd QuantaAlpha && pip install -e ."
     exit 1
 fi
 
 echo "✅ 虚拟环境已激活"
 echo "📦 Python: $(python --version)"
-echo "📍 AlphaAgent: $(which alphaagent)"
+echo "📍 QuantaAlpha: $(which quantaalpha)"
 echo ""
 
-# 进入 AlphaAgent 目录
-cd AlphaAgent
+# 进入 QuantaAlpha 目录
+cd QuantaAlpha
 
 # =============================================================================
 # 模型预设配置
@@ -113,8 +113,8 @@ fi
 echo ""
 
 # 运行实验
-# 默认从配置文件读取参数：alphaagent/app/qlib_rd_loop/run_config.yaml
-CONFIG_PATH=${CONFIG_PATH:-"alphaagent/app/qlib_rd_loop/run_config.yaml"}
+# 默认从配置文件读取参数：quantaalpha/app/qlib_rd_loop/run_config.yaml
+CONFIG_PATH=${CONFIG_PATH:-"quantaalpha/app/qlib_rd_loop/run_config.yaml"}
 export CONFIG_PATH  # 导出为环境变量，供 Python 子进程读取质量门控配置
 STEP_N=${STEP_N:-""}
 
@@ -127,8 +127,8 @@ if [ -z "${EXPERIMENT_ID}" ]; then
 fi
 
 if [ "${EXPERIMENT_ID}" != "shared" ]; then
-    export WORKSPACE_PATH="/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace_${EXPERIMENT_ID}"
-    export PICKLE_CACHE_FOLDER_PATH_STR="/mnt/DATA/quantagent/AlphaAgent/pickle_cache_${EXPERIMENT_ID}"
+    export WORKSPACE_PATH="/mnt/DATA/quantagent/QuantaAlpha/QuantaAlpha_workspace_${EXPERIMENT_ID}"
+    export PICKLE_CACHE_FOLDER_PATH_STR="/mnt/DATA/quantagent/QuantaAlpha/pickle_cache_${EXPERIMENT_ID}"
     echo "🔀 实验隔离模式: EXPERIMENT_ID=${EXPERIMENT_ID}"
     echo "   工作空间: ${WORKSPACE_PATH}"
     echo "   缓存目录: ${PICKLE_CACHE_FOLDER_PATH_STR}"
@@ -160,8 +160,8 @@ fi
 # 小回测时间: 2021-01-01 ~ 2021-12-31 (在验证集上进行快速评估)
 # 注：单独的回测框架 (backtest_v2) 使用测试集 2022-01-01 ~ 2025-12-26
 # 配置文件位置:
-#   - alphaagent/scenarios/qlib/experiment/factor_template/conf.yaml
-#   - alphaagent/scenarios/qlib/experiment/factor_template/conf_cn_combined_kdd_ver.yaml
+#   - quantaalpha/scenarios/qlib/experiment/factor_template/conf.yaml
+#   - quantaalpha/scenarios/qlib/experiment/factor_template/conf_cn_combined_kdd_ver.yaml
 
 echo "🚀 开始运行实验..."
 echo "📄 配置文件: ${CONFIG_PATH}"
@@ -169,8 +169,7 @@ echo "📂 因子库输出: ${LIBRARY_FILE}"
 echo "📅 小回测时间: 2021-01-01 ~ 2021-12-31 (验证集)"
 echo "----------------------------------------"
 if [ -n "${STEP_N}" ]; then
-  alphaagent mine --direction "${DIRECTION}" --step_n "${STEP_N}" --config_path "${CONFIG_PATH}"
+  quantaalpha mine --direction "${DIRECTION}" --step_n "${STEP_N}" --config_path "${CONFIG_PATH}"
 else
-  alphaagent mine --direction "${DIRECTION}" --config_path "${CONFIG_PATH}"
+  quantaalpha mine --direction "${DIRECTION}" --config_path "${CONFIG_PATH}"
 fi
-

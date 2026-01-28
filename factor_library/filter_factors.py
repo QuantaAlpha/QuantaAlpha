@@ -15,8 +15,8 @@ from pathlib import Path
 random.seed(42)
 
 # 路径配置
-INPUT_FILE = Path("/home/tjxy/quantagent/AlphaAgent/factor_library/all_factors_library_AA.json")
-OUTPUT_DIR = Path("/home/tjxy/quantagent/AlphaAgent/factor_library")
+INPUT_FILE = Path("/home/tjxy/quantagent/QuantaAlpha/factor_library/all_factors_library_AA.json")
+OUTPUT_DIR = Path("/home/tjxy/quantagent/QuantaAlpha/factor_library")
 
 def load_factors(filepath):
     """加载因子库"""

@@ -21,7 +21,7 @@ factor_source:
   
   custom:
     json_files:
-      - "/home/tjxy/quantagent/AlphaAgent/all_factors_library_QA_liwei_csi500_best_deepseek_aliyun_123.json"
+      - "/home/tjxy/quantagent/QuantaAlpha/all_factors_library_QA_liwei_csi500_best_deepseek_aliyun_123.json"
     quality_filter: null
     max_factors: null
     use_llm_for_incompatible: true
@@ -62,11 +62,11 @@ backtest:
 ######################################################################
 
 llm:
-  cache_dir: "/mnt/DATA/quantagent/AlphaAgent/factor_cache_csi500_best_123_clean"
+  cache_dir: "/mnt/DATA/quantagent/QuantaAlpha/factor_cache_csi500_best_123_clean"
   auto_extract_cache: false
 
 factor_calculation:
-  output_dir: "/mnt/DATA/quantagent/AlphaAgent/computed_factors_csi500_best_123_clean"
+  output_dir: "/mnt/DATA/quantagent/QuantaAlpha/computed_factors_csi500_best_123_clean"
 
 ######################################################################
 # 4. 样本与预处理配置

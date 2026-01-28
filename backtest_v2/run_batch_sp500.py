@@ -8,9 +8,9 @@ import time
 import concurrent.futures
 
 # Configuration
-CONFIG_TEMPLATE_PATH = "AlphaAgent/backtest_v2/config_sp500.yaml"
+CONFIG_TEMPLATE_PATH = "QuantaAlpha/backtest_v2/config_sp500.yaml"
 OUTPUT_BASE_DIR = "backtest_v2_results_sp500"
-RUN_SCRIPT = "AlphaAgent/backtest_v2/run_backtest.py"
+RUN_SCRIPT = "QuantaAlpha/backtest_v2/run_backtest.py"
 
 EXPERIMENTS = [
     # SP500

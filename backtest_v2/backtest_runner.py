@@ -4,7 +4,7 @@
 
 功能:
 1. 加载因子（官方/自定义）
-2. 计算自定义因子值 (使用 AlphaAgent 表达式解析器)
+2. 计算自定义因子值 (使用 QuantaAlpha 表达式解析器)
 3. 训练模型
 4. 执行回测
 5. 计算评估指标
@@ -198,7 +198,7 @@ class BacktestRunner:
     def _compute_custom_factors(self, factors: List[Dict]) -> Optional[pd.DataFrame]:
         """
         计算自定义因子
-        使用 AlphaAgent 的 expr_parser 和 function_lib
+        使用 QuantaAlpha 的 expr_parser 和 function_lib
         支持从缓存加载预计算的因子值
         """
         from .custom_factor_calculator import CustomFactorCalculator, get_qlib_stock_data

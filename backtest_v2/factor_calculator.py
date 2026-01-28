@@ -215,11 +215,11 @@ Only the following operations are allowed in expressions:
         """
         try:
             # 导入表达式解析器
-            from alphaagent.components.coder.factor_coder.expr_parser import (
+            from quantaalpha.components.coder.factor_coder.expr_parser import (
                 parse_expression, parse_symbol
             )
             # 导入函数库
-            import alphaagent.components.coder.factor_coder.function_lib as func_lib
+            import quantaalpha.components.coder.factor_coder.function_lib as func_lib
             
             # 准备数据
             df = self.data_df.copy()
@@ -309,9 +309,9 @@ Only the following operations are allowed in expressions:
             Optional[str]: 生成的 Python 代码
         """
         try:
-            from alphaagent.oai.llm_utils import APIBackend
+            from quantaalpha.oai.llm_utils import APIBackend
         except ImportError:
-            logger.error("无法导入 LLM 模块，请确保 alphaagent 已正确安装")
+            logger.error("无法导入 LLM 模块，请确保 quantaalpha 已正确安装")
             return None
         
         factor_name = factor_info.get('factor_name', 'unknown')

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-QuantaAlpha vs AlphaAgent Factor Performance Visualization
+QuantaAlpha vs QuantaAlpha Factor Performance Visualization
 Two visualization modes:
 1. Single method multi-metric plot: show metrics vs topk ratio for each method
 2. Comparison plot: direct comparison of both methods' performance and decay rate
@@ -26,7 +26,7 @@ COLORS = {
         'secondary': '#FF6B6B',
         'fill': '#FFE5E5'
     },
-    'AlphaAgent': {
+    'QuantaAlpha': {
         'primary': '#457B9D',      # Calm blue
         'secondary': '#7FB3D5', 
         'fill': '#E8F4F8'
@@ -213,13 +213,13 @@ def create_comparison_plot(df, save_path=None):
     Show QuantaAlpha advantages and decay rate comparison
     """
     qa_data = df[df['Method'] == 'QuantaAlpha'].copy()
-    aa_data = df[df['Method'] == 'AlphaAgent'].copy()
+    aa_data = df[df['Method'] == 'QuantaAlpha'].copy()
     topk = qa_data['TopK Ratio'].values
     
     fig = plt.figure(figsize=(18, 14))
     fig.patch.set_facecolor('#FAFAFA')
     
-    fig.suptitle('QuantaAlpha vs AlphaAgent: Performance Comparison', 
+    fig.suptitle('QuantaAlpha vs QuantaAlpha: Performance Comparison', 
                  fontsize=20, fontweight='bold', y=0.98)
     
     gs = GridSpec(3, 3, figure=fig, hspace=0.35, wspace=0.3)
@@ -243,7 +243,7 @@ def create_comparison_plot(df, save_path=None):
         line_qa, = ax.plot(topk, qa_values, 'o-', linewidth=2.5, markersize=8,
                           color=COLORS['QuantaAlpha']['primary'], label='QuantaAlpha')
         line_aa, = ax.plot(topk, aa_values, 's--', linewidth=2.5, markersize=8,
-                          color=COLORS['AlphaAgent']['primary'], label='AlphaAgent')
+                          color=COLORS['QuantaAlpha']['primary'], label='QuantaAlpha')
         
         ax.fill_between(topk, qa_values, aa_values, 
                        where=(qa_values >= aa_values),
@@ -251,7 +251,7 @@ def create_comparison_plot(df, save_path=None):
                        interpolate=True, label='QA Leading')
         ax.fill_between(topk, qa_values, aa_values,
                        where=(qa_values < aa_values),
-                       color=COLORS['AlphaAgent']['fill'], alpha=0.5,
+                       color=COLORS['QuantaAlpha']['fill'], alpha=0.5,
                        interpolate=True, label='AA Leading')
         
         ax.set_xlabel('Top-K Factor Ratio', fontsize=10)
@@ -265,7 +265,7 @@ def create_comparison_plot(df, save_path=None):
         ax.annotate(f'QA Lead: {final_diff:+.1f}%', 
                    xy=(0.95, 0.05), xycoords='axes fraction',
                    fontsize=9, fontweight='bold',
-                   color=COLORS['QuantaAlpha']['primary'] if final_diff > 0 else COLORS['AlphaAgent']['primary'],
+                   color=COLORS['QuantaAlpha']['primary'] if final_diff > 0 else COLORS['QuantaAlpha']['primary'],
                    ha='right')
     
     # =============================================
@@ -289,7 +289,7 @@ def create_comparison_plot(df, save_path=None):
                         label='QuantaAlpha', color=COLORS['QuantaAlpha']['primary'],
                         alpha=0.8, edgecolor='white', linewidth=1.5)
     bars2 = ax_decay.bar(x_positions + bar_width/2, aa_marginal, bar_width,
-                        label='AlphaAgent', color=COLORS['AlphaAgent']['primary'],
+                        label='QuantaAlpha', color=COLORS['QuantaAlpha']['primary'],
                         alpha=0.8, edgecolor='white', linewidth=1.5)
     
     for bar, val in zip(bars1, qa_marginal):
@@ -304,7 +304,7 @@ def create_comparison_plot(df, save_path=None):
                          xy=(bar.get_x() + bar.get_width()/2, bar.get_height()),
                          xytext=(0, 3), textcoords='offset points',
                          ha='center', va='bottom', fontsize=9, fontweight='bold',
-                         color=COLORS['AlphaAgent']['primary'])
+                         color=COLORS['QuantaAlpha']['primary'])
     
     ax_decay.set_xlabel('Top-K Factor Ratio Interval', fontsize=12)
     ax_decay.set_ylabel('Marginal Gain Rate (%)', fontsize=12)
@@ -339,12 +339,12 @@ def create_decay_analysis_plot(df, save_path=None):
     More intuitive comparison of performance decay between methods
     """
     qa_data = df[df['Method'] == 'QuantaAlpha'].copy()
-    aa_data = df[df['Method'] == 'AlphaAgent'].copy()
+    aa_data = df[df['Method'] == 'QuantaAlpha'].copy()
     topk = qa_data['TopK Ratio'].values
     
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
     fig.patch.set_facecolor('#FAFAFA')
-    fig.suptitle('Factor Expansion Decay Analysis: QuantaAlpha vs AlphaAgent', 
+    fig.suptitle('Factor Expansion Decay Analysis: QuantaAlpha vs QuantaAlpha', 
                  fontsize=18, fontweight='bold', y=0.98)
     
     key_metrics = ['IC', 'Ann. Return', 'ICIR', 'Info Ratio']
@@ -362,7 +362,7 @@ def create_decay_analysis_plot(df, save_path=None):
         line_qa = ax.plot(topk, qa_values, 'o-', linewidth=3, markersize=10,
                          color=COLORS['QuantaAlpha']['primary'], label='QuantaAlpha')
         line_aa = ax.plot(topk, aa_values, 's-', linewidth=3, markersize=10,
-                         color=COLORS['AlphaAgent']['primary'], label='AlphaAgent')
+                         color=COLORS['QuantaAlpha']['primary'], label='QuantaAlpha')
         
         ax.fill_between(topk, qa_values, aa_values,
                        where=(qa_values >= aa_values),
@@ -376,7 +376,7 @@ def create_decay_analysis_plot(df, save_path=None):
         ax2.plot(topk, qa_norm, '--', linewidth=1.5, alpha=0.5,
                 color=COLORS['QuantaAlpha']['secondary'])
         ax2.plot(topk, aa_norm, '--', linewidth=1.5, alpha=0.5,
-                color=COLORS['AlphaAgent']['secondary'])
+                color=COLORS['QuantaAlpha']['secondary'])
         ax2.set_ylabel('Growth vs Start (%)', fontsize=10, alpha=0.7)
         ax2.tick_params(axis='y', labelsize=9, colors='gray')
         
@@ -413,7 +413,7 @@ def create_summary_dashboard(df, save_path=None):
     Create comprehensive dashboard - all key info in one view
     """
     qa_data = df[df['Method'] == 'QuantaAlpha'].copy()
-    aa_data = df[df['Method'] == 'AlphaAgent'].copy()
+    aa_data = df[df['Method'] == 'QuantaAlpha'].copy()
     topk = qa_data['TopK Ratio'].values
     
     fig = plt.figure(figsize=(20, 12))
@@ -422,7 +422,7 @@ def create_summary_dashboard(df, save_path=None):
     gs = GridSpec(2, 4, figure=fig, hspace=0.3, wspace=0.3,
                  left=0.05, right=0.95, top=0.90, bottom=0.08)
     
-    fig.suptitle('QuantaAlpha vs AlphaAgent: Performance Overview', 
+    fig.suptitle('QuantaAlpha vs QuantaAlpha: Performance Overview', 
                  fontsize=22, fontweight='bold', color='white', y=0.96)
     
     qa_color = '#FF6B6B'
@@ -457,7 +457,7 @@ def create_summary_dashboard(df, save_path=None):
         ax.plot(topk, qa_values, 'o-', linewidth=2.5, markersize=7,
                color=qa_color, label='QuantaAlpha')
         ax.plot(topk, aa_values, 's-', linewidth=2.5, markersize=7,
-               color=aa_color, label='AlphaAgent')
+               color=aa_color, label='QuantaAlpha')
         ax.fill_between(topk, qa_values, aa_values,
                        where=(qa_values >= aa_values),
                        color=qa_color, alpha=0.2)
@@ -484,7 +484,7 @@ def create_summary_dashboard(df, save_path=None):
     
     bars1 = ax_bar.bar(x - width/2, qa_final, width, label='QuantaAlpha',
                       color=qa_color, alpha=0.85)
-    bars2 = ax_bar.bar(x + width/2, aa_final, width, label='AlphaAgent',
+    bars2 = ax_bar.bar(x + width/2, aa_final, width, label='QuantaAlpha',
                       color=aa_color, alpha=0.85)
     
     ax_bar.set_xticks(x)
@@ -521,7 +521,7 @@ def create_summary_dashboard(df, save_path=None):
                                 label='QuantaAlpha')
     scatter_aa = ax_risk.scatter(aa_mdd, aa_returns, s=aa_ir*80, c=aa_color,
                                 alpha=0.7, edgecolors='white', linewidth=1.5,
-                                label='AlphaAgent')
+                                label='QuantaAlpha')
     
     for i, tk in enumerate(topk):
         ax_risk.annotate(f'{tk:.0%}', (qa_mdd[i], qa_returns[i]),
@@ -548,22 +548,22 @@ def create_summary_dashboard(df, save_path=None):
 
 
 def main():
-    csv_path = '/home/tjxy/quantagent/AlphaAgent/factor_library/对比.csv'
+    csv_path = '/home/tjxy/quantagent/QuantaAlpha/factor_library/对比.csv'
     df = load_data(csv_path)
     
     print("=" * 60)
-    print("QuantaAlpha vs AlphaAgent Visualization Analysis")
+    print("QuantaAlpha vs QuantaAlpha Visualization Analysis")
     print("=" * 60)
     
-    output_dir = '/home/tjxy/quantagent/AlphaAgent/factor_library/'
+    output_dir = '/home/tjxy/quantagent/QuantaAlpha/factor_library/'
     
     print("\n[1/5] Generating QuantaAlpha single-method analysis...")
     create_single_method_plot(df, 'QuantaAlpha', 
                              save_path=f'{output_dir}QuantaAlpha_analysis.png')
     
-    print("[2/5] Generating AlphaAgent single-method analysis...")
-    create_single_method_plot(df, 'AlphaAgent',
-                             save_path=f'{output_dir}AlphaAgent_analysis.png')
+    print("[2/5] Generating QuantaAlpha single-method analysis...")
+    create_single_method_plot(df, 'QuantaAlpha',
+                             save_path=f'{output_dir}QuantaAlpha_analysis.png')
     
     print("[3/5] Generating comparison plot...")
     create_comparison_plot(df, save_path=f'{output_dir}comparison.png')
@@ -579,7 +579,7 @@ def main():
     print("=" * 60)
     print(f"\nOutput files:")
     print(f"  * {output_dir}QuantaAlpha_analysis.png")
-    print(f"  * {output_dir}AlphaAgent_analysis.png")
+    print(f"  * {output_dir}QuantaAlpha_analysis.png")
     print(f"  * {output_dir}comparison.png")
     print(f"  * {output_dir}decay_analysis.png")
     print(f"  * {output_dir}summary_dashboard.png")

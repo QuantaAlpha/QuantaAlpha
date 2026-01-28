@@ -65,11 +65,11 @@ experiment:
   output_metrics_file: backtest_metrics.json
   recorder: backtest_v2_sp500_recorder
 factor_calculation:
-  output_dir: /mnt/DATA/quantagent/AlphaAgent/computed_factors_sp500_alpha158_20
+  output_dir: /mnt/DATA/quantagent/QuantaAlpha/computed_factors_sp500_alpha158_20
 factor_source:
   type: alpha158_20
 llm:
-  cache_dir: /mnt/DATA/quantagent/AlphaAgent/factor_cache_sp500_alpha158_20
+  cache_dir: /mnt/DATA/quantagent/QuantaAlpha/factor_cache_sp500_alpha158_20
   enabled: false
   model: gpt-4
   temperature: 0.0

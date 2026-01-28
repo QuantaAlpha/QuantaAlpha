@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 def run_sp500_benchmarks():
-    base_config_path = "/home/tjxy/quantagent/AlphaAgent/backtest_v2/config_sp500.yaml"
+    base_config_path = "/home/tjxy/quantagent/QuantaAlpha/backtest_v2/config_sp500.yaml"
     
     # Load base config
     if not os.path.exists(base_config_path):
@@ -51,7 +51,7 @@ def run_sp500_benchmarks():
             del config['factor_source']['custom']
             
         # 3. Update Cache Directory (ISOLATION)
-        cache_dir = f"/mnt/DATA/quantagent/AlphaAgent/factor_cache_sp500_{benchmark}"
+        cache_dir = f"/mnt/DATA/quantagent/QuantaAlpha/factor_cache_sp500_{benchmark}"
         if 'llm' not in config:
             config['llm'] = {}
         config['llm']['cache_dir'] = cache_dir
@@ -59,7 +59,7 @@ def run_sp500_benchmarks():
         # 4. Factor Calculation Output (ISOLATION)
         if 'factor_calculation' not in config:
             config['factor_calculation'] = {}
-        config['factor_calculation']['output_dir'] = f"/mnt/DATA/quantagent/AlphaAgent/computed_factors_sp500_{benchmark}"
+        config['factor_calculation']['output_dir'] = f"/mnt/DATA/quantagent/QuantaAlpha/computed_factors_sp500_{benchmark}"
         
         # 5. Ensure Benchmark is correct (spx)
         if 'backtest' not in config:
@@ -86,7 +86,7 @@ def run_sp500_benchmarks():
              config['backtest']['benchmark'] = 'spx'
 
         # Save temporary config
-        temp_config_path = f"/home/tjxy/quantagent/AlphaAgent/backtest_v2/config_sp500_{benchmark}.yaml"
+        temp_config_path = f"/home/tjxy/quantagent/QuantaAlpha/backtest_v2/config_sp500_{benchmark}.yaml"
         with open(temp_config_path, 'w') as f:
             yaml.dump(config, f, default_flow_style=False)
             
@@ -97,7 +97,7 @@ def run_sp500_benchmarks():
         # Run Backtest
         cmd = [
             "python", 
-            "AlphaAgent/backtest_v2/run_backtest.py",
+            "QuantaAlpha/backtest_v2/run_backtest.py",
             "-c", temp_config_path
         ]
         

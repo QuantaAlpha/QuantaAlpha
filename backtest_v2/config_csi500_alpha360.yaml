@@ -65,13 +65,13 @@ experiment:
 factor_calculation:
   data_file: null
   n_jobs: 16
-  output_dir: /mnt/DATA/quantagent/AlphaAgent/computed_factors_csi500_alpha360
+  output_dir: /mnt/DATA/quantagent/QuantaAlpha/computed_factors_csi500_alpha360
   save_intermediate: true
 factor_source:
   type: alpha360
 llm:
   auto_extract_cache: false
-  cache_dir: /mnt/DATA/quantagent/AlphaAgent/factor_cache_csi500_alpha360
+  cache_dir: /mnt/DATA/quantagent/QuantaAlpha/factor_cache_csi500_alpha360
   cache_results: true
   debug: false
   enabled: true

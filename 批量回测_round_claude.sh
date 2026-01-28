@@ -8,7 +8,7 @@ cd /home/tjxy/quantagent
 echo "🔧 激活虚拟环境..."
 source venv/bin/activate
 
-cd AlphaAgent
+cd QuantaAlpha
 
 # 配置文件
 CONFIG="backtest_v2/config.yaml"
@@ -23,17 +23,17 @@ echo "[]" > "$SUMMARY_FILE"
 
 # 定义要回测的因子库列表 (Round 0-10)
 FACTOR_LIBS=(
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_0_30_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_1_30_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_2_30_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_3_27_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_4_30_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_5_30_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_6_27_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_7_27_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_8_30_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_9_27_QA_round11_best_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_number_rounds_10_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_0_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_1_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_2_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_3_27_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_4_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_5_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_6_27_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_7_27_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_8_30_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_9_27_QA_round11_best_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_number_rounds_10_30_QA_round11_best_claude_123_csi300.json"
 )
 
 echo "========================================"

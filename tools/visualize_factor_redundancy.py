@@ -22,7 +22,7 @@ from dataclasses import dataclass
 # 添加项目路径
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from alphaagent.components.coder.factor_coder.factor_ast import (
+from quantaalpha.components.coder.factor_coder.factor_ast import (
     parse_expression, Node, VarNode, NumberNode, FunctionNode, 
     BinaryOpNode, ConditionalNode, UnaryOpNode,
     find_largest_common_subtree, count_nodes

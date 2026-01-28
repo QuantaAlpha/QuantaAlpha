@@ -7,9 +7,9 @@ import pandas as pd
 import time
 
 # Configuration
-CONFIG_TEMPLATE_PATH = "AlphaAgent/backtest_v2/config_csi500.yaml"
+CONFIG_TEMPLATE_PATH = "QuantaAlpha/backtest_v2/config_csi500.yaml"
 OUTPUT_BASE_DIR = "backtest_v2_results_batch"
-RUN_SCRIPT = "AlphaAgent/backtest_v2/run_backtest.py"
+RUN_SCRIPT = "QuantaAlpha/backtest_v2/run_backtest.py"
 
 EXPERIMENTS = [
     # CSI500

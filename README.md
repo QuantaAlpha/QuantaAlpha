@@ -1,22 +1,19 @@
 <h4 align="center">
-  <img src="docs/_static/logo.png" alt="RA-Agent logo" style="width:70%; ">
+  <img src="docs/_static/logo.png" alt="QuantaAlpha logo" style="width:70%; ">
   
   <!-- <a href="https://arxiv.org/abs/2502.16789"><b>📃论文链接</b>👁️</a> -->
 </h3>
 
-KDD 2025 论文的官方源代码: [AlphaAgent: LLM-Driven Alpha Mining with Regularized Exploration to Counteract Alpha Decay](https://arxiv.org/abs/2502.16789)
+# QuantaAlpha - LLM驱动的Alpha因子挖掘框架
 
-
+基于 KDD 2025 论文: [AlphaAgent: LLM-Driven Alpha Mining with Regularized Exploration to Counteract Alpha Decay](https://arxiv.org/abs/2502.16789)
 
 # 📖 简介
 <div align="center">
       <img src="docs/_static/workflow.png" alt="我们的核心场景" style="width:60%; ">
 </div>
 
-
-
-<!-- Tag Cloud -->
-**AlphaAgent** 是一个自主框架，通过三个专门的智能体有效整合LLM智能体，用于挖掘可解释且抗衰减的Alpha因子。  
+**QuantaAlpha** 是一个自主框架，通过三个专门的智能体有效整合LLM智能体，用于挖掘可解释且抗衰减的Alpha因子。  
 
 - **Idea Agent（假设生成智能体）**: 基于金融理论或新兴趋势提出市场假设，指导因子创建。  
 - **Factor Agent（因子构建智能体）**: 根据假设构建因子，同时融入正则化机制以避免重复和过拟合。 
@@ -30,17 +27,16 @@ KDD 2025 论文的官方源代码: [AlphaAgent: LLM-Driven Alpha Mining with Reg
 ### 🐍 创建 Conda 环境
 - 使用 Python 创建新的 conda 环境（在我们的 CI 中，3.10 和 3.11 版本已充分测试）:
   ```sh
-  conda create -n alphaagent python=3.10
+  conda create -n quantaalpha python=3.10
   ```
 - 激活环境:
   ```sh
-  conda activate alphaagent
+  conda activate quantaalpha
   ```
 
 ### 🛠️ 本地安装
-- 
   ```sh
-  # 安装 AlphaAgent
+  # 安装 QuantaAlpha
   pip install -e .
   ```
 
@@ -82,10 +78,10 @@ KDD 2025 论文的官方源代码: [AlphaAgent: LLM-Driven Alpha Mining with Reg
 
 
 - 您可以修改位于以下位置的回测配置文件：
-  - 基线: `alphaagent/scenarios/qlib/experiment/factor_template/conf.yaml`
-  - 新提出的因子: `alphaagent/scenarios/qlib/experiment/factor_template/conf_cn_combined.yaml`
+  - 基线: `quantaalpha/scenarios/qlib/experiment/factor_template/conf.yaml`
+  - 新提出的因子: `quantaalpha/scenarios/qlib/experiment/factor_template/conf_cn_combined.yaml`
   - 要更改训练/验证/测试周期，请先删除 `./git_ignore_folder` 和 `./pickle_cache` 中的所有缓存文件。 
-  - 要更改市场，请删除 `./git_ignore_folder` 和 `./pickle_cache` 中的缓存文件。然后，删除目录 `alphaagent/scenarios/qlib/experiment/factor_data_template/` 中的 `daily_pv_all.h5` 和 `daily_pv_debug.h5`。 
+  - 要更改市场，请删除 `./git_ignore_folder` 和 `./pickle_cache` 中的缓存文件。然后，删除目录 `quantaalpha/scenarios/qlib/experiment/factor_data_template/` 中的 `daily_pv_all.h5` 和 `daily_pv_debug.h5`。 
 
 
 ### ⚙️ 配置
@@ -95,21 +91,21 @@ KDD 2025 论文的官方源代码: [AlphaAgent: LLM-Driven Alpha Mining with Reg
 - 要在本地环境（而非 Docker）中运行项目，请在 `.env` 文件中添加 `USE_LOCAL=True`。
 
 
-### 🚀 运行 AlphaAgent
-- 基于 [Qlib 回测框架](http://github.com/microsoft/qlib) 运行 **AlphaAgent**。
+### 🚀 运行 QuantaAlpha
+- 基于 [Qlib 回测框架](http://github.com/microsoft/qlib) 运行 **QuantaAlpha**。
   ```sh
-  alphaagent mine --potential_direction "<您的市场假设>"
+  quantaalpha mine --potential_direction "<您的市场假设>"
   ```
 
 - 或者，运行以下命令
   ```sh
-  dotenv run -- python alphaagent/app/qlib_rd_loop/factor_alphaagent.py --direction "<您的市场假设>"
+  dotenv run -- python quantaalpha/app/qlib_rd_loop/factor_mining.py --direction "<您的市场假设>"
   ```
   运行命令后，请注销并重新登录以使更改生效。 
 
 - 多因子回测
   ```sh
-  alphaagent backtest --factor_path "<您的CSV文件路径>"
+  quantaalpha backtest --factor_path "<您的CSV文件路径>"
   ```
 
   您的因子需要存储在 `.csv` 文件中。以下是一个示例：
@@ -129,7 +125,7 @@ KDD 2025 论文的官方源代码: [AlphaAgent: LLM-Driven Alpha Mining with Reg
 ### 🖥️ 监控应用程序结果
 - 您可以运行以下命令来查看运行日志的演示程序。请注意，此入口已弃用。 
   ```sh
-  alphaagent ui --port 19899 --log_dir log/
+  quantaalpha ui --port 19899 --log_dir log/
   ```
 
 

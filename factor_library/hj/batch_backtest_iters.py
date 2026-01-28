@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime
 
 # 路径配置
-PROJECT_ROOT = Path("/home/tjxy/quantagent/AlphaAgent")
+PROJECT_ROOT = Path("/home/tjxy/quantagent/QuantaAlpha")
 BACKTEST_SCRIPT = PROJECT_ROOT / "backtest_v2" / "run_backtest.py"
 CONFIG_FILE = PROJECT_ROOT / "backtest_v2" / "config.yaml"
 FACTOR_DIR = PROJECT_ROOT / "factor_library" / "hj"

@@ -8,7 +8,7 @@ cd /home/tjxy/quantagent
 echo "🔧 激活虚拟环境..."
 source venv/bin/activate
 
-cd AlphaAgent
+cd QuantaAlpha
 
 # 配置文件
 CONFIG="backtest_v2/config.yaml"
@@ -19,9 +19,9 @@ mkdir -p "$OUTPUT_DIR"
 
 # 定义要回测的因子库列表
 FACTOR_LIBS=(
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/AA_top80_RankIC_AA_claude_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/AA_top80_RankIC_AA_deepseek_123_csi300.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/AA_top80_RankIC_AA_gpt_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/AA_top80_RankIC_AA_claude_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/AA_top80_RankIC_AA_deepseek_123_csi300.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/AA_top80_RankIC_AA_gpt_123_csi300.json"
 )
 
 # 对应的简短名称

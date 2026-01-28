@@ -188,7 +188,7 @@ llm:
   timeout: 300
   max_retries: 3
   cache_results: true
-  cache_dir: "/mnt/DATA/quantagent/AlphaAgent/factor_cache"
+  cache_dir: "/mnt/DATA/quantagent/QuantaAlpha/factor_cache"
   auto_extract_cache: false
   debug: false
 
@@ -197,7 +197,7 @@ llm:
 ######################################################################
 
 factor_calculation:
-  output_dir: "/mnt/DATA/quantagent/AlphaAgent/computed_factors"
+  output_dir: "/mnt/DATA/quantagent/QuantaAlpha/computed_factors"
   save_intermediate: true
   n_jobs: 4
   data_file: null

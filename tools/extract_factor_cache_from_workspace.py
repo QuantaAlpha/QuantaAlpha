@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-从 AlphaAgent 工作空间提取因子计算缓存到 backtest_v2 格式
+从 QuantaAlpha 工作空间提取因子计算缓存到 backtest_v2 格式
 
 使用方法:
     # 提取指定工作空间的所有因子
@@ -75,7 +75,7 @@ def extract_cache(
     从工作空间提取因子缓存
     
     Args:
-        workspace_path: AlphaAgent 工作空间路径
+        workspace_path: QuantaAlpha 工作空间路径
         cache_dir: 目标缓存目录
         factor_json: 可选，只提取该 JSON 中存在的因子
         overwrite: 是否覆盖已有缓存
@@ -163,10 +163,10 @@ def extract_cache(
 
 
 def main():
-    parser = argparse.ArgumentParser(description='从 AlphaAgent 工作空间提取因子缓存')
+    parser = argparse.ArgumentParser(description='从 QuantaAlpha 工作空间提取因子缓存')
     parser.add_argument('--workspace', '-w', required=True, help='工作空间路径')
     parser.add_argument('--cache-dir', '-c', 
-                       default='/mnt/DATA/quantagent/AlphaAgent/factor_cache',
+                       default='/mnt/DATA/quantagent/QuantaAlpha/factor_cache',
                        help='目标缓存目录')
     parser.add_argument('--factor-json', '-j', help='只提取该 JSON 中的因子')
     parser.add_argument('--overwrite', action='store_true', help='覆盖已有缓存')

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-自定义因子计算器 - 直接使用 AlphaAgent 的表达式解析器
+自定义因子计算器 - 直接使用 QuantaAlpha 的表达式解析器
 支持所有因子挖掘时使用的表达式语法
 
 功能:
@@ -28,7 +28,7 @@ sys.path.insert(0, str(project_root))
 
 # 抑制一些不必要的警告
 warnings.filterwarnings('ignore', category=FutureWarning, module='pandas')
-warnings.filterwarnings('ignore', category=UserWarning, module='alphaagent')
+warnings.filterwarnings('ignore', category=UserWarning, module='quantaalpha')
 
 # 配置 joblib 使用线程后端而不是进程后端，避免子进程导入 LLM 模块
 os.environ.setdefault('JOBLIB_START_METHOD', 'loky')
@@ -36,13 +36,13 @@ os.environ.setdefault('JOBLIB_START_METHOD', 'loky')
 logger = logging.getLogger(__name__)
 
 # 默认缓存目录
-DEFAULT_CACHE_DIR = Path("/mnt/DATA/quantagent/AlphaAgent/factor_cache")
+DEFAULT_CACHE_DIR = Path("/mnt/DATA/quantagent/QuantaAlpha/factor_cache")
 
 
 class CustomFactorCalculator:
     """
     自定义因子计算器
-    直接使用 AlphaAgent 的表达式解析器和函数库
+    直接使用 QuantaAlpha 的表达式解析器和函数库
     支持从缓存加载预计算的因子值
     支持自动从主程序日志中提取缓存
     """
@@ -233,11 +233,11 @@ class CustomFactorCalculator:
             # 配置 joblib 使用单线程模式，避免子进程导入问题
             from joblib import parallel_backend
             
-            from alphaagent.components.coder.factor_coder.expr_parser import (
+            from quantaalpha.components.coder.factor_coder.expr_parser import (
                 parse_expression, parse_symbol
             )
             # 导入函数库
-            import alphaagent.components.coder.factor_coder.function_lib as func_lib
+            import quantaalpha.components.coder.factor_coder.function_lib as func_lib
             
             # 复制数据
             df = self.data_df.copy()
@@ -445,7 +445,7 @@ class CustomFactorCalculator:
             # 重新导入必要的模块以确保在子进程中可用
             import numpy as np
             import pandas as pd
-            import alphaagent.components.coder.factor_coder.function_lib as func_lib
+            import quantaalpha.components.coder.factor_coder.function_lib as func_lib
             
             # 使用 eval 计算，不使用 self.calculate_factor 因为它包含了可能无法序列化的对象
             
@@ -453,7 +453,7 @@ class CustomFactorCalculator:
             df = self.data_df.copy()
             
             # 导入表达式解析器
-            from alphaagent.components.coder.factor_coder.expr_parser import (
+            from quantaalpha.components.coder.factor_coder.expr_parser import (
                 parse_expression, parse_symbol
             )
             import io
@@ -578,10 +578,10 @@ class CustomFactorDataLoader:
             Tuple[features_df, labels_df]
         """
         # 计算标签
-        from alphaagent.components.coder.factor_coder.expr_parser import (
+        from quantaalpha.components.coder.factor_coder.expr_parser import (
             parse_expression, parse_symbol
         )
-        import alphaagent.components.coder.factor_coder.function_lib as func_lib
+        import quantaalpha.components.coder.factor_coder.function_lib as func_lib
         
         df = data_df.copy()
         

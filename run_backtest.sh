@@ -1,7 +1,7 @@
 #!/bin/bash
 # 快速运行回测工具
 
-cd /home/tjxy/quantagent/AlphaAgent
+cd /home/tjxy/quantagent/QuantaAlpha
 source ../venv/bin/activate
 
 echo "=========================================="

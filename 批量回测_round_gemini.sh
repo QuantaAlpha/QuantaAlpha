@@ -8,7 +8,7 @@ cd /home/tjxy/quantagent
 echo "🔧 激活虚拟环境..."
 source venv/bin/activate
 
-cd AlphaAgent
+cd QuantaAlpha
 
 # 配置文件
 CONFIG="backtest_v2/config.yaml"
@@ -23,17 +23,17 @@ echo "[]" > "$SUMMARY_FILE"
 
 # 定义要回测的因子库列表 (Round 0-10, 随机抽取)
 FACTOR_LIBS=(
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_0_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_1_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_2_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_3_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_4_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_5_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_6_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_7_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_8_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_9_random30_gemini_123.json"
-    "/home/tjxy/quantagent/AlphaAgent/factor_library/round_10_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_0_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_1_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_2_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_3_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_4_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_5_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_6_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_7_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_8_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_9_random30_gemini_123.json"
+    "/home/tjxy/quantagent/QuantaAlpha/factor_library/round_10_random30_gemini_123.json"
 )
 
 echo "========================================"

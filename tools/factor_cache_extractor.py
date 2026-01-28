@@ -11,10 +11,10 @@
 3. 生成因子映射索引文件
 
 使用方式:
-    python tools/factor_cache_extractor.py --log-dir /path/to/log --output-dir /mnt/DATA/quantagent/AlphaAgent/factor_cache
+    python tools/factor_cache_extractor.py --log-dir /path/to/log --output-dir /mnt/DATA/quantagent/QuantaAlpha/factor_cache
     
     # 指定实验 ID
-    python tools/factor_cache_extractor.py --exp-id 2026-01-16_17-24-17-907337 --output-dir /mnt/DATA/quantagent/AlphaAgent/factor_cache
+    python tools/factor_cache_extractor.py --exp-id 2026-01-16_17-24-17-907337 --output-dir /mnt/DATA/quantagent/QuantaAlpha/factor_cache
 """
 
 import argparse
@@ -31,17 +31,17 @@ import pandas as pd
 # 默认路径配置 - 数据全部存储到 /mnt/DATA/quantagent
 # 日志目录列表（新路径优先，旧路径兼容历史数据）
 DEFAULT_LOG_DIRS = [
-    "/mnt/DATA/quantagent/AlphaAgent/log",  # 新路径
-    "/home/tjxy/quantagent/AlphaAgent/log",  # 旧路径（兼容历史数据）
+    "/mnt/DATA/quantagent/QuantaAlpha/log",  # 新路径
+    "/home/tjxy/quantagent/QuantaAlpha/log",  # 旧路径（兼容历史数据）
 ]
 DEFAULT_LOG_DIR = DEFAULT_LOG_DIRS[0]  # 主日志目录
 # 工作空间基础目录（用于动态发现所有 workspace 目录）
 WORKSPACE_BASE_DIRS = [
-    "/mnt/DATA/quantagent/AlphaAgent",  # 新路径基础目录
-    "/home/tjxy/quantagent/AlphaAgent/git_ignore_folder",  # 旧路径基础目录
+    "/mnt/DATA/quantagent/QuantaAlpha",  # 新路径基础目录
+    "/home/tjxy/quantagent/QuantaAlpha/git_ignore_folder",  # 旧路径基础目录
 ]
-DEFAULT_OUTPUT_DIR = "/mnt/DATA/quantagent/AlphaAgent/factor_cache"
-DEFAULT_INDEX_FILE = "/mnt/DATA/quantagent/AlphaAgent/factor_cache_index.json"
+DEFAULT_OUTPUT_DIR = "/mnt/DATA/quantagent/QuantaAlpha/factor_cache"
+DEFAULT_INDEX_FILE = "/mnt/DATA/quantagent/QuantaAlpha/factor_cache_index.json"
 
 
 def get_all_workspace_dirs() -> List[str]:
@@ -74,7 +74,7 @@ def get_all_workspace_dirs() -> List[str]:
 
 # 动态获取工作空间目录列表（兼容新旧格式）
 DEFAULT_WORKSPACE_DIRS = get_all_workspace_dirs() or [
-    "/mnt/DATA/quantagent/AlphaAgent/RD-Agent_workspace",  # 默认回退
+    "/mnt/DATA/quantagent/QuantaAlpha/RD-Agent_workspace",  # 默认回退
 ]
 
 
@@ -336,7 +336,7 @@ def main():
   python tools/factor_cache_extractor.py --exp-id 2026-01-16_17-24-17-907337
   
   # 指定输出目录
-  python tools/factor_cache_extractor.py --output-dir /mnt/DATA/quantagent/AlphaAgent/factor_cache
+  python tools/factor_cache_extractor.py --output-dir /mnt/DATA/quantagent/QuantaAlpha/factor_cache
         """
     )
     

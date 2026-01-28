@@ -16,7 +16,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
 ]
-description = "Alpha Factor Mining Agent"
+description = "QuantaAlpha - Alpha Factor Mining Agent"
 dynamic = [
   "dependencies",
   "optional-dependencies",
@@ -26,20 +26,21 @@ keywords = [
   "Autonomous Agents",
   "Large Language Models",
   "Research and Development",
+  "Quantitative Finance",
 ]
-name = "alphaagent"
+name = "quantaalpha"
 readme = "README.md"
 requires-python = ">=3.10"
 
 [project.scripts]
-alphaagent = "alphaagent.app.cli:app"
+quantaalpha = "quantaalpha.app.cli:app"
 
 [project.urls]
-homepage = "https://github.com/microsoft/RD-Agent/"
-issue = "https://github.com/microsoft/RD-Agent/issues"
+homepage = "https://github.com/hj1650782738/quantagentevo"
+issue = "https://github.com/hj1650782738/quantagentevo/issues"
 
 [tool.setuptools]
-packages = ["alphaagent"]
+packages = ["quantaalpha"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
