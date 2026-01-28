@@ -5,6 +5,49 @@ Pipfile
 public
 release-notes.md
 
+# ========================================
+# 数据和结果文件 (不上传)
+# ========================================
+
+# JSON 数据文件 (因子库、实验结果等)
+*.json
+!pyproject.json
+!package.json
+!package-lock.json
+!tsconfig.json
+
+# CSV 数据文件
+*.csv
+
+# 回测结果目录
+backtest_v2_results*/
+ic_decay_analysis/results/
+
+# 因子库数据
+factor_library/
+extracted_factors/
+computed_factors/
+
+# 图片文件 (实验结果图)
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Excel 文件
+*.xlsx
+*.xls
+
+# 中文命名的临时文件
+优质因子*.png
+优质因子*.json
+优质因子*.md
+
+# 迭代数据文件
+iter*.json
+
+# ========================================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 */__pycache__/*
@@ -154,9 +197,12 @@ reports/
 git_ignore_folder/
 factor_zoo/*
 saved_mlruns/
-#cache
+
+# cache directories and files
 *cache*/
 *cache.json
+pickle_cache/
+factor_cache/
 
 # DB files
 *.db
@@ -178,10 +224,11 @@ mlruns/
 *_debug*
 *.ipynb
 注意事项.md
-# alphaagent/scenarios/qlib/experiment/factor_template/
-# alphaagent/scenarios/qlib/experiment/factor_data_template/
-alphaagent/app/qlib_rd_loop/factor_rdagent.py
 
+# ========================================
+# 应用层冗余目录 (不需要的场景)
+# ========================================
+alphaagent/app/qlib_rd_loop/factor_rdagent.py
 alphaagent/scenarios/qlib/experiment/factor_template/*
 alphaagent/app/data_mining/
 alphaagent/app/general_model/
@@ -190,3 +237,31 @@ alphaagent/scenarios/data_mining/
 alphaagent/scenarios/general_model/
 alphaagent/scenarios/kaggle/
 backend/
+
+# ========================================
+# 其他数据和临时文件
+# ========================================
+# 日志文件
+*.log
+log/
+logs/
+
+# 临时和实验文件
+home/
+constraints/
+
+# LFS 缓存
+.git/lfs/
+
+# Paper 中的编译产物
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.bbl
+paper/*.blg
+
+# 工具输出
+tools/factor_analyzer/factor_analyzer_results/
