@@ -96,6 +96,38 @@ python backtest/run_backtest.py -c configs/backtest/config.yaml \
     --factor-source custom --factor-json path/to/factors.json
 ```
 
+## 🌟 核心功能
+
+### 1. 进化探索 (交叉/变异)
+
+QuantaAlpha 实现了进化算法驱动的因子探索：
+
+- **变异 (Mutation)**: 在优秀因子基础上进行局部探索，生成变体因子
+- **交叉 (Crossover)**: 组合多个高性能因子的特征，发现新的因子模式
+- **轨迹池管理**: 跟踪所有探索轨迹，支持父代选择策略 (best/random/weighted)
+
+### 2. 质量门控
+
+三重质量检验机制，确保因子质量：
+
+| 检验类型 | 功能 | 默认状态 |
+|---------|------|---------|
+| 一致性检验 | 验证假设→描述→表达式的逻辑一致性 | ✅ 开启 |
+| 复杂度检验 | 限制符号长度、基础特征数、自由参数比例 | ✅ 开启 |
+| 冗余度检验 | 基于AST子树匹配检测重复因子 | ✅ 开启 |
+
+### 3. 因子正则化
+
+防止过拟合的正则化机制 (论文公式):
+
+```
+R_g(f, h) = α₁·SL(f) + α₂·PC(f) + α₃·ER(f, h)
+```
+
+- **SL**: 符号长度约束 (默认 ≤250)
+- **PC**: 参数复杂度约束 (自由参数比例 ≤0.5)
+- **ER**: 特征使用约束 (基础特征数 ≤6)
+
 ## ⚙️ 配置说明
 
 ### 模型配置
@@ -113,9 +145,9 @@ CHAT_MODEL=google/gemini-3-pro-preview
 
 编辑 `configs/run_config.yaml` 自定义:
 
-- 进化参数 (mutation, crossover)
-- 执行参数 (步数, 并行度)
-- 质量门控参数
+- **进化参数**: `mutation_enabled`, `crossover_enabled`, `max_rounds`
+- **执行参数**: `max_loops`, `steps_per_loop`, `parallel_enabled`
+- **质量门控**: `consistency_enabled`, `complexity_enabled`, `redundancy_enabled`
 
 ## 📚 引用
 
