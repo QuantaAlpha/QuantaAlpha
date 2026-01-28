@@ -2,8 +2,8 @@
 import pandas as pd
 import numpy as np
 import os
-from alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol
-from alphaagent.components.coder.factor_coder.function_lib import *
+from quantaalpha.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol
+from quantaalpha.components.coder.factor_coder.function_lib import *
 
 
 def calculate_factor(expr: str, name: str):

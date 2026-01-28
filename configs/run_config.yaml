@@ -56,7 +56,7 @@ execution:
   parallel_execution: false
   # Branch log root directory: effective only when parallel planning enabled with >1 branches
   # 分支日志根目录：仅在启用并行规划且分支数>1时有效
-  branch_log_root: /mnt/DATA/quantagent/QuantaAlpha/log
+  branch_log_root: log
   # Branch log prefix: log directory name format is {prefix}_{index}
   # 分支日志前缀：日志目录名称格式为{prefix}_{index}
   branch_log_prefix: branch
@@ -260,7 +260,7 @@ factor:
     threshold: 5
     # Path to factor zoo file for duplication checking
     # 用于重复性检查的因子库文件路径
-    factor_zoo_path: "/home/tjxy/quantagent/QuantaAlpha/factor_zoo/alpha158_20.csv"  # Uses default if null  # 如果为null则使用默认值
+    factor_zoo_path: null  # Uses default if null  # 如果为null则使用默认值
 
 
 # ============================================================

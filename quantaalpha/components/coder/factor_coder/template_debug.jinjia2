@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 import os
-from alphaagent.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol
-from alphaagent.components.coder.factor_coder.function_lib import *
+from quantaalpha.components.coder.factor_coder.expr_parser import parse_expression, parse_symbol
+from quantaalpha.components.coder.factor_coder.function_lib import *
 
 
 def calculate_factor(expr: str, name: str):
     # Stock DataFrame
     # df.columns: ['$open', '$close', '$high', '$low', '$volume', '$amount', '$turn', '$pettm', '$pbmrq']
-    df = pd.read_hdf('/home/tangziyi/RD-Agent/alphaagent/scenarios/qlib/experiment/factor_data_template/daily_pv_all.h5', key='data')
+    df = pd.read_hdf('./daily_pv.h5', key='data')
     
     print('expr: ', expr)
     expr = parse_symbol(expr, df.columns)

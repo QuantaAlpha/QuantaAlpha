@@ -26,42 +26,42 @@
 
 ```bash
 cd /home/tjxy/quantagent/AlphaAgent
-python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --factor-source alpha158_20
+python backtest/run_backtest.py -c configs/backtest/config.yaml --factor-source alpha158_20
 ```
 
 ### 2. 使用 Alpha158 完整因子库
 
 ```bash
-python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --factor-source alpha158
+python backtest/run_backtest.py -c configs/backtest/config.yaml --factor-source alpha158
 ```
 
 ### 3. 使用 Alpha360 扩展因子库
 
 ```bash
-python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --factor-source alpha360
+python backtest/run_backtest.py -c configs/backtest/config.yaml --factor-source alpha360
 ```
 
 ### 4. 使用自定义因子库
 
 ```bash
-python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
+python backtest/run_backtest.py -c configs/backtest/config.yaml \
     --factor-source custom \
-    --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_1.json
+    --factor-json /path/to/factors.json
 ```
 
 ### 5. 组合使用官方因子和自定义因子
 
 ```bash
-python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
+python backtest/run_backtest.py -c configs/backtest/config.yaml \
     --factor-source combined \
-    --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_1.json \
-    --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_2.json
+    --factor-json /path/to/factors1.json \
+    --factor-json /path/to/factors2.json
 ```
 
 ### 6. Dry Run 模式（仅加载因子）
 
 ```bash
-python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
+python backtest/run_backtest.py -c configs/backtest/config.yaml \
     --factor-source custom \
     --factor-json /path/to/factors.json \
     --dry-run -v
@@ -69,7 +69,7 @@ python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
 
 ## 配置文件说明
 
-配置文件 `config.yaml` 包含以下主要部分：
+配置文件 `configs/backtest/config.yaml` 包含以下主要部分：
 
 ### 因子源配置
 ```yaml
@@ -203,7 +203,7 @@ backtest:
 
 ## 输出结果
 
-回测完成后，结果保存在 `backtest_v2_results/backtest_metrics.json`：
+回测完成后，结果保存在 `data/backtest_results/backtest_metrics.json`：
 
 ```json
 {
@@ -232,14 +232,19 @@ backtest:
 ## 目录结构
 
 ```
-backtest_v2/
-├── __init__.py          # 包初始化
-├── config.yaml          # 配置文件
-├── run_backtest.py      # 入口脚本
-├── factor_loader.py     # 因子加载器
-├── factor_calculator.py # 因子计算器（含 LLM 集成）
-├── backtest_runner.py   # 回测执行器
-└── README.md            # 使用说明
+AlphaAgent/
+├── backtest/                    # 回测模块
+│   ├── __init__.py              # 包初始化
+│   ├── run_backtest.py          # 入口脚本
+│   ├── factor_loader.py         # 因子加载器
+│   ├── factor_calculator.py     # 因子计算器（含 LLM 集成）
+│   ├── backtest_runner.py       # 回测执行器
+│   └── README.md                # 使用说明
+├── configs/                     # 配置文件目录
+│   └── backtest/
+│       └── config.yaml          # 回测配置
+└── data/                        # 数据和结果目录
+    └── backtest_results/        # 回测结果
 ```
 
 ## 依赖项
