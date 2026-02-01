@@ -6,7 +6,7 @@
 
 **QuantaAlpha** - LLM驱动的Alpha因子挖掘框架
 
-基于论文: [AlphaAgent: LLM-Driven Alpha Mining with Regularized Exploration to Counteract Alpha Decay](https://arxiv.org/abs/2502.16789) (KDD 2025)
+基于论文: 
 
 ## 📖 简介
 
