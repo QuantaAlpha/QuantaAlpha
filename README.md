@@ -1,8 +1,5 @@
 # QuantaAlpha
 
-<div align="center">
-  <img src="docs/_static/logo.png" alt="QuantaAlpha logo" style="width:60%;">
-</div>
 
 **QuantaAlpha** - LLM驱动的Alpha因子挖掘框架
 
