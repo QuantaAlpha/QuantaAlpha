@@ -8,12 +8,12 @@ fire
 fuzzywuzzy
 openai
 
-scikit-learn==1.6.1
-xgboost==3.0.0
+scikit-learn==1.7.2
+xgboost==3.1.3
 catboost==1.2.8
 
-numpy==1.23.5 # we use numpy as default data format. So we have to install numpy
-pandas==1.5.3 # we use pandas as default data format. So we have to install pandas
+numpy==2.2.6 # we use numpy as default data format. So we have to install numpy
+pandas==2.3.3 # we use pandas as default data format. So we have to install pandas
 pandarallel # parallelize pandas
 matplotlib
 langchain
