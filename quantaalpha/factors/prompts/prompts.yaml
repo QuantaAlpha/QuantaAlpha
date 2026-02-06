@@ -1,0 +1,481 @@
+potential_direction_transformation: |-
+  It's the first round, the user provided a potential direction: "{{ potential_direction }}". Referring to it, you need to transform it into a hypothesis in formal language that is clear and actionable for factor generation. Consider the following aspects while formulating the hypothesis:
+  1. **Clarity**: Ensure the hypothesis is specific and unambiguous.
+  2. **Actionability**: The hypothesis should suggest a clear path for experimentation or investigation.
+  3. **Relevance**: Ensure the hypothesis is directly related to the potential direction provided by the user.
+
+
+hypothesis_and_feedback: |-
+  {% for hypothesis, experiment, feedback in trace.hist[-10:] %}
+  Hypothesis {{ loop.index }}: {{ hypothesis }}
+  Corresponding Code (that leads to the difference in performance): {{experiment.sub_workspace_list[0].code_dict.get("model.py")}}
+  Observation on the result with the hypothesis: {{ feedback.observations }}
+  Feedback on the original hypothesis:  {{ feedback.hypothesis_evaluation }}
+  New Feedback for Context (For you to agree or improve upon):  {{ feedback.new_hypothesis }}
+  Reasoning for new hypothesis:  {{ feedback.reason }}
+  Did changing to this hypothesis work? (focus on the change):  {{ feedback.decision }}
+  {% endfor %}
+
+hypothesis_output_format: |-
+  The output should follow JSON format. Do not add any other text in your response. The schema is as follows:
+  {
+  "hypothesis": "A SINGLE LINE OF TEXT. The new hypothesis generated based on the information provided.",
+  "concise_knowledge": "A SINGLE LINE OF TEXT. Transferable knowledge based on theoretical principles. Use conditional grammar. eg. 'If...., ..; When..., .; and etc' Make sure that you state things clearly without ambiguity. Eg. avoid saying 'previous hypothesis', because one wouldn't know what that is.",
+  "concise_observation": "A SINGLE LINE OF TEXT. It focuses on the observation of the given scenario, data characteristics, or previous experiences (failures & succeses).",
+  "concise_justification": "A SINGLE LINE OF TEXT. Justify the hypothesis based on theoretical principles or initial assumptions.",
+  "concise_specification": "A SINGLE LINE OF TEXT. Define the scope, conditions, constraints of the hypothesis. Specify the expected relationships, variables, and thresholds, ensuring testability and relevance to the observed data."
+    }
+
+
+factor_hypothesis_specification: |-
+  1. **Data-Driven Hypothesis Formation:**  
+    - Ground hypotheses within the scope of available data for seamless testing.
+    - Align hypotheses with the temporal, cross-sectional, and distributional properties of the data.
+    - Avoid overfitting by focusing on robust, economically intuitive, and innovative relationships. 
+
+  2. **Justification of the Hypothesis:**  
+    - Use observed market patterns to creatively infer underlying economic or behavioral drivers.
+    - Build on empirical evidence while exploring innovative connections or untested relationships.
+    - Propose actionable insights that challenge conventional assumptions, yet remain testable.
+    - Emphasize the factor's potential to uncover unique, predictive market behaviors.
+
+  3. **Continuous Optimization and Exploration:**  
+      - Refine the first hypothesis iteratively by testing across different variants. 
+      - Incorporate feedback from empirical results to enhance the factor's predictive power.
+
+
+function_lib_description: |-
+  Only the following operations are allowed in expressions: 
+  ### **Cross-sectional Functions**
+  - **RANK(A)**: Ranking of each element in the cross-sectional dimension of A.
+  - **ZSCORE(A)**: Z-score of each element in the cross-sectional dimension of A.
+  - **MEAN(A)**: Mean value of each element in the cross-sectional dimension of A.
+  - **STD(A)**: Standard deviation in the cross-sectional dimension of A.
+  - **SKEW(A)**: Skewness in the cross-sectional dimension of A.
+  - **KURT(A)**: Kurtosis in the cross-sectional dimension of A.
+  - **MAX(A)**: Maximum value in the cross-sectional dimension of A.
+  - **MIN(A)**: Minimum value in the cross-sectional dimension of A.
+  - **MEDIAN(A)**: Median value in the cross-sectional dimension of A
+
+  ### **Time-Series Functions**
+  - **DELTA(A, n)**: Change in value of A over n periods.
+  - **DELAY(A, n)**: Value of A delayed by n periods.
+  - **TS_MEAN(A, n)**: Mean value of sequence A over the past n days.
+  - **TS_SUM(A, n)**: Sum of sequence A over the past n days.
+  - **TS_RANK(A, n)**: Time-series rank of the last value of A in the past n days.
+  - **TS_ZSCORE(A, n)**: Z-score for each sequence in A over the past n days.
+  - **TS_MEDIAN(A, n)**: Median value of sequence A over the past n days.
+  - **TS_PCTCHANGE(A, p)**: Percentage change in the value of sequence A over p periods.
+  - **TS_MIN(A, n)**: Minimum value of A in the past n days.
+  - **TS_MAX(A, n)**: Maximum value of A in the past n days.
+  - **TS_ARGMAX(A, n)**: The index (relative to the current time) of the maximum value of A over the past n days.
+  - **TS_ARGMIN(A, n)**: The index (relative to the current time) of the minimum value of A over the past n days.
+  - **TS_QUANTILE(A, p, q)**: Rolling quantile of sequence A over the past p periods, where q is the quantile value between 0 and 1.
+  - **TS_STD(A, n)**: Standard deviation of sequence A over the past n days.
+  - **TS_VAR(A, p)**: Rolling variance of sequence A over the past p periods.
+  - **TS_CORR(A, B, n)**: Correlation coefficient between sequences A and B over the past n days.
+  - **TS_COVARIANCE(A, B, n)**: Covariance between sequences A and B over the past n days.
+  - **TS_MAD(A, n)**: Rolling Median Absolute Deviation of sequence A over the past n days.
+  - **PERCENTILE(A, q, p)**: Quantile of sequence A, where q is the quantile value between 0 and 1. If p is provided, it calculates the rolling quantile over the past p periods.
+  - **HIGHDAY(A, n)**: Number of days since the highest value of A in the past n days.
+  - **LOWDAY(A, n)**: Number of days since the lowest value of A in the past n days.
+  - **SUMAC(A, n)**: Cumulative sum of A over the past n days.
+
+  ### **Moving Averages and Smoothing Functions**
+  - **SMA(A, n, m)**: Simple moving average of A over n periods with modifier m.
+  - **WMA(A, n)**: Weighted moving average of A over n periods, with weights decreasing from 0.9 to 0.9^(n).
+  - **EMA(A, n)**: Exponential moving average of A over n periods, where the decay factor is 2/(n+1).
+  - **DECAYLINEAR(A, d)**: Linearly weighted moving average of A over d periods, with weights increasing from 1 to d.
+
+  ### **Mathematical Operations**
+  - **PROD(A, n)**: Product of values in A over the past n days. Use `*` for general multiplication.
+  - **LOG(A)**: Natural logarithm of each element in A.
+  - **SQRT(A)**: Square root of each element in A.
+  - **POW(A, n)**: Raise each element in A to the power of n.
+  - **SIGN(A)**: Sign of each element in A, one of 1, 0, or -1.
+  - **EXP(A)**: Exponential of each element in A.
+  - **ABS(A)**: Absolute value of A.
+  - **MAX(A, B)**: Maximum value between A and B.
+  - **MIN(A, B)**: Minimum value between A and B.
+  - **INV(A)**: Reciprocal (1/x) of each element in sequence A.
+  - **FLOOR(A)**: Floor of each element in sequence A.
+  
+  ### **Conditional and Logical Functions**
+  - **COUNT(C, n)**: Count of samples satisfying condition C in the past n periods. Here, C is a logical expression, e.g., `$close > $open`.
+  - **SUMIF(A, n, C)**: Sum of A over the past n periods if condition C is met. Here, C is a logical expression.
+  - **FILTER(A, C)**: Filtering multi-column sequence A based on condition C. Here, C is presented in a logical expression form, with the same size as A.
+  - **(C1)&&(C2)**: Logical operation "and". Both C1 and C2 are logical expressions, such as A > B.
+  - **(C1)||(C2)**: Logical operation "or". Both C1 and C2 are logical expressions, such as A > B.
+  - **(C1)?(A):(B)**: Logical operation "If condition C1 holds, then A, otherwise B". C1 is a logical expression, such as A > B.
+
+  ### **Regression and Residual Functions**
+  - **SEQUENCE(n)**: A single-column sequence of length n, ranging from 1 to integer n. `SEQUENCE()` should always be nested in `REGBETA()` or `REGRESI()` as argument B.
+  - **REGBETA(A, B, n)**: Regression coefficient of A on B using the past n samples, where A MUST be a multi-column sequence and B a single-column or multi-column sequence.
+  - **REGRESI(A, B, n)**: Residual of regression of A on B using the past n samples, where A MUST be a multi-column sequence and B a single-column or multi-column sequence.
+
+  ### **Technical Indicators**
+  - **RSI(A, n)**: Relative Strength Index of sequence A over n periods. Measures momentum by comparing the magnitude of recent gains to recent losses.
+  - **MACD(A, short_window, long_window)**: Moving Average Convergence Divergence (MACD) of sequence A, calculated as the difference between the short-term (short_window) and long-term (long_window) exponential moving averages.
+  - **BB_MIDDLE(A, n)**: Middle Bollinger Band, calculated as the n-period simple moving average of sequence A.
+  - **BB_UPPER(A, n)**: Upper Bollinger Band, calculated as middle band plus two standard deviations of sequence A over n periods.
+  - **BB_LOWER(A, n)**: Lower Bollinger Band, calculated as middle band minus two standard deviations of sequence A over n periods.
+
+
+  Note that:
+  - Only the variables provided in data (e.g., `$open`), arithmetic operators (`+, -, *, /`), logical operators (`&&, ||`), and the operations above are allowed in the factor expression.
+  - Make sure your factor expression contain at least one variables within the dataframe columns (e.g. $open), combined with registered operations above. Do NOT use any undeclared variable (e.g. 'n', 'w_1') and undefined symbols (e.g., '=') in the expression. 
+  - Pay attention to the distinction between operations with the TS prefix (e.g., `TS_STD()`) and those without (e.g., `STD()`). 
+
+
+factor_experiment_output_format: |-
+  Do NOT use any undeclared variables. The factor expression should be strictly based on the function library (e.g. `RANK(.)`) and the variables provided in data (e.g., `$open`). 
+  The output should follow JSON format without other content. The schema is as follows:
+  {
+      "factor name 1": {
+          "description": "description of factor 1",
+          "variables": {
+              "variable or function name 1": "description of variable or function 1",
+              "variable or function name 2": "description of variable or function 2"
+          }
+          "formulation": "A LaTeX formula of factor 1",
+          "expression": "An expression of factor 1, based on functions and variable mentioned",
+      },
+      "factor name 2": {
+          "description": "description of factor 2",
+          "variables": {
+              "variable or function name 1": "description of variable or function 1",
+              "variable or function name 2": "description of variable or function 2"
+          }
+          "formulation": "A LaTeX formula of factor 2",
+          "expression": "An expression of factor 2, based on functions and variable mentioned",
+      }
+      # Don't add ellipsis (...) or any filler text that might cause JSON parsing errors here!
+  }
+
+  Here is an example:
+  {
+      "Normalized_Intraday_Range_Factor_10D": {
+          "description": "This factor integrates candlestick movement patterns with market volatility to enhance predictive accuracy for short-term price movements. The factor computes the normalized difference between the candlestick body size and the standard deviation of closing prices over a 10-day period.",
+          "variables": {
+              "$close": "Close price of the stock on that day.",
+              "$open": "Open price of the stock on that day.",
+              "ABS(A)": "Absolute value of A.",
+              "TS_STD(A, n)": "Standard deviation of sequence A over the past n days."
+          }
+          "formulation": "NIR_\\text{10D} = \\frac{\\text{ABS}(\\text{close} - \\text{open})}{\\text{STD}(\\text{close}, 10)}",
+          "expression": "ABS($close - $open) / (TS_STD($close, 10) + 1e-8)",
+      },
+      "Volume_Range_Correlation_Factor_20D": {
+          "description": "This factor measures the correlation between the candlestick range (high - low) and the trading volume over a 20-day period, aiming to capture the relationship between price range and market participation.",
+          "variables": {
+              "$high": "High price of the stock on that day.",
+              "$low": "Low price of the stock on that day.",
+              "$volume": "Volume of the stock on that day.",
+              "TS_CORR(A, B, n)": "Correlation coefficient between sequences A and B over the past n days."
+          }
+          "formulation": "VRC_\\text{20D} = \\text{TS_CORR}(\\text{high} - \\text{low}, \\text{volume}, 20)",
+          "expression": "TS_CORR($high - $low, $volume, 20)",
+      }
+  }
+
+factor_feedback_generation:
+  system: |-
+    Please understand the following operation logic and then make your feedback that is suitable for the scenario:
+
+    {{ scenario }}
+
+    You will receive a hypothesis, multiple tasks with their factors, their results, and the SOTA result. 
+    Your feedback should specify whether the current result supports or refutes the hypothesis, compare it with previous SOTA (State of the Art) results, and suggest improvements or new directions.
+    Please understand the following operation logic and then make your feedback that is suitable for the scenario:
+      1. Logic Explanation:
+          - Each hypothesis represents a theoretical framework that can be refined through multiple iterations
+          - Focus on exploring various implementations within the same theoretical framework
+          - Continuously optimize factor construction methods before considering direction changes
+      
+      2. Development Directions:
+          - Hypothesis Refinement:
+              - Suggest specific improvements in factor construction methodology
+              - Propose alternative mathematical representations of the same theoretical concept
+              - Identify potential variations in parameter selection and combination methods
+          
+          - Factor Enhancement:
+              - Fine-tune existing factors through parameter or structure optimization
+              - Explore different normalization and standardization approaches
+              - Consider alternative window sizes and weighting schemes
+          
+          - Methodological Iteration:
+              - Refine the mathematical expression while maintaining the core concept
+              - Suggest complementary signals within the same theoretical framework
+              - Propose robust variations of the current methodology
+      
+      3. Final Goal:
+          - The ultimate goal is to continuously mine factors that surpass each iteration to maintain the best SOTA.
+    
+      When analyzing results:
+      1. **Factor Construction Analysis:**
+          - Evaluate how different construction methods affect factor performance
+          - Identify which aspects of the construction process contribute most to performance
+          - Suggest specific modifications to improve factor robustness
+      
+      2. **Parameter Sensitivity:**
+          - Analyze the impact of different parameter choices
+          - Recommend parameter ranges for further exploration
+          - Identify critical components in the factor construction process
+
+      3. **Complexity Control (CRITICAL - PRIMARY CAUSE OF POOR TEST PERFORMANCE):**
+          - **Symbol Length (SL)**: Factors with expressions exceeding 250 characters are HIGHLY LIKELY to be OVERFITTING. If a factor is flagged for high symbol length, it MUST be drastically simplified in the next iteration. Target: 50-150 characters.
+          - **Base Features Count (ER)**: Factors using too many distinct raw features (> 6) indicate over-engineering. Recommend reducing to 2-4 core features.
+          - **Free Parameters (PC)**: Factors with too many free parameters (numeric constants) relative to total nodes (> 50%) are likely over-parameterized. Reduce parameter count significantly.
+          - **OVERFITTING WARNING**: Complex factors with long expressions, many nested functions, and conditional branches almost ALWAYS perform well on training/validation but FAIL CATASTROPHICALLY on test sets. This is the #1 cause of poor out-of-sample performance.
+          - **RECOMMENDED ACTION**: When a factor has high training IC but poor test IC, ASSUME it is overfitting due to complexity. Generate a MUCH simpler factor (< 150 characters) that captures the core idea.
+          - When complexity feedback is provided, treat it as a CRITICAL ERROR that must be addressed immediately. Do not just slightly modify the factor - generate a fundamentally simpler alternative.
+
+    Focus on Continuous Refinement:
+      - Exhaust all possible variations within the current theoretical framework
+      - Document the effectiveness of different implementation approaches
+      - **Always prioritize simplicity over complexity** - simpler factors that achieve similar or better performance are preferred
+      
+    Please provide detailed and constructive feedback for future exploration.
+    Respond in JSON format. Example JSON structure for Result Analysis:
+    {
+      "Observations": "Your overall observations here",
+      "Feedback for Hypothesis": "Observations related to the hypothesis",
+      "New Hypothesis": "Your new hypothesis here",
+      "Reasoning": "Reasoning for the new hypothesis",
+      "Replace Best Result": "yes or no"
+    }
+  user: |-
+    Target hypothesis: 
+    {{ hypothesis_text }}
+    Tasks and Factors:
+    {% for task in task_details %}
+      - {{ task.factor_name }}: {{ task.factor_description }}
+        - Factor Formulation: {{ task.factor_formulation }}
+        - Variables: {{ task.variables }}
+        - Factor Implementation: {{ task.factor_implementation }}
+        {% if task.get("complexity_feedback") and task.complexity_feedback %}
+        - **Complexity Feedback**: {{ task.complexity_feedback }}
+          **Important**: This factor has been flagged for excessive complexity. Please consider simplifying the expression in future iterations. Factors that are too complex (long symbol length, too many base features, or excessive parameters) are prone to overfitting and poor generalization to test sets.
+        {% endif %}
+        {% if task.factor_implementation == "False" %}
+        **Note: This factor was not implemented in the current experiment. Only the hypothesis for implemented factors can be verified.**
+        {% endif %}
+    {% endfor %}
+    Combined Results: 
+    {{ combined_result }}
+    
+    Analyze the combined result in the context of its ability to:
+    1. Support or refute the hypothesis.
+    2. Show improvement or deterioration compared to the SOTA experiment.
+
+    Evaluation Metrics Explanations:
+    Below are the financial meanings of each metric, which should be used to judge the results:
+
+    - 1day.excess_return_without_cost.max_drawdown: Measures the maximum loss from a peak to a trough without considering transaction costs. (the smaller the better)
+    - 1day.excess_return_without_cost.information_ratio: Evaluates the excess return per unit of risk without considering transaction costs. (the bigger the better)
+    - 1day.excess_return_without_cost.annualized_return: Annualized return without considering transaction costs. (the bigger the better)
+    - IC: Measures the correlation between predicted returns (\hat{y}) and actual returns (y), using Pearson correlation. (the bigger the better)
+
+    When judging the results:
+      1. **Recommendation for Replacement:**
+        - If the new factor shows a significant improvement in the annualized return without transaction costs, recommend it to replace the current best result.
+        - If the annualized return and any other single metric are better than SOTA, recommend the replacement.
+        - Minor variations in other metrics are acceptable as long as the annualized return improves.
+        - **However, if a factor has complexity warnings, be cautious about recommending replacement even if metrics are good, as it may overfit and fail on future data.**
+      
+      2. **Complexity Considerations:**
+        - If complexity feedback is provided for a factor, this is a critical issue that must be addressed.
+        - Factors flagged for excessive complexity should be simplified in the next iteration, even if current metrics appear good.
+        - Emphasize in your feedback that the factor needs simplification to avoid overfitting and improve generalization.
+
+    Note: Only factors with 'Factor Implementation' as True are implemented and tested in this experiment. If 'Factor Implementation' is False, the hypothesis for that factor cannot be verified in this run.
+
+
+hypothesis_gen:
+  system_prompt: |-
+    The user is working on generating new hypotheses for the {{targets}} in a data-driven research and development process. 
+    The {{targets}} are used in the following scenario:
+    {{scenario}}
+    The user has already proposed several hypotheses and conducted evaluations on them. This information will be provided to you. 
+    Your task is to check whether a hypothesis has already been generated. If one exists, follow it or generate an improved version.
+    {% if hypothesis_specification %}
+    To assist you in formulating new hypotheses, the user has provided some additional information:
+    {{hypothesis_specification}}.
+    **Important:** If the hypothesis_specification outlines the next steps you need to follow, ensure you adhere to those instructions.
+    {% endif %}
+    Please generate the output using the following format and specifications. Avoid making assumptions that depend on data outside the supported data range.
+    {{ hypothesis_output_format }}
+
+  user_prompt: |-
+    {% if hypothesis_and_feedback|length == 0 %}It is the first round of hypothesis generation. The user has no hypothesis on this scenario yet. You are encouraged to propose an innovative hypothesis that diverges significantly from existing perspectives.
+    {% elif hypothesis_and_feedback|length > 0 and round == 0 %}{{ hypothesis_and_feedback }}
+    {% else %}It is not the first round, the user has made several hypothesis on this scenario and did several evaluation on them.
+    The former hypothesis and the corresponding feedbacks are as follows (focus on the last one & the new hypothesis that it provides and reasoning to see if you agree):
+    {{ hypothesis_and_feedback }}
+    {% endif %}
+    {% if RAG %}
+    To assist you in generating new {{targets}}, we have provided the following information: {{RAG}}.
+    **Note:** The provided RAG is for reference only. 
+    You must carefully assess whether the RAG aligns with the {{targets}}. 
+    If it does not, it should not be used. Exercise caution and make your own judgment.
+    {% endif %}
+    Also generate the relevant keys for the reasoning and the distilled knowledge that follows. For those keys, in particular for knowledge, explain in the context of the specific scenario to build up domain knowledge in the specific field rather than general knowledge.
+
+hypothesis2experiment:
+  system_prompt: |-
+    The user is trying to generate new {{targets}} based on the hypothesis generated in the previous step. 
+    The {{targets}} are used in certain scenario, the scenario is as follows:
+    {{ scenario }}
+
+    The user will use the {{targets}} generated to do some experiments. The user will provide this information to you:
+    1. The target hypothesis you are targeting to generate {{targets}} for.
+    2. The hypothesis generated in the previous steps and their corresponding feedbacks.
+    3. Former proposed {{targets}} on similar hypothesis.
+    4. Duplicated sub-expressions that you have to evade for better factor originality and novelty. 
+    5. Some additional information to help you generate new {{targets}}.
+
+
+    1. **2-3 Factors per Generation:**
+      - Ensure each generation produces 2-3 factors.
+      - Balance simplicity and innovation to build a robust factor library.
+      - Note that each factor is independent. Please do NOT reference other factors within the factor expression.
+
+    2. **CRITICAL: Factor Complexity Constraints (MUST FOLLOW - OVERFITTING PREVENTION):**
+      - **Symbol Length (SL) Limit: ≤ 250 characters (STRICT LIMIT)**
+        - Factor expressions MUST NOT exceed 250 characters. This is a HARD LIMIT.
+        - **WARNING: Overly complex/long expressions (> 250 chars) are highly prone to OVERFITTING.** They may perform well on training data but fail catastrophically on test data.
+        - **Simple factors generalize better.** A concise factor with moderate performance is FAR more valuable than a complex one with high training performance but poor test performance.
+        - Example of GOOD (short, ~50 chars): `RANK(TS_MEAN($return, 20))`
+        - Example of GOOD (moderate, ~100 chars): `RANK(TS_CORR($close, $volume, 10)) * SIGN(TS_MEAN($return, 5))`
+        - Example of BAD (too long, > 250 chars): `RANK(POW(TS_CORR($close, SEQUENCE(15), 15), 2)) * RANK(TS_MEAN(($high - $low) / ($volume + 1e-8), 15)) * ...`
+      - **Base Features (ER) Limit: ≤ 6 distinct raw features**
+        - Use at most 6 distinct base features (e.g., $close, $open, $high, $low, $volume, $return).
+        - Reusing the same feature multiple times is acceptable, but using too many different features indicates over-engineering.
+        - Prefer factors that focus on 2-4 core features rather than using all available features.
+      - **Simplicity Priority (ANTI-OVERFITTING):**
+        - **ALWAYS prioritize simplicity over complexity.** A simple factor that works is FAR better than a complex one.
+        - **Complex factors with many nested functions, conditional branches, and parameters are OVERFITTING indicators.**
+        - Avoid deep nesting (e.g., RANK(POW(TS_CORR(...))) is too nested)
+        - Avoid complex conditional expressions (e.g., (A > B) ? (C * D / E) : (F * G / H))
+        - Prefer linear combinations over multiplicative chains
+        - Use fewer function calls and simpler operations
+        - **Target expression length: 50-150 characters for optimal generalization.**
+      - **If previous factors were flagged for complexity, you MUST generate MUCH simpler alternatives in the next iteration.**
+
+    3.**Key Considerations in Factor Construction:**
+      - **Data Preprocessing and Standardization:**
+          - Avoid using raw prices and volumes directly due to scale differences
+          - Use relative changes or standardized data (e.g., RANK(), ZSCORE())
+          - Convert prices to returns, e.g. `(DELTA($close, 1)/$close)` instead of price levels
+          - Transform volume into relative changes, e.g. `(DELTA($volume, 1)/$volume)`
+
+      - **Time Series Processing:**
+          - Consider appropriate sample periods for indicators requiring historical data
+          - Choose suitable window sizes for moving averages SMA(), EMA(), WMA()
+
+      - **Normalization and Stability:**
+          - Add small constants (e.g., 1e-8) to denominators to prevent division by zero
+          - Use TS_ZSCORE() for factor value standardization
+          - Consider SIGN() to reduce impact of extreme values
+          - Apply MAX(MIN(x, upper), lower) for value truncation
+
+      - **Cross-sectional Treatment:**
+          - Apply RANK() or ZSCORE() for cross-sectional comparability
+          - Use FILTER() for outlier handling
+          - Ensure sufficient window length for correlation calculations
+
+      - **Robustness Considerations:**
+          - Validate factor stability across multiple time windows
+          - Consider TS_MEDIAN() over TS_MEAN() to reduce outlier impact
+          - Apply moving averages to smooth high-frequency variations
+  
+      - **Flexibility Considerations:**  
+          - Allow for a range of values or flexibility when defining factors, rather than imposing strict equality constraints.
+          - For example, in expression `(TS_MIN($low, 10) == DELAY(TS_MIN($low, 10), 1))`, `==` is too restrictive. 
+          - Instead, use a range-based approach like: `(TS_MIN($low, 10) < DELAY(TS_MIN($low, 10), 1) + 1/10 * TS_STD($low, 20)) && (TS_MIN($low, 10) > DELAY(TS_MIN($low, 10), 1) - 1/10 * TS_STD($low, 20))`.
+
+      - **Handling Duplicated Sub-expressions:**
+            - When given specific duplicated sub-expressions to avoid, ensure new factor expressions use alternative calculations
+            - Replace duplicated patterns with semantically similar but structurally different expressions
+            - For example, if `ABS($close - $open)` is flagged as duplicated:
+                - Consider using `($high - $low)` for price range
+                - Use `SIGN($close - $open) * ($close - $open)` for directional magnitude
+                - Explore other price difference combinations like `($high - $low) / ($open + $close)`
+            - Maintain factor interpretability while avoiding structural repetition
+            - Focus on unique combinations of operators and variables to ensure originality
+
+    Please generate the output following the format below:
+    {{ experiment_output_format }}
+
+    Strictly adhere to the syntax requirements of factor expressions; do not use undeclared variables (e.g., n) or functions.
+    
+  user_prompt: |-
+    The user has made several hypothesis on this scenario and did several evaluation on them.
+    The target hypothesis you are targeting to generate {{targets}} for is as follows:
+    {{ target_hypothesis }}
+    
+    The former hypothesis and the corresponding feedbacks are as follows:
+    {{ hypothesis_and_feedback }}
+
+    When constructing factor expressions, you are restricted to utilizing only the following daily-level variable:
+    - $open: open price of the stock on that day.
+    - $close: close price of the stock on that day.
+    - $high: high price of the stock on that day.
+    - $low: low price of the stock on that day.
+    - $volume: volume of the stock on that day.
+    - $return: daily return of the stock on that day.
+
+    Allowed operators and functions in factor expressions are: 
+    {{function_lib_description}}
+
+
+    {% if expression_duplication %}
+    **Alert: Duplication Detected in Previous Factor Expressions**
+    {{ expression_duplication }}
+
+    Recommendations:
+    - Avoid the duplicated sub-expressions above
+    - Generate novel factor by uniquely combining data variables and operations
+    - Experiment with a mix of mathematical operations (e.g., exponentiation, logarithmic transformations) to construct expressions that reveal different relationships and interactions among variables.
+    - Replace raw variables with transformed variants to enhance expressiveness, such as using `$open`, `$close/TS_MEAN($close, 10)`, or `($open + $close) / 2` instead of `$close` to normalize or adjust for trends.
+    {% endif %}
+
+    Please generate the new {{targets}} in JSON format based on the information above.
+
+
+
+expression_duplication: |-
+  - Proposed Expression: {{ prev_expression }}
+  {% if duplicated_subtree_size > duplication_threshold %}
+  - Novelty Check Failed: Duplicated subtree size ({{ duplicated_subtree_size }}) exceeds threshold ({{ duplication_threshold }})
+  - Duplicated Sub-expression: {{ duplicated_subtree }}
+    {% if matched_alpha %}Matched with: {{ matched_alpha }}{% endif %}
+  {% endif %}
+  {% if free_args_ratio >= 0.5 %}
+  - Parsimony Check Failed: Free arguments ratio ({{ "%.2f"|format(free_args_ratio * 100) }}%) >= 50%
+    - Number of free args: {{ num_free_args }}, Total nodes: {{ num_all_nodes }}
+    - This indicates the factor is over-parameterized. Please reduce the number of free parameters.
+  {% endif %}
+  {% if unique_vars_ratio >= 0.5 %}
+  - Diversity Check Failed: Unique variables ratio ({{ "%.2f"|format(unique_vars_ratio * 100) }}%) >= 50%
+    - Number of unique vars: {{ num_unique_vars }}, Total nodes: {{ num_all_nodes }}
+    - This indicates the factor lacks diversity. Please use more repeated variables or operators.
+  {% endif %}
+  {% if symbol_length > symbol_length_threshold %}
+  - **Symbol Length (SL) Check FAILED: Expression length ({{ symbol_length }}) exceeds HARD LIMIT ({{ symbol_length_threshold }} characters)**
+    - **🚨 OVERFITTING ALERT**: This factor expression is TOO COMPLEX and will almost certainly OVERFIT.
+    - **Root Cause**: Complex expressions with many nested functions, conditional branches, and parameters fit noise in training data rather than true market patterns.
+    - **Action Required**: Generate a FUNDAMENTALLY SIMPLER expression. Do NOT just remove a few characters - redesign the factor from scratch.
+    - **Target Length**: 50-150 characters for optimal generalization. Anything over 200 is suspicious.
+    - **Example of GOOD** (~50 chars): `RANK(TS_MEAN($return, 20))`
+    - **Example of ACCEPTABLE** (~100 chars): `RANK(TS_CORR($close, $volume, 10)) * SIGN(TS_MEAN($return, 5))`
+    - **Example of BAD** (> 200 chars): Any expression with multiple nested functions, complex conditionals, or many arithmetic operations.
+    - **REMEMBER**: A simple factor with IC=0.03 that generalizes is FAR more valuable than a complex factor with IC=0.06 that overfits.
+  {% endif %}
+  {% if num_base_features > base_features_threshold %}
+  - **Base Features Count (ER) Check Failed: Number of base features ({{ num_base_features }}) exceeds threshold ({{ base_features_threshold }})**
+    - **CRITICAL**: The factor uses too many distinct raw features (e.g., $close, $open, $high, $low, $volume, $return).
+    - **Action Required**: Reduce the number of distinct base features used. Focus on 2-4 core features instead of using all available features.
+    - Target: Use at most {{ base_features_threshold }} distinct base features. Reusing the same feature multiple times is acceptable.
+  {% endif %}
+

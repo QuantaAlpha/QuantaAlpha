@@ -1,0 +1,128 @@
+# =============================================================================
+# QuantaAlpha .gitignore
+# =============================================================================
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pth
+*.egg-info/
+*.egg
+.eggs/
+.installed.cfg
+MANIFEST
+build/
+dist/
+develop-eggs/
+sdist/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.manifest
+*.spec
+
+# ---- Environments ----
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ---- IDE / Editor ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ---- Testing & Coverage ----
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ---- Type checking ----
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# ---- Logs ----
+log/
+*.log
+*.out
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ---- Data & Results (local experiment outputs) ----
+data/
+mlruns/
+reports/
+backtest_v2_results/
+backtest_v2_results*/
+
+# ---- Factor library outputs (generated at runtime) ----
+all_factors_library*.json
+
+# ---- Binary / large files ----
+*.pkl
+*.h5
+*.db
+*.ipynb
+*.pth
+
+# ---- Cache ----
+*cache*/
+*cache.json
+.ipynb_checkpoints/
+
+# ---- Node.js (frontend) ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- Legacy / deprecated directories ----
+alphaagent.egg-info/
+quantaalpha.egg-info/
+git_ignore_folder/
+home/
+saved_mlruns/
+factor_zoo/
+factor_library/
+env_tpl/
+factor_template/mlruns/
+alphaagent/
+alphaagent_backup/
+backtest_v2_backup/
+factor_library_manager_backup.py
+/backend/
+
+# ---- Misc ----
+Pipfile
+public/
+release-notes.md
+*_debug*
+*_analysis*.csv
+*_analysis*.json
+*qlib_res.csv
+注意事项.md
+
+# ---- Translations ----
+*.mo
+*.pot
+
+# ---- Sphinx documentation ----
+docs/_build/

@@ -1,0 +1,239 @@
+qlib_factor_background: |-
+  The factor is a characteristic or variable used in quant investment that can help explain the returns and risks of a portfolio or a single asset. Factors are used by investors to identify and exploit sources of excess returns, and they are central to many quantitative investment strategies.
+  Each number in the factor represents a physics value to an instrument on a day.
+  User will train a model to predict the next several days return based on the factor values of the previous days.
+  The factor is defined in the following parts:
+  1. Name: The name of the factor.
+  2. Description: The description of the factor.
+  3. Formulation: The formulation of the factor.
+  4. Expression: The executable expression of the factor.
+  4. Variables: The variables or functions used in the formulation of the factor.
+  The factor might not provide all the parts of the information above since some might not be applicable.
+  Please specifically give all the hyperparameter in the factors like the window size, look back period, and so on. One factor should statically defines one output with a static source data. For example, last 10 days momentum and last 20 days momentum should be two different factors.
+
+qlib_factor_interface: |-
+  Your factor expression should follow the interface to better interact with the user's system.
+  Your expression must at least one variables (e.g., `$open`). Other parts contain arithmetic operator (`+, -, *, /`), logical operator (`&&, ||`), functions (`DELAY(), EXP()`), and conditional statement (`A?B:C`). 
+  User will write your expression into a python template and execute the file directly with "python {your_file_name}.py". The factor values will be saved into a HDF5(H5) file named "result.h5" in the same directory as your python file. The result file is a HDF5(H5) file containing a pandas dataframe. The index of the dataframe is the "datetime" and "instrument", and the single column name is the factor name, and the value is the factor value. The result file should be saved in the same directory as your python file.
+
+qlib_factor_strategy: |-
+  Ensure that for every step of data processing, the data format (including indexes) is clearly explained through comments.
+  Each transformation or calculation should be accompanied by a detailed description of how the data is structured, especially focusing on key aspects like whether the data has multi-level indexing, how to access specific columns or index levels, and any operations that affect the data shape (e.g., `reset_index()`, `groupby()`, `merge()`).
+  This step-by-step explanation will ensure clarity and accuracy in data handling. For example:
+  1. **Start with multi-level index**:  
+    ```python
+    # The initial DataFrame has a multi-level index with 'datetime' and 'instrument'.
+    # To access the 'datetime' index, use df.index.get_level_values('datetime').
+    datetime_values = df.index.get_level_values('datetime')
+    ```
+ 
+  2. **Reset the index if necessary**:  
+    ```python
+    # Resetting the index to move 'datetime' and 'instrument' from the index to columns.
+    # This operation flattens the multi-index structure.
+    df = df.reset_index()
+    ```
+ 
+  3. **Perform groupby operations**:  
+    ```python
+    # Grouping by 'datetime' and 'instrument' to aggregate the data.
+    # After groupby, the result will maintain 'datetime' and 'instrument' as a multi-level index.
+    df_grouped = df.groupby(['datetime', 'instrument']).sum()
+    ```
+ 
+  4. **Ensure consistent datetime formats**:  
+    ```python
+    # Before merging, ensure that the 'datetime' column in both DataFrames is of the same format.
+    # Convert to datetime format if necessary.
+    df['datetime'] = pd.to_datetime(df['datetime'])
+    other_df['datetime'] = pd.to_datetime(other_df['datetime'])
+    ```
+ 
+  5. **Merge operations**:  
+    ```python
+    # When merging DataFrames, ensure you are merging on both 'datetime' and 'instrument'.
+    # If these are part of the index, reset the index before merging.
+    merged_df = pd.merge(df, other_df, on=['datetime', 'instrument'], how='inner')
+    ```
+
+qlib_factor_output_format: |-
+  Your output should be a pandas dataframe similar to the following example information:
+  <class 'pandas.core.frame.DataFrame'>
+  MultiIndex: 40914 entries, (Timestamp('2020-01-02 00:00:00'), 'SH600000') to (Timestamp('2021-12-31 00:00:00'), 'SZ300059')
+  Data columns (total 1 columns):
+  #   Column            Non-Null Count  Dtype  
+  ---  ------            --------------  -----  
+  0   your factor name  40914 non-null  float64
+  dtypes: float64(1)
+  memory usage: <ignore>
+  Notice: The non-null count is OK to be different to the total number of entries since some instruments may not have the factor value on some days.
+  One possible format of `result.h5` may be like following:
+  datetime    instrument
+  2020-01-02  SZ000001     -0.001796
+              SZ000166      0.005780
+              SZ000686      0.004228
+              SZ000712      0.001298
+              SZ000728      0.005330
+                              ...
+  2021-12-31  SZ000750      0.000000
+              SZ000776      0.002459
+
+qlib_factor_simulator: |-
+  The factors will be sent into Qlib to train a model to predict the next several days return based on the factor values of the previous days. 
+  Qlib is an AI-oriented quantitative investment platform that aims to realize the potential, empower research, and create value using AI technologies in quantitative investment, from exploring ideas to implementing productions. Qlib supports diverse machine learning modeling paradigms. including supervised learning, market dynamics modeling, and RL.
+  User will use Qlib to automatically do the following things:
+  1. generate a new factor table based on the factor values.
+  2. train a model like LightGBM, CatBoost, LSTM or simple PyTorch model to predict the next several days return based on the factor values.
+  3. build a portfolio based on the predicted return based on a strategy.
+  4. evaluate the portfolio's performance including the return, sharpe ratio, max drawdown, and so on.
+
+qlib_factor_rich_style_description : |-
+  ### R&D Agent-Qlib: Automated Quantitative Trading & Iterative Factors Evolution Demo
+
+  #### [Overview](#_summary)
+
+  The demo showcases the iterative process of hypothesis generation, knowledge construction, and decision-making. It highlights how financial factors evolve through continuous feedback and refinement.
+
+  #### [Automated R&D](#_rdloops)
+
+  - **[R (Research)](#_research)**
+    - Iterative development of ideas and hypotheses.
+    - Continuous learning and knowledge construction.
+
+  - **[D (Development)](#_development)**
+    - Progressive implementation and code generation of factors.
+    - Automated testing and validation of financial factors.
+
+  #### [Objective](#_summary)
+
+  To demonstrate the dynamic evolution of financial factors through the Qlib platform, emphasizing how each iteration enhances the accuracy and reliability of the resulting financial factors.
+
+qlib_factor_from_report_rich_style_description : |-
+  ### R&D Agent-Qlib: Automated Quantitative Trading & Factor Extraction from Financial Reports Demo
+
+  #### [Overview](#_summary)
+
+  This demo showcases the process of extracting factors from financial research reports, implementing these factors, and analyzing their performance through Qlib backtest, continually expanding and refining the factor library.
+
+  #### [Automated R&D](#_rdloops)
+
+  - **[R (Research)](#_research)**
+    - Iterative development of ideas and hypotheses from financial reports.
+    - Continuous learning and knowledge construction.
+
+  - **[D (Development)](#_development)**
+    - Progressive factor extraction and code generation.
+    - Automated implementation and testing of financial factors.
+
+  #### [Objective](#_summary)
+
+  <table border="1" style="width:100%; border-collapse: collapse;">
+    <tr>
+      <td>💡 <strong>Innovation </strong></td>
+      <td>Tool to quickly extract and test factors from research reports.</td>
+    </tr>
+    <tr>
+      <td>⚡ <strong>Efficiency </strong></td>
+      <td>Rapid identification of valuable factors from numerous reports.</td>
+    </tr>
+    <tr>
+      <td>🗃️ <strong>Outputs </strong></td>
+      <td>Expand and refine the factor library to support further research.</td>
+    </tr>
+  </table>
+
+qlib_factor_experiment_setting: |-
+  | Dataset 📊 | Model 🤖    | Factors 🌟       | Data Split  🧮                                   |
+  |---------|----------|---------------|-------------------------------------------------|
+  | CSI300  | LGBModel | Alpha158 Plus | Train: 2012-01-01 to 2018-12-31 <br> Valid: 2019-01-01 to 2020-12-31 <br> Test &nbsp;: 2021-01-01 to 2024-12-01 |
+
+
+qlib_model_background: |-
+  The model is a machine learning or deep learning structure used in quantitative investment to predict the returns and risks of a portfolio or a single asset. Models are employed by investors to generate forecasts based on historical data and identified factors, which are central to many quantitative investment strategies.
+  Each model takes the factors as input and predicts the future returns. Usually, the bigger the model is, the better the performance would be.
+  The model is defined in the following parts:
+  1. Name: The name of the model.
+  2. Description: The description of the model.
+  3. Architecture: The detailed architecture of the model, such as neural network layers or tree structures.
+  4. Hyperparameters: The hyperparameters used in the model, such as learning rate, number of epochs, etc.
+  5. ModelType: The type of the model, "Tabular" for tabular model and "TimeSeries" for time series model.
+  The model should provide clear and detailed documentation of its architecture and hyperparameters. One model should statically define one output with a fixed architecture and hyperparameters. For example, a model with an two GRU layer and a model with three GRU layer should be considered two different models.
+
+qlib_model_interface: |-
+  Your python code should follow the interface to better interact with the user's system.
+  You code should contain several parts:
+  1. The import part: import the necessary libraries.
+  2. A class which is a sub-class of pytorch.nn.Module. This class should should have a init function and a forward function which inputs a tensor and outputs a tensor.
+  3. Set a variable called "model_cls" to the class you defined.
+
+  The user will save your code into a python file called "model.py". Then the user imports model_cls in file "model.py" after setting the cwd into the directory:
+  ```python
+  from model import model_cls
+  ```
+  So your python code should follow the pattern:
+  ```python
+  class XXXModel(torch.nn.Module):
+      ...
+  model_cls = XXXModel
+  ```
+
+  The model has two types, "Tabular" for tabular model and "TimeSeries" for time series model. The input shape to a tabular model is (batch_size, num_features) and the input shape to a time series model is (batch_size, num_features, num_timesteps). The output shape of the model should be (batch_size, 1).
+  The "batch_size" is a dynamic value which is determined by the input of forward function.
+  The "num_features" and "num_timesteps" are static which will be provided to the model through init function.
+  User will initialize the tabular model with the following code:
+  ```python
+  model = model_cls(num_features=num_features)
+  ```
+  User will initialize the time series model with the following code:
+  ```python
+  model = model_cls(num_features=num_features, num_timesteps=num_timesteps)
+  ```
+  No other parameters will be passed to the model so give other parameters a default value or just make them static.
+
+  When dealing with TimeSeries model, remember to permute the input tensor since the input tensor is in the shape of (batch_size, num_features, num_timesteps) and a normal time series model is expecting the input tensor in the shape of (batch_size, num_timesteps, num_features).
+
+  Don't write any try-except block in your python code. The user will catch the exception message and provide the feedback to you. Also, don't write main function in your python code. The user will call the forward method in the model_cls to get the output tensor.
+
+  Please notice that your model should only use current features as input. The user will provide the input tensor to the model's forward function.
+
+
+qlib_model_output_format: |-
+  Your output should be a tensor with shape (batch_size, 1). 
+  The output tensor should be saved in a file named "output.pth" in the same directory as your python file.
+  The user will evaluate the shape of the output tensor so the tensor read from "output.pth" should be 8 numbers.
+
+qlib_model_simulator: |-
+  The models will be sent into Qlib to train and evaluate their performance in predicting future returns. Hypothesis is improved upon checking the feedback on the results. 
+  Qlib is an AI-oriented quantitative investment platform that aims to realize the potential, empower research, and create value using AI technologies in quantitative investment, from exploring ideas to implementing productions. Qlib supports diverse machine learning modeling paradigms, including supervised learning, market dynamics modeling, and reinforcement learning (RL).
+  User will use Qlib to automatically perform the following tasks:
+  1. Generate a baseline factor table.
+  2. Train the model defined in your class Net to predict the next several days' returns based on the factor values.
+  3. Build a portfolio based on the predicted returns using a specific strategy.
+  4. Evaluate the portfolio's performance, including metrics such as return, Sharpe ratio, max drawdown, and others.
+  5. Iterate on growing the hypothesis to enable model improvements based on performance evaluations and feedback.
+
+qlib_model_rich_style_description: |-
+  ### Qlib Model Evolving Automatic R&D Demo
+  
+  #### [Overview](#_summary)
+  
+  The demo showcases the iterative process of hypothesis generation, knowledge construction, and decision-making in model construction in quantitative finance. It highlights how models evolve through continuous feedback and refinement.
+  
+  #### [Automated R&D](#_rdloops)
+  
+  - **[R (Research)](#_research)**
+    - Iteration of ideas and hypotheses.
+    - Continuous learning and knowledge construction.
+  
+  - **[D (Development)](#_development)**
+    - Evolving code generation and model refinement.
+    - Automated implementation and testing of models.
+  
+  #### [Objective](#_summary)
+  
+  To demonstrate the dynamic evolution of models through the Qlib platform, emphasizing how each iteration enhances the accuracy and reliability of the resulting models. 
+
+qlib_model_experiment_setting: |-
+  | Dataset 📊 | Model 🤖    | Factors 🌟       | Data Split  🧮                                   |
+  |---------|----------|---------------|-------------------------------------------------|
+  | CSI300  | QuantaAlpha-dev | 20 factors (Alpha158)  | Train: 2008-01-01 to 2014-12-31 <br> Valid: 2015-01-01 to 2016-12-31 <br> Test &nbsp;: 2017-01-01 to 2020-08-01 |

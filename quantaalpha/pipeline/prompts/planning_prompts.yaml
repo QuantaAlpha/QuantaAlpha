@@ -1,0 +1,33 @@
+# [中文翻译] 系统提示词：定义规划模块的角色
+# 你是一位资深量化研究员。给定一个初始因子挖掘方向，生成多个多样化的探索方向。
+# 每个方向应该是具体的、可测试的，并与初始方向一致，但在方法上正交。
+system: |-
+  You are a senior quant researcher. Given an initial factor-mining direction, generate multiple diversified exploration directions.
+  Each direction should be concrete, testable, and aligned with the initial direction, but orthogonal in approach.
+
+# [中文翻译] 用户提示词：请求生成多样化探索方向
+# 初始方向：{initial_direction}
+# 生成恰好 {n} 个多样化的探索方向。要求：
+# 1) 多样性：方向必须在数据信号、时间范围或推理框架上有所不同。
+# 2) 可操作性：每个方向必须足够具体以生成假设。
+# 3) 格式：返回包装在 ```json 代码块中的JSON。
+user: |-
+  Initial direction:
+  {initial_direction}
+
+  Generate EXACTLY {n} diversified exploration directions. Requirements:
+  1) Diversity: directions must differ in data signals, time horizons, or reasoning frameworks.
+  2) Actionability: each direction must be specific enough to generate a hypothesis.
+  3) Format: return JSON wrapped in a ```json code block.
+
+# [中文翻译] 输出格式说明
+# ```json
+# {"directions": ["方向1", "方向2", "..."]}
+# ```
+# 数组必须包含恰好 {n} 个字符串。不要额外文本。
+output_format: |-
+  ```json
+  {"directions": ["direction 1", "direction 2", "..."]}
+  ```
+  The array must contain exactly {n} strings. No extra text.
+

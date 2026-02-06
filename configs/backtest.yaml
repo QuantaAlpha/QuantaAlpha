@@ -1,0 +1,219 @@
+######################################################################
+# 回测工具 V2 配置文件
+# 支持 Qlib 官方因子库（alpha158/alpha360）和自定义因子库（JSON格式）
+#
+# 使用方式：
+#   python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
+#       --factor-source alpha158 
+#   
+#   或使用自定义因子库：
+#   python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
+#       --factor-source custom \
+#       --factor-json /path/to/factors.json
+######################################################################
+
+# 全局随机种子（确保结果可复现）
+random_seed: 42
+
+experiment:
+  name: "backtest_v2_experiment"
+  recorder: "backtest_v2_recorder"
+  output_dir: "/nfsdata-117/quantaalpha/data/results/backtest_v2_results"
+  output_metrics_file: "backtest_metrics.json"
+
+######################################################################
+# 1. 因子源配置（factor_source）
+######################################################################
+
+factor_source:
+  # 支持的类型：
+  # - "alpha158": Qlib Alpha158 因子库（158个因子）
+  # - "alpha158_20": Qlib Alpha158(20) 因子库（20个核心因子）
+  # - "alpha360": Qlib Alpha360 因子库（360个因子）
+  # - "custom": 自定义因子库（从JSON文件加载）
+  # - "combined": 组合使用官方因子和自定义因子
+  type: "alpha158_20"
+  
+  # 自定义因子库配置（仅当 type 为 "custom" 或 "combined" 时生效）
+  custom:
+    # JSON 文件路径列表
+    json_files: []
+    # 示例：
+    # json_files:
+    #   - "/home/tjxy/.qlib/factor_data/quality/high_quality_1.json"
+    #   - "/home/tjxy/.qlib/factor_data/quality/high_quality_2.json"
+    
+    # 质量过滤（可选）：仅加载指定质量等级的因子
+    # 可选值：high_quality, medium_quality, low_quality
+    quality_filter: null
+    
+    # 最大因子数量限制（可选）
+    max_factors: null
+    
+    # 是否使用 LLM 计算不兼容的因子表达式
+    use_llm_for_incompatible: true
+  
+  # 组合模式配置（仅当 type 为 "combined" 时生效）
+  combined:
+    # 使用的官方因子库
+    official_source: "alpha158_20"
+    # 是否包含自定义因子
+    include_custom: true
+
+######################################################################
+# 2. 数据与市场配置（data）
+######################################################################
+
+data:
+  # Qlib 数据源路径（与 .env 中 QLIB_DATA_DIR 保持一致）
+  provider_uri: "/nfsdata-117/quantaalpha/data/raw/cn_data"
+  region: "cn"
+  
+  # 市场标的：例如 "csi300", "csi500", "all"
+  market: "csi300"
+  
+  # 整个样本区间
+  start_time: "2016-01-01"
+  end_time: "2025-12-26"
+
+######################################################################
+# 3. 样本与预处理配置（dataset）
+######################################################################
+
+dataset:
+  # 标签定义
+  label: "Ref($close, -2) / Ref($close, -1) - 1"
+  
+  # 训练阶段预处理
+  learn_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"        # 处理无穷值（无需参数，处理整个DataFrame）
+    - class: "DropnaLabel"
+    # 使用 CSRankNorm 对 Feature 进行排名标准化（对异常值鲁棒）
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    # 对 Label 使用 CSRankNorm 排名标准化（将极端值映射到正常范围）
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  # 推理阶段预处理
+  infer_processors:
+    - class: "Fillna"
+      kwargs:
+        fields_group: "feature"
+    - class: "ProcessInf"        # 处理无穷值
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "feature"
+    - class: "CSRankNorm"
+      kwargs:
+        fields_group: "label"
+  
+  # 数据集划分
+  segments:
+    train: ["2016-01-01", "2020-12-31"]
+    valid: ["2021-01-01", "2021-12-31"]
+    test:  ["2022-01-01", "2025-12-26"]
+
+######################################################################
+# 4. 模型配置（model）
+######################################################################
+
+model:
+  # 支持的模型类型：lgb, xgb, catboost, linear
+  type: "lgb"
+  
+  # LGBModel 参数
+  params:
+    loss: "mse"
+    learning_rate: 0.1         # 提高学习率，加速收敛
+    max_depth: 8
+    num_leaves: 210
+    colsample_bytree: 0.8879
+    subsample: 0.8789
+    lambda_l1: 205.6999
+    lambda_l2: 580.9768
+    num_threads: 20
+    seed: 42
+    random_state: 42
+    early_stopping_round: 50  # 增加早停轮数，给更多机会改进
+    num_boost_round: 500      # 增加最大迭代轮数
+    min_child_samples: 100     # 叶节点最小样本数，防止过拟合
+    feature_fraction_bynode: 0.8  # 每个节点随机选择特征
+
+######################################################################
+# 5. 回测与组合配置（backtest）
+######################################################################
+
+backtest:
+  # 组合构建策略配置
+  strategy:
+    class: "TopkDropoutStrategy"
+    module_path: "qlib.contrib.strategy"
+    kwargs:
+      signal: "<PRED>"
+      topk: 50
+      n_drop: 5
+  
+  # 回测窗口与交易参数
+  backtest:
+    start_time: "2022-01-01"
+    end_time: "2025-12-26"
+    account: 100000000
+    benchmark: "SH000300"  # 改为沪深300指数，与股票池csi300匹配
+    exchange_kwargs:
+      limit_threshold: 0.095
+      deal_price: "open"  # 使用开盘价成交
+      open_cost: 0.0005
+      close_cost: 0.0015
+      min_cost: 5
+
+######################################################################
+# 6. LLM 配置（用于自定义因子计算）
+######################################################################
+
+llm:
+  # 是否启用 LLM 计算
+  enabled: true
+  
+  # 计算超时时间（秒）
+  timeout: 300
+  
+  # 最大重试次数
+  max_retries: 3
+  
+  # 是否缓存计算结果
+  cache_results: true
+  # 缓存目录 (使用 /mnt/DATA 存储，节省根目录空间)
+  cache_dir: "/nfsdata-117/quantaalpha/data/results/factor_cache"
+  
+  # 是否自动从主程序日志中提取缓存
+  # 启用后，回测时会自动检查并提取主程序已计算的因子
+  # 禁用自动缓存提取（扫描 45+ 实验目录非常慢）
+  # 如需提取缓存，手动运行: python tools/factor_cache_extractor.py
+  auto_extract_cache: false
+  
+  # 调试模式（输出更多日志）
+  debug: false
+
+######################################################################
+# 7. 因子计算配置
+######################################################################
+
+factor_calculation:
+  # 因子数据保存路径
+  output_dir: "/nfsdata-117/quantaalpha/data/results/computed_factors"
+  
+  # 是否保存中间结果
+  save_intermediate: true
+  
+  # 并行计算线程数
+  n_jobs: 4
+  
+  # 数据文件路径（用于自定义因子计算）
+  data_file: null  # 如果为 null，将自动从 qlib 获取数据
+

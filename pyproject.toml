@@ -1,0 +1,53 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools",
+  "setuptools-scm",
+]
+
+[project]
+authors = [
+  {email = "tangzy27@mail2.sysu.edu.cn", name = "Ziyi Tang"},
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+description = "QuantaAlpha - LLM-Driven Alpha Factor Mining Agent"
+dynamic = [
+  "dependencies",
+  "optional-dependencies",
+  "version",
+]
+keywords = [
+  "Quantitative Finance",
+  "Factor Mining",
+  "Large Language Models",
+  "Autonomous Agents",
+]
+name = "quantaalpha"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.scripts]
+quantaalpha = "quantaalpha.cli:app"
+
+[project.urls]
+homepage = "https://github.com/QuantaAlpha/quantaalpha"
+issue = "https://github.com/QuantaAlpha/quantaalpha/issues"
+
+[tool.setuptools]
+packages = {find = {where = ["."]}}
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.dynamic.optional-dependencies]
+docs = {file = ["requirements/docs.txt"]}
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+version_scheme = "guess-next-dev"

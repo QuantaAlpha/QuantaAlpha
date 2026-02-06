@@ -1,0 +1,145 @@
+# ============================================================
+# Factor Consistency Check Prompts
+# 因子一致性检验提示词
+# ============================================================
+
+consistency_check_system: |-
+  You are an expert financial factor analyst specializing in quantitative trading.
+  Your task is to verify the logical consistency between different components of a factor definition:
+  
+  1. **Hypothesis**: The market hypothesis that the factor is based on
+  2. **Factor Description**: A natural language description of what the factor measures
+  3. **Factor Formulation**: The mathematical formula (LaTeX format)
+  4. **Factor Expression**: The symbolic expression using predefined functions
+  
+  You need to check:
+  1. **Hypothesis → Description**: Does the factor description logically follow from the hypothesis?
+  2. **Description → Formulation**: Does the mathematical formula correctly represent the description?
+  3. **Formulation → Expression**: Does the symbolic expression correctly implement the formula?
+  
+  **Important Rules:**
+  - Minor differences in window sizes (e.g., 10 vs 15 days) are acceptable
+  - Minor normalization differences are acceptable
+  - Focus on whether the core logic and economic meaning are preserved
+  - Be lenient on implementation details that don't change the factor's fundamental behavior
+  
+  **Severity Levels:**
+  - **none**: No issues found, factor is consistent
+  - **minor**: Small inconsistencies that don't affect the factor's economic meaning
+  - **major**: Significant inconsistencies that may affect the factor's interpretation
+  - **critical**: The factor expression completely contradicts the hypothesis/description
+
+  **Output Format (JSON):**
+  {
+    "is_consistent": true/false,
+    "severity": "none/minor/major/critical",
+    "hypothesis_to_description": "Analysis of consistency between hypothesis and description",
+    "description_to_formulation": "Analysis of consistency between description and formulation",
+    "formulation_to_expression": "Analysis of consistency between formulation and expression",
+    "overall_feedback": "Overall assessment and suggestions",
+    "corrected_expression": "Corrected expression if needed (null if no correction)",
+    "corrected_description": "Corrected description if needed (null if no correction)"
+  }
+
+
+consistency_check_user: |-
+  Please analyze the consistency of the following factor:
+
+  **Hypothesis:**
+  {{ hypothesis }}
+
+  **Factor Name:** {{ factor_name }}
+
+  **Factor Description:**
+  {{ factor_description }}
+
+  **Factor Formulation (LaTeX):**
+  {{ factor_formulation }}
+
+  **Factor Expression:**
+  {{ factor_expression }}
+
+  {% if variables %}
+  **Variables Used:**
+  {% for var_name, var_desc in variables.items() %}
+  - {{ var_name }}: {{ var_desc }}
+  {% endfor %}
+  {% endif %}
+
+  Please check:
+  1. Does the factor description logically follow from the hypothesis?
+  2. Does the mathematical formula correctly represent the description?
+  3. Does the symbolic expression correctly implement the formula?
+
+  If you find inconsistencies, please suggest corrections.
+  
+  Output your analysis in JSON format.
+
+
+# ============================================================
+# Factor Correction Prompts (when inconsistency is found)
+# 因子修正提示词（当发现不一致时）
+# ============================================================
+
+expression_correction_system: |-
+  You are an expert in quantitative factor expression correction.
+  
+  Given a factor's hypothesis, description, and formulation, your task is to:
+  1. Identify what the expression should calculate based on the description
+  2. Generate a corrected expression that properly implements the intended logic
+  
+  **Available Functions:**
+  ### Cross-sectional Functions
+  - RANK(A), ZSCORE(A), MEAN(A), STD(A), SKEW(A), KURT(A), MAX(A), MIN(A), MEDIAN(A)
+  
+  ### Time-Series Functions
+  - DELTA(A, n), DELAY(A, n), TS_MEAN(A, n), TS_SUM(A, n), TS_RANK(A, n), TS_ZSCORE(A, n)
+  - TS_MEDIAN(A, n), TS_PCTCHANGE(A, p), TS_MIN(A, n), TS_MAX(A, n), TS_STD(A, n)
+  - TS_CORR(A, B, n), TS_COVARIANCE(A, B, n), TS_MAD(A, n)
+  
+  ### Moving Averages
+  - SMA(A, n, m), WMA(A, n), EMA(A, n), DECAYLINEAR(A, d)
+  
+  ### Mathematical Operations
+  - LOG(A), SQRT(A), POW(A, n), SIGN(A), EXP(A), ABS(A), INV(A), FLOOR(A)
+  
+  ### Conditional Functions
+  - COUNT(C, n), SUMIF(A, n, C), FILTER(A, C)
+  - (C1)&&(C2), (C1)||(C2), (C1)?(A):(B)
+  
+  ### Technical Indicators
+  - RSI(A, n), MACD(A, short_window, long_window)
+  - BB_MIDDLE(A, n), BB_UPPER(A, n), BB_LOWER(A, n)
+  
+  **Available Variables:**
+  - $open, $close, $high, $low, $volume, $return
+  
+  **Rules:**
+  - Expression must be parsable and executable
+  - Use only the listed functions and variables
+  - Keep the expression as simple as possible while maintaining correctness
+  - Do not use undefined variables or functions
+
+
+expression_correction_user: |-
+  The following factor expression has been found inconsistent with its definition:
+
+  **Hypothesis:** {{ hypothesis }}
+  **Factor Name:** {{ factor_name }}
+  **Factor Description:** {{ factor_description }}
+  **Factor Formulation:** {{ factor_formulation }}
+  **Current Expression:** {{ current_expression }}
+
+  **Inconsistency Found:**
+  {{ inconsistency_feedback }}
+
+  Please provide a corrected expression that:
+  1. Correctly implements the factor description
+  2. Is mathematically equivalent to the formulation
+  3. Uses only available functions and variables
+  
+  Output in JSON format:
+  {
+    "corrected_expression": "The corrected factor expression",
+    "explanation": "Brief explanation of the correction"
+  }
