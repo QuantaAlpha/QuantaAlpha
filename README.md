@@ -1,36 +1,52 @@
-# QuantaAlpha
-
 <div align="center">
 
-<img src="images/overview.jpg" width="100%" alt="QuantaAlpha Overview">
+  <img src="images/overview.jpg" alt="QuantaAlpha Logo" width="100%"/>
 
-**LLM-Driven Experimental Framework for Factor Mining and Backtesting**
+  <h1 align="center" style="color: #2196F3; font-size: 32px; font-weight: 700; margin: 20px 0; line-height: 1.4;">
+    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>LLM-Driven Experimental Framework for Factor Mining</em></span>
+  </h1>
 
-[English](README.md) | [中文](README_CN.md)
+  <p align="center" style="font-size: 16px; color: #666; margin: 10px 0; font-weight: 500;">
+    🚀 <em>Trajectory-Based Self-Evolution Paradigm: Plan - Evolve - Constrain</em>
+  </p>
+
+  <p style="margin: 20px 0;">
+    <a href="#"><img src="https://img.shields.io/badge/License-MIT-00A98F.svg?style=flat-square&logo=opensourceinitiative&logoColor=white" /></a>
+    <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white" /></a>
+    <a href="#"><img src="https://img.shields.io/badge/Platform-Linux-FCC624.svg?style=flat-square&logo=linux&logoColor=black" /></a>
+  </p>
+
+  <p style="font-size: 16px; color: #666; margin: 15px 0; font-weight: 500;">
+    🌐 <a href="README.md" style="text-decoration: none; color: #0066cc;">English</a> | <a href="README_CN.md" style="text-decoration: none; color: #0066cc;">中文</a>
+  </p>
 
 </div>
 
 ---
 
-## Core Framework: Trajectory-Based Self-Evolution Paradigm
+## 🚀 Core Framework: Trajectory-Based Self-Evolution Paradigm
 
-**Plan - Evolve - Constrain: Empowering AI Survival in Real Financial Markets**
+<div align="center">
+  <h3>🎯 Plan · Evolve · Constrain - Empowering AI Survival in Real Financial Markets</h3>
+  
+  <p style="font-size: 16px; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+    QuantaAlpha goes beyond single-shot mining success, pursuing <strong>Trajectory-Level Evolution</strong>. By simulating iterative research in real markets, it builds an Agentic Science experimental platform capable of logical self-consistency and environmental adaptation.
+  </p>
+</div>
 
-QuantaAlpha goes beyond single-shot mining success, pursuing **Trajectory-Level Evolution**. By simulating iterative research in real markets, it builds an Agentic Science experimental platform capable of logical self-consistency and environmental adaptation.
+<br/>
 
-### Diversified Planning Initialization
-> Instead of relying on blind randomness, the initialization Agent uses a `planning` operator to generate significantly different research directions in parallel (e.g., "Microstructure Momentum" vs. "Fundamental Anomalies"), avoiding local optima from the source.
+### ✨ Key Features
 
-### Trajectory Evolution
-> - **Mutation**: Precisely locates failure nodes and performs **targeted refinement** on local logic, rather than overturning the entire trajectory.
-> - **Crossover**: Fuses superior genes across trajectories, for example, non-linearly recombining **Institutional Capital Flow** with **Retail Sentiment** factors to emerge with new, robust logic.
-
-### Structured Constraint
-> Introduces AST symbol verification and consistency verifiers, enforcing a "Investment Hypothesis -- Language Description -- Code Implementation" trinity, ensuring that evolved codes are not just high-yield, but **interpretable economic hypotheses**.
+- **🧩 Diversified Planning Initialization**: Instead of relying on blind randomness, the initialization Agent uses a `planning` operator to generate significantly different research directions in parallel, avoiding local optima.
+- **🧬 Trajectory Evolution**: 
+    - **Mutation**: Precisely locates failure nodes and performs **targeted refinement** on local logic.
+    - **Crossover**: Fuses superior genes across trajectories, creating new, robust logic (e.g., combining Institutional Capital Flow with Retail Sentiment).
+- **🛡️ Structured Constraint**: Enforces a "Investment Hypothesis -- Language Description -- Code Implementation" trinity using AST verification, ensuring evolved codes are **interpretable economic hypotheses**.
 
 ---
 
-## Empirical Performance
+## 📊 Empirical Performance
 
 ### 1. Peak Performance Metrics
 
@@ -43,35 +59,24 @@ QuantaAlpha goes beyond single-shot mining success, pursuing **Trajectory-Level 
 | | Calmar Ratio (CR) | **3.4774** |
 
 <div align="center">
-<img src="images/主实验.png" width="90%" alt="Main Experiment Results">
+  <img src="images/主实验.png" width="90%" alt="Main Experiment Results" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
 </div>
 
-### 2. Zero-Shot Transferability
+### 2. Zero-Shot Transferability & 3. Resilience
 
-Factors mined on **CSI 300** were directly transferred to **CSI 500** and **S&P 500**, generating cumulative excess returns of **160%** and **137%** respectively over four years.
-
-<div align="center">
-<img src="images/figure3.png" width="90%" alt="Zero-Shot Transfer">
+<div align="center" style="display: flex; justify-content: center; gap: 20px;">
+  <div style="flex: 1; text-align: center;">
+    <p><strong>Zero-Shot Transfer</strong></p>
+    <img src="images/figure3.png" width="95%" alt="Zero-Shot Transfer" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+    <p style="font-size: 12px; color: #666;">CSI 300 factors transferred to CSI 500/S&P 500</p>
+  </div>
+  <div style="flex: 1; text-align: center;">
+    <p><strong>Resilience Test</strong></p>
+    <img src="images/figure4.png" width="95%" alt="Resilience Test" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  </div>
 </div>
 
-### 3. Resilience Under Extreme Volatility
-
-<div align="center">
-<img src="images/figure4.png" width="90%" alt="Resilience Test">
-</div>
-
----
-
-## Core Features
-
-- **Factor Mining**: LLM proposes hypotheses and factor expressions, followed by automated small-scale backtesting and scoring
-- **Trajectory Evolution**: Mutation + Crossover across exploration directions for self-improving factor discovery
-- **Factor Library**: Generates `all_factors_library*.json` with backtest results for subsequent combination
-- **Independent Backtesting**: Freely combine factors from the library for full period backtest evaluation
-- **Quality Gates**: Consistency, redundancy, and complexity checks (configurable)
-- **Web Dashboard**: React-based frontend for experiment monitoring, factor library browsing, and independent backtesting
-
----
+<br/>
 
 ## System Requirements
 

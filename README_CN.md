@@ -1,36 +1,52 @@
-# QuantaAlpha
-
 <div align="center">
 
-<img src="images/overview.jpg" width="100%" alt="QuantaAlpha Overview">
+  <img src="images/overview.jpg" alt="QuantaAlpha Logo" width="100%"/>
 
-**面向因子挖掘与回测的 LLM 驱动实验框架**
+  <h1 align="center" style="color: #2196F3; font-size: 32px; font-weight: 700; margin: 20px 0; line-height: 1.4;">
+    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>面向因子挖掘与回测的 LLM 驱动实验框架</em></span>
+  </h1>
 
-[English](README.md) | [中文](README_CN.md)
+  <p align="center" style="font-size: 16px; color: #666; margin: 10px 0; font-weight: 500;">
+    🚀 <em>基于轨迹的自进化范式：规划 - 进化 - 约束</em>
+  </p>
+
+  <p style="margin: 20px 0;">
+    <a href="#"><img src="https://img.shields.io/badge/License-MIT-00A98F.svg?style=flat-square&logo=opensourceinitiative&logoColor=white" /></a>
+    <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white" /></a>
+    <a href="#"><img src="https://img.shields.io/badge/Platform-Linux-FCC624.svg?style=flat-square&logo=linux&logoColor=black" /></a>
+  </p>
+
+  <p style="font-size: 16px; color: #666; margin: 15px 0; font-weight: 500;">
+    🌐 <a href="README.md" style="text-decoration: none; color: #0066cc;">English</a> | <a href="README_CN.md" style="text-decoration: none; color: #0066cc;">中文</a>
+  </p>
 
 </div>
 
 ---
 
-## 核心框架：基于轨迹的自进化范式
+## 🚀 核心框架：基于轨迹的自进化范式
 
-**规划 - 进化 - 约束：让 AI 在真实金融市场中生存**
+<div align="center">
+  <h3>🎯 规划 · 进化 · 约束 - 让 AI 在真实金融市场中生存</h3>
+  
+  <p style="font-size: 16px; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+    QuantaAlpha 不满足于单次挖掘的成功，而是追求<strong>轨迹级 (Trajectory) 的进化</strong>。通过模拟真实市场中的研究迭代，它构建了一个具备逻辑自洽性与环境适应力的 Agentic Science 实验平台。
+  </p>
+</div>
 
-QuantaAlpha 不满足于单次挖掘的成功，而是追求**轨迹级 (Trajectory) 的进化**。通过模拟真实市场中的研究迭代，它构建了一个具备逻辑自洽性与环境适应力的 Agentic Science 实验平台。
+<br/>
 
-### 多样化规划初始化
-> 初始化 Agent 不依赖盲目随机，而是通过 `planning` 算子并行生成差异显著的研究方向（如"微观结构动量" vs "基本面异象"），从源头规避局部最优。
+### ✨ 关键特性
 
-### 轨迹级进化
-> - **变异 (Mutation)**：精准定位失效节点（如过时的市场假设），对局部逻辑进行**定向修正**，而非全盘推翻。
-> - **交叉 (Crossover)**：跨轨迹融合优势基因，例如将**机构资金流**与**散户情绪**因子非线性重组，涌现出更具鲁棒性的新逻辑。
-
-### 结构化约束
-> 引入 AST 符号校验与一致性验证器，强制要求"投资假设—语言描述—代码实现"三位一体，确保进化出的不仅是高收益代码，更是**可解释的经济学假设**。
+- **🧩 多样化规划初始化**: 初始化 Agent 不依赖盲目随机，而是通过 `planning` 算子并行生成差异显著的研究方向（如"微观结构动量" vs "基本面异象"），从源头规避局部最优。
+- **🧬 轨迹级进化**: 
+    - **变异 (Mutation)**：精准定位失效节点（如过时的市场假设），对局部逻辑进行**定向修正**，而非全盘推翻。
+    - **交叉 (Crossover)**：跨轨迹融合优势基因，例如将**机构资金流**与**散户情绪**因子非线性重组，涌现出更具鲁棒性的新逻辑。
+- **🛡️ 结构化约束**: 引入 AST 符号校验与一致性验证器，强制要求"投资假设—语言描述—代码实现"三位一体，确保进化出的不仅是高收益代码，更是**可解释的经济学假设**。
 
 ---
 
-## 实证表现
+## 📊 实证表现
 
 ### 1. 巅峰性能指标
 
@@ -43,24 +59,24 @@ QuantaAlpha 不满足于单次挖掘的成功，而是追求**轨迹级 (Traject
 | | 卡玛比率 (Calmar Ratio) | **3.4774** |
 
 <div align="center">
-<img src="images/主实验.png" width="90%" alt="主实验结果">
+  <img src="images/主实验.png" width="90%" alt="主实验结果" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
 </div>
 
-### 2. 零样本迁移
+### 2. 零样本迁移 & 3. 韧性考验
 
-在 **CSI 300** 上挖掘出的因子，直接迁移至 **中证500** 和 **标普500**，四年内分别创造了 **160%** 和 **137%** 的累积超额收益。
-
-<div align="center">
-<img src="images/figure3.png" width="90%" alt="零样本迁移">
+<div align="center" style="display: flex; justify-content: center; gap: 20px;">
+  <div style="flex: 1; text-align: center;">
+    <p><strong>零样本迁移 (Zero-Shot Transfer)</strong></p>
+    <img src="images/figure3.png" width="95%" alt="零样本迁移" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+    <p style="font-size: 12px; color: #666;">CSI 300 挖掘因子直接迁移至 CSI 500/S&P 500</p>
+  </div>
+  <div style="flex: 1; text-align: center;">
+    <p><strong>韧性考验 (Resilience)</strong></p>
+    <img src="images/figure4.png" width="95%" alt="韧性测试" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  </div>
 </div>
 
-### 3. 韧性考验
-
-<div align="center">
-<img src="images/figure4.png" width="90%" alt="韧性测试">
-</div>
-
----
+<br/>
 
 ## 系统要求
 

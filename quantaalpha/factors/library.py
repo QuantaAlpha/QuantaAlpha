@@ -273,7 +273,8 @@ class FactorLibraryManager:
         """遍历因子库 JSON，将所有可用的 result.h5 同步到 MD5 缓存目录。
 
         Returns:
-            { "total": int, "synced": int, "skipped": int, "failed": int }
+            { "total": int, "synced": int, "skipped": int, "failed": int,
+              "already_cached": int, "no_source": int }
         """
         cache_dir_path = Path(cache_dir or DEFAULT_FACTOR_CACHE_DIR)
 
@@ -284,6 +285,8 @@ class FactorLibraryManager:
         synced = 0
         skipped = 0
         failed = 0
+        already_cached = 0
+        no_source = 0
 
         for fid, finfo in factors.items():
             expr = finfo.get("factor_expression", "")
@@ -291,6 +294,8 @@ class FactorLibraryManager:
             h5_path = cloc.get("result_h5_path", "")
 
             if not expr or not h5_path:
+                # 没有 H5 源文件可供同步
+                no_source += 1
                 skipped += 1
                 continue
 
@@ -298,6 +303,8 @@ class FactorLibraryManager:
             pkl_file = cache_dir_path / f"{md5_key}.pkl"
 
             if pkl_file.exists():
+                # MD5 缓存已存在，无需重复同步
+                already_cached += 1
                 skipped += 1
                 continue
 
@@ -318,6 +325,8 @@ class FactorLibraryManager:
             "synced": synced,
             "skipped": skipped,
             "failed": failed,
+            "already_cached": already_cached,
+            "no_source": no_source,
         }
 
     # ------------------------------------------------------------------

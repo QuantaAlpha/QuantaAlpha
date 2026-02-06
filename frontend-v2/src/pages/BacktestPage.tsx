@@ -137,9 +137,9 @@ export const BacktestPage: React.FC = () => {
     setWarmCacheResult(null);
     try {
       const resp = await warmCache(selectedLibrary);
-      if (resp.success && resp.data) {
-        const d = resp.data as any;
-        setWarmCacheResult(`同步 ${d.synced} 个，跳过 ${d.skipped} 个，失败 ${d.failed} 个`);
+      if (resp.success) {
+        // Use the detailed message from backend
+        setWarmCacheResult(resp.message || '完成');
       }
       // Refresh cache status
       const cs = await getCacheStatus(selectedLibrary);
@@ -286,7 +286,7 @@ export const BacktestPage: React.FC = () => {
                   }`}
                 >
                   Combined
-                  <span className="block text-xs font-normal mt-0.5">自定义 + Alpha158</span>
+                  <span className="block text-xs font-normal mt-0.5">自定义 + Alpha158(20)</span>
                 </button>
               </div>
             </div>
@@ -373,7 +373,7 @@ export const BacktestPage: React.FC = () => {
                   <p className="text-xs text-muted-foreground">
                     {cacheStatus.need_compute === 0
                       ? '所有因子已缓存，回测将快速执行'
-                      : `${cacheStatus.need_compute} 个因子无缓存，回测时将从头计算（较慢）。点击"预热缓存"从 HDF5 文件同步到本地缓存`}
+                      : `${cacheStatus.need_compute} 个因子无缓存，回测时将从表达式重新计算（首次较慢，计算后自动缓存）`}
                   </p>
                 </div>
               ) : null}

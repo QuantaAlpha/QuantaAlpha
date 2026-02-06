@@ -286,7 +286,7 @@ class FactorLoader:
         """
         source_type = self.factor_source_config.get('type', 'alpha158_20')
         
-        logger.info(f"📊 加载因子源: {source_type}")
+        logger.debug(f"📊 加载因子源: {source_type}")
         
         if source_type == 'alpha158':
             return self._load_alpha158(), []
@@ -303,12 +303,12 @@ class FactorLoader:
     
     def _load_alpha158_20(self) -> Dict[str, str]:
         """加载 Alpha158(20) 因子"""
-        logger.info(f"  ✓ 加载 Alpha158(20) 因子库: {len(self.ALPHA158_20_FACTORS)} 个因子")
+        logger.debug(f"  ✓ 加载 Alpha158(20) 因子库: {len(self.ALPHA158_20_FACTORS)} 个因子")
         return self.ALPHA158_20_FACTORS.copy()
     
     def _load_alpha158(self) -> Dict[str, str]:
         """加载 Alpha158 因子"""
-        logger.info(f"  ✓ 加载 Alpha158 因子库: {len(self.ALPHA158_FACTORS)} 个因子")
+        logger.debug(f"  ✓ 加载 Alpha158 因子库: {len(self.ALPHA158_FACTORS)} 个因子")
         return self.ALPHA158_FACTORS.copy()
     
     def _load_alpha360(self) -> Dict[str, str]:
@@ -357,7 +357,7 @@ class FactorLoader:
             "KSFT": "(2*$close-$high-$low)/$open",
         })
         
-        logger.info(f"  ✓ 加载 Alpha360 因子库: {len(alpha360_factors)} 个因子")
+        logger.debug(f"  ✓ 加载 Alpha360 因子库: {len(alpha360_factors)} 个因子")
         return alpha360_factors
     
     def _load_custom_factors(self) -> Tuple[Dict[str, str], List[Dict]]:
@@ -392,7 +392,7 @@ class FactorLoader:
         if max_factors and len(custom_factors) > max_factors:
             custom_factors = custom_factors[:max_factors]
         
-        logger.info(f"  ✓ 加载自定义因子: {len(custom_factors)} 个 (使用自定义计算器)")
+        logger.debug(f"  ✓ 加载自定义因子: {len(custom_factors)} 个 (使用自定义计算器)")
         
         # 返回空的 qlib_compatible，所有因子走自定义计算
         return {}, custom_factors
@@ -468,7 +468,7 @@ class FactorLoader:
             qlib_compatible.update(custom_compatible)
             needs_llm.extend(custom_llm)
         
-        logger.info(f"  ✓ 组合因子: {len(qlib_compatible)} 个Qlib兼容, {len(needs_llm)} 个需要LLM计算")
+        logger.debug(f"  ✓ 组合因子: {len(qlib_compatible)} 个Qlib兼容, {len(needs_llm)} 个需要LLM计算")
         return qlib_compatible, needs_llm
     
     def _parse_factor_json(self, file_path: Path, 

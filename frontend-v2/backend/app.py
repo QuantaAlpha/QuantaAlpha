@@ -266,12 +266,30 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
         line_count = 0
         current_phase = "planning"
 
+        # Noisy patterns to suppress (shared with backtest)
+        _MINING_NOISE = (
+            "field data contains nan",
+            "common_infra",
+            "PyTorch models are skipped",
+            "UserWarning: pkg_resources",
+            "FutureWarning",
+            "UserWarning",
+            "Training until validation scores",
+            "Did not meet early stopping",
+        )
+
         while True:
             line_bytes = await proc.stdout.readline()
             if not line_bytes:
                 break
             line = line_bytes.decode("utf-8", errors="replace").rstrip()
+            if not line:
+                continue
             line_count += 1
+
+            # Skip noisy warnings
+            if any(p in line for p in _MINING_NOISE):
+                continue
 
             # Detect phase from log messages
             new_phase = current_phase
@@ -640,10 +658,21 @@ async def warm_cache(
 
     from quantaalpha.factors.library import FactorLibraryManager
     result = FactorLibraryManager.warm_cache_from_json(lib_path)
+    # Build a clear message
+    parts = []
+    if result['synced']:
+        parts.append(f"新同步 {result['synced']} 个")
+    if result.get('already_cached'):
+        parts.append(f"已有缓存 {result['already_cached']} 个")
+    if result.get('no_source'):
+        parts.append(f"无H5源 {result['no_source']} 个(回测时从表达式计算)")
+    if result['failed']:
+        parts.append(f"失败 {result['failed']} 个")
+    msg = "，".join(parts) if parts else "无需操作"
     return ApiResponse(
         success=True,
         data=result,
-        message=f"缓存预热完成：同步 {result['synced']} 个，跳过 {result['skipped']} 个，失败 {result['failed']} 个",
+        message=msg,
     )
 
 
@@ -765,11 +794,30 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
         )
         task["pid"] = proc.pid
 
+        # Noisy warnings from Qlib / dependencies that can be safely suppressed
+        _NOISY_PATTERNS = (
+            "field data contains nan",            # Qlib: some stocks have NaN open/close
+            "common_infra",                       # Qlib executor init info
+            "PyTorch models are skipped",         # PyTorch not installed, we use LightGBM
+            "UserWarning: pkg_resources",         # setuptools deprecation noise
+            "Training until validation scores",   # LightGBM verbose training rounds
+            "FutureWarning",                      # Pandas deprecation warnings
+            "UserWarning",                        # Generic non-critical UserWarning
+            "Did not meet early stopping",        # LightGBM early stop info
+            "num_leaves is set=",                 # LightGBM param echoing
+        )
+
         while True:
             line_bytes = await proc.stdout.readline()
             if not line_bytes:
                 break
             line = line_bytes.decode("utf-8", errors="replace").rstrip()
+            if not line:
+                continue
+
+            # Skip noisy repeated warnings
+            if any(p in line for p in _NOISY_PATTERNS):
+                continue
 
             level = "info"
             if "ERROR" in line or "Error" in line:
