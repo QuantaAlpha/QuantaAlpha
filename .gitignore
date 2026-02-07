@@ -60,7 +60,8 @@ dmypy.json
 .pyre/
 
 # ---- Logs ----
-log/
+/log/
+!quantaalpha/log/
 *.log
 *.out
 pip-log.txt
