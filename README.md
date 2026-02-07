@@ -346,18 +346,6 @@ quality_gate:
 
 ---
 
-## Resource Estimation
-
-| Configuration | Approximate LLM Tokens | Approximate Time |
-| :--- | :--- | :--- |
-| 2 directions x 3 rounds x 3 factors | ~100K tokens | ~30-60 min |
-| 3 directions x 5 rounds x 5 factors | ~500K tokens | ~2-4 hours |
-| 5 directions x 10 rounds x 5 factors | ~2M tokens | ~8-16 hours |
-
-> Token and time consumption is approximately proportional to `num_directions x max_rounds x factors_per_hypothesis`.
-
----
-
 ## FAQ
 
 | Problem | Solution |
