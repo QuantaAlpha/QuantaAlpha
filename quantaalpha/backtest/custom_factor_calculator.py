@@ -35,8 +35,8 @@ os.environ.setdefault('JOBLIB_START_METHOD', 'loky')
 
 logger = logging.getLogger(__name__)
 
-# 默认缓存目录
-DEFAULT_CACHE_DIR = Path("/mnt/DATA/quantagent/AlphaAgent/factor_cache")
+# 默认缓存目录（优先从环境变量 FACTOR_CACHE_DIR 读取）
+DEFAULT_CACHE_DIR = Path(os.environ.get("FACTOR_CACHE_DIR", "data/results/factor_cache"))
 
 
 class CustomFactorCalculator:

@@ -17,10 +17,10 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-# 默认集中缓存目录（MD5 哈希命名的 .pkl 文件）
+# 默认集中缓存目录（MD5 哈希命名的 .pkl 文件，优先从环境变量读取）
 DEFAULT_FACTOR_CACHE_DIR = os.environ.get(
     "FACTOR_CACHE_DIR",
-    "/nfsdata-117/quantaalpha/data/results/factor_cache",
+    "data/results/factor_cache",
 )
 
 
