@@ -1,13 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { ExecutionProgress, LogEntry } from '@/types';
-import { formatDateTime } from '@/utils';
+import { ExecutionProgress } from '@/types';
 import { Sparkles, Brain, TrendingUp, CheckCircle2 } from 'lucide-react';
 
 interface ProgressSidebarProps {
   progress: ExecutionProgress;
-  logs: LogEntry[];
 }
 
 const phaseConfig = {
@@ -19,33 +17,9 @@ const phaseConfig = {
   completed: { icon: CheckCircle2, label: '完成', color: 'text-success' },
 };
 
-export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress, logs }) => {
-  const logsEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logs]);
-
+export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress }) => {
   const currentPhase = phaseConfig[progress.phase];
   const Icon = currentPhase.icon;
-
-  const getLogIcon = (level: LogEntry['level']) => {
-    switch (level) {
-      case 'success': return '✅';
-      case 'error': return '❌';
-      case 'warning': return '⚠️';
-      default: return '•';
-    }
-  };
-
-  const getLogColor = (level: LogEntry['level']) => {
-    switch (level) {
-      case 'success': return 'text-success';
-      case 'error': return 'text-destructive';
-      case 'warning': return 'text-warning';
-      default: return 'text-muted-foreground';
-    }
-  };
 
   return (
     <div className="space-y-4">
@@ -84,7 +58,7 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress, logs
         <CardContent className="p-4">
           <div className="text-sm font-medium mb-3">执行时间线</div>
           <div className="space-y-3">
-            {Object.entries(phaseConfig).map(([phase, config], idx) => {
+            {Object.entries(phaseConfig).map(([phase, config]) => {
               const isActive = phase === progress.phase;
               const isPassed = Object.keys(phaseConfig).indexOf(phase) < Object.keys(phaseConfig).indexOf(progress.phase);
               const PhaseIcon = config.icon;
@@ -117,33 +91,6 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress, logs
                 </div>
               );
             })}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Logs */}
-      <Card className="glass card-hover animate-fade-in-left" style={{ animationDelay: '0.2s' }}>
-        <CardContent className="p-4">
-          <div className="text-sm font-medium mb-3">实时日志</div>
-          <div className="h-[200px] overflow-y-auto rounded-lg bg-secondary/20 p-3 font-mono text-xs space-y-1">
-            {logs.length === 0 ? (
-              <div className="flex h-full items-center justify-center text-muted-foreground">
-                等待日志输出...
-              </div>
-            ) : (
-              <>
-                {logs.map((log) => (
-                  <div key={log.id} className="flex gap-2 items-start animate-fade-in-up">
-                    <span className="text-muted-foreground shrink-0">
-                      {formatDateTime(log.timestamp).split(' ')[1]}
-                    </span>
-                    <span className="shrink-0">{getLogIcon(log.level)}</span>
-                    <span className={getLogColor(log.level)}>{log.message}</span>
-                  </div>
-                ))}
-                <div ref={logsEndRef} />
-              </>
-            )}
           </div>
         </CardContent>
       </Card>

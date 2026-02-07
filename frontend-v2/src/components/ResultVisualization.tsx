@@ -10,7 +10,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -207,7 +206,7 @@ export const ResultVisualization: React.FC<ResultVisualizationProps> = ({ result
                 </tr>
               </thead>
               <tbody>
-                {result.factors.slice(0, 10).map((factor, idx) => (
+                {result.factors.slice(0, 10).map((factor) => (
                   <tr key={factor.factorId} className="border-b border-border/50">
                     <td className="py-3">
                       <div>

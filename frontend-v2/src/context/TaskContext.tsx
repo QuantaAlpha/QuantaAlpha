@@ -58,6 +58,7 @@ interface TaskContextValue {
   miningIcTimeSeries: TimeSeriesData[];
   startMining: (config: TaskConfig) => void;
   stopMining: () => void;
+  resetMiningTask: () => void;
 
   // ---- Backtest ----
   backtestTask: BacktestTask | null;
@@ -163,11 +164,20 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const startRealMining = useCallback(
     async (config: TaskConfig) => {
       try {
+        // Load defaults from localStorage
+        let defaults: any = {};
+        const savedConfig = localStorage.getItem('quantaalpha_config');
+        if (savedConfig) {
+          try {
+            defaults = JSON.parse(savedConfig);
+          } catch {}
+        }
+
         const resp = await apiStartMining({
           direction: config.userInput,
-          numDirections: config.numDirections,
-          maxRounds: config.maxRounds,
-          librarySuffix: config.librarySuffix,
+          numDirections: config.numDirections || defaults.defaultNumDirections || 2,
+          maxRounds: config.maxRounds || defaults.defaultMaxRounds || 3,
+          librarySuffix: config.librarySuffix || defaults.defaultLibrarySuffix || undefined,
         });
         if (!resp.success || !resp.data) throw new Error(resp.error || 'Failed');
 

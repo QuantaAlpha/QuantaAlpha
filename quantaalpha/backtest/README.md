@@ -25,7 +25,6 @@
 ### 1. 使用 Alpha158(20) 基础因子
 
 ```bash
-cd /home/tjxy/quantagent/AlphaAgent
 python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --factor-source alpha158_20
 ```
 
@@ -46,7 +45,7 @@ python backtest_v2/run_backtest.py -c backtest_v2/config.yaml --factor-source al
 ```bash
 python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
     --factor-source custom \
-    --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_1.json
+    --factor-json /path/to/factor_data/quality/high_quality_1.json
 ```
 
 ### 5. 组合使用官方因子和自定义因子
@@ -54,8 +53,8 @@ python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
 ```bash
 python backtest_v2/run_backtest.py -c backtest_v2/config.yaml \
     --factor-source combined \
-    --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_1.json \
-    --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_2.json
+    --factor-json /path/to/factor_data/quality/high_quality_1.json \
+    --factor-json /path/to/factor_data/quality/high_quality_2.json
 ```
 
 ### 6. Dry Run 模式（仅加载因子）
@@ -87,7 +86,7 @@ factor_source:
 ### 数据配置
 ```yaml
 data:
-  provider_uri: "/home/tjxy/.qlib/qlib_data/cn_data"
+  provider_uri: "~/.qlib/qlib_data/cn_data"
   market: "csi300"  # csi300, csi500, all
   start_time: "2016-01-01"
   end_time: "2025-12-26"

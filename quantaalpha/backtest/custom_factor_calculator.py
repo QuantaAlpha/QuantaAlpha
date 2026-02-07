@@ -479,7 +479,7 @@ def get_qlib_stock_data(config: Dict) -> pd.DataFrame:
     
     data_config = config.get('data', {})
     
-    provider_uri = data_config.get('provider_uri', '/home/tjxy/.qlib/qlib_data/cn_data')
+    provider_uri = data_config.get('provider_uri', os.path.expanduser('~/.qlib/qlib_data/cn_data'))
     region = data_config.get('region', 'cn')
     
     try:

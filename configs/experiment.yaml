@@ -256,7 +256,7 @@ factor:
     symbol_length_threshold: 200
     # Maximum number of distinct base features ($close, $open, etc.)
     # 不同基础特征的最大数量（$close, $open等）
-    base_features_threshold: 6
+    base_features_threshold: 5
     # Maximum free arguments ratio (numeric constants / total nodes)
     # 最大自由参数比例（数值常量/总节点数）
     free_args_ratio_threshold: 0.5

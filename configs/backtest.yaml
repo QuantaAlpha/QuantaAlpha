@@ -40,8 +40,8 @@ factor_source:
     json_files: []
     # 示例：
     # json_files:
-    #   - "/home/tjxy/.qlib/factor_data/quality/high_quality_1.json"
-    #   - "/home/tjxy/.qlib/factor_data/quality/high_quality_2.json"
+    #   - "/path/to/factor_data/quality/high_quality_1.json"
+    #   - "/path/to/factor_data/quality/high_quality_2.json"
     
     # 质量过滤（可选）：仅加载指定质量等级的因子
     # 可选值：high_quality, medium_quality, low_quality

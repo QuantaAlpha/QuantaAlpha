@@ -51,7 +51,7 @@ def main():
   
   # 使用自定义因子库
   python run_backtest.py -c config.yaml --factor-source custom \
-      --factor-json /home/tjxy/.qlib/factor_data/quality/high_quality_1.json
+      --factor-json /path/to/factor_data/quality/high_quality_1.json
   
   # 使用组合因子（官方 + 自定义）
   python run_backtest.py -c config.yaml --factor-source combined \

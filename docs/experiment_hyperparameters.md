@@ -161,7 +161,7 @@ Round 4: 交叉轮 (Crossover)
 
 | 参数名 | 值 | 说明 |
 |--------|-----|------|
-| `provider_uri` | `/home/tjxy/.qlib/qlib_data/cn_data` | Qlib 数据路径 |
+| `provider_uri` | `~/.qlib/qlib_data/cn_data` | Qlib 数据路径 |
 | `region` | `cn` | 市场区域 (cn/us) |
 
 ### 7.2 市场配置

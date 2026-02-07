@@ -113,9 +113,19 @@ def _load_dotenv_dict() -> Dict[str, str]:
 
 
 def _find_factor_jsons() -> List[str]:
-    """Find all factor library JSON files in the project root."""
-    pattern = str(PROJECT_ROOT / "all_factors_library*.json")
-    return sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)
+    """Find all factor library JSON files in data/factorlib/."""
+    factorlib_dir = PROJECT_ROOT / "data" / "factorlib"
+    pattern = str(factorlib_dir / "all_factors_library*.json")
+    results = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)
+
+    old_pattern = str(PROJECT_ROOT / "all_factors_library*.json")
+    old_results = sorted(glob.glob(old_pattern), key=os.path.getmtime, reverse=True)
+
+    seen = set(results)
+    for r in old_results:
+        if r not in seen:
+            results.append(r)
+    return results
 
 
 def _load_factor_library(path: str) -> Dict[str, Any]:
@@ -378,7 +388,7 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
         # Prefer the library file matching the librarySuffix for this experiment
         target_lib = None
         if req.librarySuffix:
-            candidate = PROJECT_ROOT / f"all_factors_library_{req.librarySuffix}.json"
+            candidate = PROJECT_ROOT / "data" / "factorlib" / f"all_factors_library_{req.librarySuffix}.json"
             if candidate.exists():
                 target_lib = str(candidate)
         if not target_lib:

@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import {
-  LineChart,
-  Line,
   AreaChart,
   Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,25 +12,49 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { TimeSeriesData, RealtimeMetrics } from '@/types';
-import { formatNumber, formatPercent, formatDate } from '@/utils';
+import { TimeSeriesData, RealtimeMetrics, LogEntry } from '@/types';
+import { formatNumber, formatPercent, formatDate, formatDateTime } from '@/utils';
 import { TrendingUp, Activity, BarChart3, Target } from 'lucide-react';
 
 interface LiveChartsProps {
   equityCurve: TimeSeriesData[];
   drawdownCurve: TimeSeriesData[];
-  icTimeSeries: TimeSeriesData[];
   metrics: RealtimeMetrics | null;
   isRunning: boolean;
+  logs: LogEntry[];
 }
 
 export const LiveCharts: React.FC<LiveChartsProps> = ({
   equityCurve,
   drawdownCurve,
-  icTimeSeries,
   metrics,
   isRunning,
+  logs,
 }) => {
+  const logsEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [logs]);
+
+  const getLogIcon = (level: LogEntry['level']) => {
+    switch (level) {
+      case 'success': return '✅';
+      case 'error': return '❌';
+      case 'warning': return '⚠️';
+      default: return '•';
+    }
+  };
+
+  const getLogColor = (level: LogEntry['level']) => {
+    switch (level) {
+      case 'success': return 'text-success';
+      case 'error': return 'text-destructive';
+      case 'warning': return 'text-warning';
+      default: return 'text-muted-foreground';
+    }
+  };
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -38,6 +62,19 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
           <p className="text-xs text-muted-foreground mb-1">{formatDate(label)}</p>
           <p className="text-sm font-bold text-primary">
             {payload[0].name}: {formatNumber(payload[0].value, 4)}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const QualityTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="glass-strong rounded-lg p-3 shadow-xl">
+          <p className="text-sm font-bold text-primary">
+            {label}: {payload[0].value}
           </p>
         </div>
       );
@@ -61,6 +98,15 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
       <div className="text-2xl font-bold">{value}</div>
     </div>
   );
+
+  const qualityData = useMemo(() => {
+    if (!metrics) return [];
+    return [
+      { name: '高质量', value: metrics.highQualityFactors || 0, fill: '#10B981' },
+      { name: '中等', value: metrics.mediumQualityFactors || 0, fill: '#F59E0B' },
+      { name: '低质量', value: metrics.lowQualityFactors || 0, fill: '#EF4444' },
+    ];
+  }, [metrics]);
 
   return (
     <div className="space-y-4">
@@ -98,7 +144,39 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
 
       {/* Main Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Equity Curve */}
+        
+        {/* Real-time Logs (Full Width) */}
+        <Card className="glass card-hover animate-fade-in-left lg:col-span-2">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              实时日志
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] overflow-y-auto rounded-lg bg-yellow-50 p-3 font-mono text-xs space-y-1 border border-yellow-100">
+              {logs.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-muted-foreground">
+                  等待日志输出...
+                </div>
+              ) : (
+                <>
+                  {logs.map((log) => (
+                    <div key={log.id} className="flex gap-2 items-start animate-fade-in-up">
+                      <span className="text-muted-foreground shrink-0">
+                        {formatDateTime(log.timestamp).split(' ')[1]}
+                      </span>
+                      <span className="shrink-0">{getLogIcon(log.level)}</span>
+                      <span className={getLogColor(log.level)}>{log.message}</span>
+                    </div>
+                  ))}
+                  <div ref={logsEndRef} />
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Equity Curve (Left) */}
         <Card className="glass card-hover animate-fade-in-left">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -144,7 +222,7 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
           </CardContent>
         </Card>
 
-        {/* Drawdown Curve */}
+        {/* Drawdown Curve (Right) */}
         <Card className="glass card-hover animate-fade-in-right">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -192,111 +270,28 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
           </CardContent>
         </Card>
 
-        {/* IC Time Series */}
-        <Card className="glass card-hover animate-fade-in-left lg:col-span-2">
+        {/* Quality Distribution (Bottom, Full Width) */}
+        <Card className="glass card-hover animate-fade-in-up lg:col-span-2">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
-                IC 时序分析
-              </CardTitle>
-              {metrics && (
-                <div className="flex gap-3 text-xs">
-                  <span className="text-muted-foreground">
-                    IC: <span className="text-foreground font-mono">{formatNumber(metrics.ic, 4)}</span>
-                  </span>
-                  <span className="text-muted-foreground">
-                    ICIR: <span className="text-foreground font-mono">{formatNumber(metrics.icir, 3)}</span>
-                  </span>
-                </div>
-              )}
-            </div>
+            <CardTitle className="text-base flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+              因子质量分布
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={icTimeSeries}>
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={qualityData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                  tickFormatter={(value) => formatDate(value).split('/').slice(1).join('/')}
-                />
-                <YAxis
-                  tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                  tickFormatter={(value) => formatNumber(value, 3)}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#10B981"
-                  strokeWidth={2}
-                  dot={false}
-                  animationDuration={300}
-                />
-              </LineChart>
+                <XAxis dataKey="name" tick={{ fill: '#9CA3AF', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#9CA3AF', fontSize: 11 }} />
+                <Tooltip content={<QualityTooltip />} />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]} animationDuration={500} />
+              </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
+
       </div>
-
-      {/* Factor Quality Distribution */}
-      {metrics && (
-        <Card className="glass card-hover animate-fade-in-up">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">因子质量分布</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">总因子数</span>
-                <span className="text-2xl font-bold">{metrics.totalFactors}</span>
-              </div>
-
-              {/* Quality Bar */}
-              <div className="relative h-8 rounded-full overflow-hidden bg-secondary/30">
-                <div
-                  className="absolute left-0 top-0 h-full bg-success transition-all duration-500"
-                  style={{ width: `${(metrics.highQualityFactors / metrics.totalFactors) * 100}%` }}
-                />
-                <div
-                  className="absolute left-0 top-0 h-full bg-warning transition-all duration-500"
-                  style={{
-                    left: `${(metrics.highQualityFactors / metrics.totalFactors) * 100}%`,
-                    width: `${(metrics.mediumQualityFactors / metrics.totalFactors) * 100}%`,
-                  }}
-                />
-                <div
-                  className="absolute left-0 top-0 h-full bg-destructive transition-all duration-500"
-                  style={{
-                    left: `${((metrics.highQualityFactors + metrics.mediumQualityFactors) / metrics.totalFactors) * 100}%`,
-                    width: `${(metrics.lowQualityFactors / metrics.totalFactors) * 100}%`,
-                  }}
-                />
-              </div>
-
-              {/* Quality Labels */}
-              <div className="grid grid-cols-3 gap-3 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-success" />
-                  <span className="text-muted-foreground">高质量</span>
-                  <span className="ml-auto font-bold text-success">{metrics.highQualityFactors}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-warning" />
-                  <span className="text-muted-foreground">中等</span>
-                  <span className="ml-auto font-bold text-warning">{metrics.mediumQualityFactors}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-destructive" />
-                  <span className="text-muted-foreground">低质量</span>
-                  <span className="ml-auto font-bold text-destructive">{metrics.lowQualityFactors}</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };

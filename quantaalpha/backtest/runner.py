@@ -58,9 +58,16 @@ class BacktestRunner:
         if self._qlib_initialized:
             return
             
+        import os
         import qlib
         
-        provider_uri = self.config['data']['provider_uri']
+        # 优先使用 .env 中的 QLIB_DATA_DIR，其次使用配置文件中的 provider_uri
+        provider_uri = (
+            os.environ.get('QLIB_DATA_DIR')
+            or os.environ.get('QLIB_PROVIDER_URI')
+            or self.config['data']['provider_uri']
+        )
+        provider_uri = os.path.expanduser(provider_uri)
         region = self.config['data'].get('region', 'cn')
         qlib.init(provider_uri=provider_uri, region=region)
         self._qlib_initialized = True

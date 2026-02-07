@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Settings, Sparkles, Loader2, Square } from 'lucide-react';
+import { Send, Sparkles, Square } from 'lucide-react';
 import { TaskConfig } from '@/types';
 
 interface ChatInputProps {
@@ -10,13 +10,7 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunning = false }) => {
   const [input, setInput] = useState('');
-  const [showSettings, setShowSettings] = useState(false);
-  const [config, setConfig] = useState<Partial<TaskConfig>>({
-    numDirections: 2,
-    maxRounds: 3,
-    market: 'csi300',
-    parallelExecution: true,
-    qualityGateEnabled: true,
+  const [config] = useState<Partial<TaskConfig>>({
     librarySuffix: '',
   });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -54,98 +48,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 pb-6">
       <div className="container mx-auto px-6">
-        {/* Settings Panel */}
-        {showSettings && !isRunning && (
-          <div className="glass-strong rounded-2xl p-4 mb-3 animate-fade-in-up">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div>
-                <label className="block text-xs text-muted-foreground mb-1">
-                  并行方向数
-                </label>
-                <input
-                  type="number"
-                  value={config.numDirections}
-                  onChange={(e) =>
-                    setConfig({ ...config, numDirections: parseInt(e.target.value) })
-                  }
-                  className="w-full rounded-lg border border-border/50 bg-background/50 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                  min={1}
-                  max={10}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-muted-foreground mb-1">
-                  进化轮次
-                </label>
-                <input
-                  type="number"
-                  value={config.maxRounds}
-                  onChange={(e) =>
-                    setConfig({ ...config, maxRounds: parseInt(e.target.value) })
-                  }
-                  className="w-full rounded-lg border border-border/50 bg-background/50 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                  min={1}
-                  max={20}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-muted-foreground mb-1">
-                  市场选择
-                </label>
-                <select
-                  value={config.market}
-                  onChange={(e) =>
-                    setConfig({ ...config, market: e.target.value as 'csi300' | 'csi500' | 'sp500' })
-                  }
-                  className="w-full rounded-lg border border-border/50 bg-background/50 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                >
-                  <option value="csi300">CSI 300</option>
-                  <option value="csi500">CSI 500</option>
-                </select>
-              </div>
-
-              <div className="flex items-end">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={config.qualityGateEnabled}
-                    onChange={(e) =>
-                      setConfig({ ...config, qualityGateEnabled: e.target.checked })
-                    }
-                    className="h-4 w-4 rounded border-border/50 text-primary focus:ring-primary"
-                  />
-                  <span className="text-xs text-muted-foreground">质量门控</span>
-                </label>
-              </div>
-            </div>
-
-            {/* 因子库名称 —— 独立一行 */}
-            <div className="mt-3">
-              <label className="block text-xs text-muted-foreground mb-1">
-                因子库名称
-                <span className="ml-1 text-[10px] opacity-60">（选填，留空则默认 all_factors_library.json）</span>
-              </label>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground whitespace-nowrap">all_factors_library_</span>
-                <input
-                  type="text"
-                  value={config.librarySuffix ?? ''}
-                  onChange={(e) => {
-                    // 只允许字母、数字、下划线、中划线
-                    const val = e.target.value.replace(/[^a-zA-Z0-9_\-]/g, '');
-                    setConfig({ ...config, librarySuffix: val });
-                  }}
-                  placeholder="例如 momentum_v1"
-                  className="flex-1 rounded-lg border border-border/50 bg-background/50 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                />
-                <span className="text-xs text-muted-foreground whitespace-nowrap">.json</span>
-              </div>
-            </div>
-          </div>
-        )}
-
+        
         {/* Example Prompts */}
         {!input && !isRunning && (
           <div className="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
@@ -182,18 +85,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowSettings(!showSettings)}
-                    className={`p-2.5 rounded-lg transition-all ${
-                      showSettings
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary'
-                    }`}
-                    title="高级设置"
-                  >
-                    <Settings className="h-5 w-5" />
-                  </button>
-
                   {isRunning && onStop ? (
                     <button
                       onClick={onStop}

@@ -68,8 +68,31 @@ if [ "${EXPERIMENT_ID}" != "shared" ]; then
     echo "工作空间: ${WORKSPACE_PATH}"
 fi
 
-# 确保 Qlib 数据符号链接
+# =============================================================================
+# 校验 Qlib 数据
+# =============================================================================
 QLIB_DATA="${QLIB_DATA_DIR:-}"
+if [ -z "${QLIB_DATA}" ]; then
+    echo "错误: 未配置 QLIB_DATA_DIR，请在 .env 中设置 Qlib 数据路径"
+    echo "示例: QLIB_DATA_DIR=/path/to/qlib/cn_data"
+    exit 1
+fi
+if [ ! -d "${QLIB_DATA}" ]; then
+    echo "错误: Qlib 数据目录不存在: ${QLIB_DATA}"
+    echo "请检查 .env 中 QLIB_DATA_DIR 的路径是否正确"
+    exit 1
+fi
+# 校验关键子目录
+for subdir in calendars features instruments; do
+    if [ ! -d "${QLIB_DATA}/${subdir}" ]; then
+        echo "错误: Qlib 数据目录缺少 ${subdir}/ 子目录: ${QLIB_DATA}"
+        echo "有效的 Qlib 数据目录应包含 calendars/、features/、instruments/ 子目录"
+        exit 1
+    fi
+done
+echo "Qlib 数据校验通过: ${QLIB_DATA}"
+
+# 确保 Qlib 数据符号链接
 if [ -n "${QLIB_DATA}" ]; then
     QLIB_SYMLINK_DIR="$HOME/.qlib/qlib_data"
     if [ ! -L "${QLIB_SYMLINK_DIR}/cn_data" ] || [ "$(readlink -f ${QLIB_SYMLINK_DIR}/cn_data 2>/dev/null)" != "$(readlink -f ${QLIB_DATA})" ]; then

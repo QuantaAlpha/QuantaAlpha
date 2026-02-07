@@ -251,7 +251,9 @@ class AlphaAgentLoop(LoopBase, metaclass=LoopMeta):
                 library_filename = f"all_factors_library_{library_suffix}.json"
             else:
                 library_filename = "all_factors_library.json"
-            library_path = project_root / library_filename
+            factorlib_dir = project_root / "data" / "factorlib"
+            factorlib_dir.mkdir(parents=True, exist_ok=True)
+            library_path = factorlib_dir / library_filename
             manager = FactorLibraryManager(str(library_path))
             manager.add_factors_from_experiment(
                 experiment=prev_out["factor_backtest"],

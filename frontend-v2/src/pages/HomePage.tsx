@@ -20,7 +20,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     miningTask: task,
     miningEquityCurve: equityCurve,
     miningDrawdownCurve: drawdownCurve,
-    miningIcTimeSeries: icTimeSeries,
     startMining,
     stopMining,
   } = useTaskContext();
@@ -36,7 +35,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in-up">
           <div className="text-center mb-10">
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              欢迎使用 QuantaAlpha AI
+              欢迎使用 QuantaAlpha
             </h2>
             <p className="text-lg text-muted-foreground">
               用自然语言描述需求，AI 自动挖掘高质量量化因子
@@ -115,15 +114,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         // Execution View
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-1">
-            <ProgressSidebar progress={task.progress} logs={task.logs} />
+            <ProgressSidebar progress={task.progress} />
           </div>
           <div className="lg:col-span-3">
             <LiveCharts
               equityCurve={equityCurve}
               drawdownCurve={drawdownCurve}
-              icTimeSeries={icTimeSeries}
               metrics={task.metrics || null}
               isRunning={task.status === 'running'}
+              logs={task.logs}
             />
           </div>
         </div>
