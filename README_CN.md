@@ -296,12 +296,11 @@ conda activate quantaalpha
 ### 3. 安装依赖
 
 ```bash
-# 以开发模式安装包
+# 以开发模式安装（会自动读取 requirements.txt 并安装所有依赖）
 SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0 pip install -e .
-
-# 安装额外依赖
-pip install -r requirements.txt
 ```
+
+> **说明**：`pip install -e .` 会读取 `pyproject.toml`，其中配置了 `dependencies = {file = ["requirements.txt"]}`，因此所有依赖会被自动安装，无需再单独执行 `pip install -r requirements.txt`。`SETUPTOOLS_SCM_PRETEND_VERSION` 环境变量用于在没有 git tag 的情况下提供版本号。
 
 ### 4. 配置环境变量
 

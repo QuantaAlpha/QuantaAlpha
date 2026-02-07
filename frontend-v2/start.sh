@@ -67,7 +67,7 @@ fi
 # =============================================================================
 # 安装后端依赖（在 conda 环境中）
 # =============================================================================
-pip install fastapi uvicorn websockets python-multipart 2>/dev/null | grep -v "already satisfied"
+pip install fastapi uvicorn websockets python-multipart python-dotenv pyyaml 2>/dev/null | grep -v "already satisfied"
 
 # =============================================================================
 # 启动后端

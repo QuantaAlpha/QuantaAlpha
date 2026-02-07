@@ -53,20 +53,19 @@
 
 ### 一键启动
 ```bash
-cd /Users/wanghuacan/Documents/tmp/QA/frontend-v2
+cd frontend-v2
 ./start.sh
 ```
 
 ### 手动启动
 ```bash
-# 终端 1 - 后端
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+# 终端 1 - 后端（在已激活 quantaalpha conda 环境的前提下）
+cd frontend-v2
+pip install -r backend/requirements.txt
+python backend/app.py
 
 # 终端 2 - 前端
+cd frontend-v2
 npm install
 npm run dev
 ```

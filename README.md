@@ -146,12 +146,11 @@ conda activate quantaalpha
 ### 3. Install Dependencies
 
 ```bash
-# Install the package in development mode
+# Install in development mode (automatically installs all dependencies from requirements.txt)
 SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0 pip install -e .
-
-# Install additional dependencies
-pip install -r requirements.txt
 ```
+
+> **Note**: `pip install -e .` reads `pyproject.toml`, which declares `dependencies = {file = ["requirements.txt"]}`, so all dependencies are installed automatically -- no need to run `pip install -r requirements.txt` separately. The `SETUPTOOLS_SCM_PRETEND_VERSION` environment variable provides a version number when no git tag is available.
 
 ### 4. Configure Environment Variables
 
