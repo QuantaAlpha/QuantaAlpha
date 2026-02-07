@@ -48,8 +48,6 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress }) =>
               style={{ width: `${progress.progress}%` }}
             />
           </div>
-
-          <p className="text-xs text-muted-foreground">{progress.message}</p>
         </CardContent>
       </Card>
 

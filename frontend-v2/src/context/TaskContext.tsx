@@ -361,6 +361,21 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setMiningTask((prev) => (prev ? { ...prev, status: 'failed' } : prev));
   }, [miningTask, backendAvailable]);
 
+  // Reset mining task
+  const resetMiningTask = useCallback(() => {
+    // Ensure stopped first
+    miningWsRef.current?.close();
+    miningWsRef.current = null;
+    if (miningPollingRef.current) {
+      clearInterval(miningPollingRef.current);
+      miningPollingRef.current = null;
+    }
+    setMiningTask(null);
+    setMiningEquityCurve([]);
+    setMiningDrawdownCurve([]);
+    setMiningIcTimeSeries([]);
+  }, []);
+
   // ==================================================================
   // BACKTEST
   // ==================================================================
@@ -469,7 +484,9 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     miningIcTimeSeries,
     startMining,
     stopMining,
-    // Backtest
+    resetMiningTask,
+
+    // ---- Backtest ----
     backtestTask,
     backtestLogs,
     startBacktestTask,

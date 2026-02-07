@@ -1,5 +1,6 @@
 import React from 'react';
-import { Sparkles, Database, BarChart3, Settings as SettingsIcon } from 'lucide-react';
+import { Sparkles, Database, BarChart3, Settings as SettingsIcon, LogOut } from 'lucide-react';
+import { useTaskContext } from '@/context/TaskContext';
 
 export type PageId = 'home' | 'library' | 'backtest' | 'settings';
 
@@ -16,6 +17,8 @@ export const Layout: React.FC<LayoutProps> = ({
   onNavigate,
   showNavigation = true,
 }) => {
+  const { miningTask, resetMiningTask } = useTaskContext();
+
   const navItems = [
     { id: 'home' as const, label: '因子挖掘', icon: Sparkles },
     { id: 'library' as const, label: '因子库', icon: Database },
@@ -31,40 +34,53 @@ export const Layout: React.FC<LayoutProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="absolute inset-0 bg-primary blur-xl opacity-50 animate-pulse" />
-                <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600 shadow-lg">
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
               </div>
               <div>
                 <h1 className="text-xl font-bold neon-text">QuantaAlpha</h1>
-                <p className="text-xs text-muted-foreground">智能因子挖掘平台 V2</p>
+                <p className="text-xs text-muted-foreground">智能因子挖掘平台</p>
               </div>
             </div>
 
             {/* Navigation */}
-            {showNavigation && (
-              <nav className="flex items-center gap-2">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = currentPage === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => onNavigate(item.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                        isActive
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-sm font-medium">{item.label}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            )}
+            <div className="flex items-center gap-4">
+              {showNavigation && (
+                <nav className="flex items-center gap-2">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentPage === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => onNavigate(item.id)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                          isActive
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              )}
+              
+              {/* Reset Button (Only visible when mining task exists) */}
+              {miningTask && (
+                <button
+                  onClick={resetMiningTask}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all border border-destructive/20"
+                  title="结束任务并返回主界面"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="text-sm font-medium">返回主页</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
