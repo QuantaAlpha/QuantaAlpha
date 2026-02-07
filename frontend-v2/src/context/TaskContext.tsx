@@ -88,6 +88,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [miningEquityCurve, setMiningEquityCurve] = useState<TimeSeriesData[]>([]);
   const [miningDrawdownCurve, setMiningDrawdownCurve] = useState<TimeSeriesData[]>([]);
   const [miningIcTimeSeries, setMiningIcTimeSeries] = useState<TimeSeriesData[]>([]);
+  const [bestMetrics, setBestMetrics] = useState<RealtimeMetrics | null>(null);
 
   const miningWsRef = useRef<WebSocket | null>(null);
   const miningPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -186,6 +187,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setMiningEquityCurve([]);
         setMiningDrawdownCurve([]);
         setMiningIcTimeSeries([]);
+        setBestMetrics(null);
         miningDataPointsRef.current = 0;
 
         // WebSocket
@@ -374,6 +376,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setMiningEquityCurve([]);
     setMiningDrawdownCurve([]);
     setMiningIcTimeSeries([]);
+    setBestMetrics(null);
   }, []);
 
   // ==================================================================
@@ -482,6 +485,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     miningEquityCurve,
     miningDrawdownCurve,
     miningIcTimeSeries,
+    bestMetrics,
     startMining,
     stopMining,
     resetMiningTask,

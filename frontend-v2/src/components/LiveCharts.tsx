@@ -20,6 +20,7 @@ interface LiveChartsProps {
   equityCurve: TimeSeriesData[];
   drawdownCurve: TimeSeriesData[];
   metrics: RealtimeMetrics | null;
+  bestMetrics?: RealtimeMetrics | null;
   isRunning: boolean;
   logs: LogEntry[];
 }
@@ -28,10 +29,14 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
   equityCurve,
   drawdownCurve,
   metrics,
+  bestMetrics,
   isRunning,
   logs,
 }) => {
   const logsEndRef = useRef<HTMLDivElement>(null);
+
+  // Use bestMetrics for the top stat cards if available, otherwise fallback to current metrics
+  const displayMetrics = bestMetrics || metrics;
 
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -109,51 +114,51 @@ export const LiveCharts: React.FC<LiveChartsProps> = ({
   }, [metrics]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full flex flex-col">
       {/* Key Metrics Row */}
-      {metrics && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
+      {displayMetrics && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up flex-shrink-0">
           <StatCard
             icon={TrendingUp}
             label="年化收益"
-            value={formatPercent(metrics.annualReturn)}
-            trend={metrics.annualReturn}
+            value={formatPercent(displayMetrics.annualReturn)}
+            trend={displayMetrics.annualReturn}
             color="text-success"
           />
           <StatCard
             icon={Activity}
             label="RankIC"
-            value={formatNumber(metrics.rankIc, 4)}
+            value={formatNumber(displayMetrics.rankIc, 4)}
             color="text-primary"
           />
           <StatCard
             icon={BarChart3}
             label="夏普比率"
-            value={formatNumber(metrics.sharpeRatio, 2)}
+            value={formatNumber(displayMetrics.sharpeRatio, 2)}
             color="text-warning"
           />
           <StatCard
             icon={Target}
             label="最大回撤"
-            value={formatPercent(metrics.maxDrawdown)}
-            trend={metrics.maxDrawdown}
+            value={formatPercent(displayMetrics.maxDrawdown)}
+            trend={displayMetrics.maxDrawdown}
             color="text-destructive"
           />
         </div>
       )}
 
       {/* Main Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow min-h-0">
         
         {/* Real-time Logs (Full Width) */}
-        <Card className="glass card-hover animate-fade-in-left lg:col-span-2">
-          <CardHeader className="pb-3">
+        <Card className="glass card-hover animate-fade-in-left lg:col-span-2 flex flex-col">
+          <CardHeader className="pb-3 flex-shrink-0">
             <CardTitle className="text-base flex items-center gap-2">
               实时日志
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="h-[300px] overflow-y-auto rounded-lg bg-yellow-50 p-3 font-mono text-xs space-y-1 border border-yellow-100">
+          <CardContent className="flex-grow min-h-0 overflow-hidden">
+            <div className="h-full overflow-y-auto rounded-lg bg-yellow-50 p-3 font-mono text-xs space-y-1 border border-yellow-100">
               {logs.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-muted-foreground">
                   等待日志输出...

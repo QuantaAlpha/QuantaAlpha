@@ -20,6 +20,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     miningTask: task,
     miningEquityCurve: equityCurve,
     miningDrawdownCurve: drawdownCurve,
+    bestMetrics,
     startMining,
     stopMining,
   } = useTaskContext();
@@ -34,7 +35,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         // Welcome Screen
         <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in-up">
           <div className="text-center mb-10">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-4 text-foreground">
               欢迎使用 QuantaAlpha
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -112,15 +113,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       ) : (
         // Execution View
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-140px)]">
+          <div className="lg:col-span-1 h-full flex flex-col">
             <ProgressSidebar progress={task.progress} />
           </div>
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 h-full overflow-hidden">
             <LiveCharts
               equityCurve={equityCurve}
               drawdownCurve={drawdownCurve}
               metrics={task.metrics || null}
+              bestMetrics={bestMetrics}
               isRunning={task.status === 'running'}
               logs={task.logs}
             />
