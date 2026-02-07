@@ -1,4 +1,5 @@
 import pickle
+import sys
 from pathlib import Path
 from typing import List
 import os
@@ -107,17 +108,15 @@ class QlibFactorRunner(CachedRunner[QlibFactorExperiment]):
                                 data_source = Path(__file__).parent.parent.parent.parent.parent / FACTOR_COSTEER_SETTINGS.data_folder
                             daily_pv_link = ws.workspace_path / "daily_pv.h5"
                             if not daily_pv_link.exists() and (data_source / "daily_pv.h5").exists():
-                                import os
                                 os.symlink(str(data_source / "daily_pv.h5"), str(daily_pv_link))
                             
                             # 执行因子
                             import subprocess
                             env = os.environ.copy()
                             project_root = Path(__file__).parent.parent.parent.parent.parent
-                            env['PYTHONPATH'] = str(project_root) + ':' + env.get('PYTHONPATH', '')
+                            env['PYTHONPATH'] = str(project_root) + os.pathsep + env.get('PYTHONPATH', '')
                             subprocess.check_output(
-                                f"python {ws.workspace_path / 'factor.py'}",
-                                shell=True,
+                                [sys.executable, str(ws.workspace_path / 'factor.py')],
                                 cwd=str(ws.workspace_path),
                                 stderr=subprocess.STDOUT,
                                 env=env,

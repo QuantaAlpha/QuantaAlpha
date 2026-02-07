@@ -1,6 +1,7 @@
 import io
 import re
 import shutil
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -14,20 +15,21 @@ from quantaalpha.log import logger
 
 
 def generate_data_folder_from_qlib(use_local: bool = True):
-    template_path = Path(__file__).parent / "factor_data_template"
+    template_path = Path(__file__).parent / "data_template"
     qtde = QTDockerEnv(is_local=use_local)
     qtde.prepare()
     
-    # 运行数据生成脚本
+    # 使用当前 Python 解释器，确保子进程能找到已安装的包（如 qlib）
+    python_exe = sys.executable
     logger.info(f"在{'本地' if use_local else 'Docker容器'}中生成因子数据")
     execute_log = qtde.run(
         local_path=str(template_path),
-        entry=f"python generate.py",
+        entry=f'{python_exe} generate.py',
     )
 
     # 检查文件是否生成
-    daily_pv_all = Path(__file__).parent / "factor_data_template" / "daily_pv_all.h5"
-    daily_pv_debug = Path(__file__).parent / "factor_data_template" / "daily_pv_debug.h5"
+    daily_pv_all = Path(__file__).parent / "data_template" / "daily_pv_all.h5"
+    daily_pv_debug = Path(__file__).parent / "data_template" / "daily_pv_debug.h5"
     
     assert daily_pv_all.exists(), "daily_pv_all.h5 is not generated."
     assert daily_pv_debug.exists(), "daily_pv_debug.h5 is not generated."
@@ -40,7 +42,7 @@ def generate_data_folder_from_qlib(use_local: bool = True):
         Path(FACTOR_COSTEER_SETTINGS.data_folder) / "daily_pv.h5",
     )
     shutil.copy(
-        Path(__file__).parent / "factor_data_template" / "README.md",
+        Path(__file__).parent / "data_template" / "README.md",
         Path(FACTOR_COSTEER_SETTINGS.data_folder) / "README.md",
     )
 
@@ -50,7 +52,7 @@ def generate_data_folder_from_qlib(use_local: bool = True):
         Path(FACTOR_COSTEER_SETTINGS.data_folder_debug) / "daily_pv.h5",
     )
     shutil.copy(
-        Path(__file__).parent / "factor_data_template" / "README.md",
+        Path(__file__).parent / "data_template" / "README.md",
         Path(FACTOR_COSTEER_SETTINGS.data_folder_debug) / "README.md",
     )
     

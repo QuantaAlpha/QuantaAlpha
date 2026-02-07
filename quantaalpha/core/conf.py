@@ -69,8 +69,8 @@ class RDAgentSettings(ExtendedBaseSettings):
 
     # workspace conf - 从环境变量 WORKSPACE_PATH 读取，默认使用项目内 data/results
     workspace_path: Path = Path(
-        os.environ.get("WORKSPACE_PATH", 
-                       os.environ.get("DATA_RESULTS_DIR", "data/results") + "/workspace")
+        os.environ.get("WORKSPACE_PATH",
+                       str(Path(os.environ.get("DATA_RESULTS_DIR", "data/results")) / "workspace"))
     )
 
     # multi processing conf
@@ -80,7 +80,7 @@ class RDAgentSettings(ExtendedBaseSettings):
     cache_with_pickle: bool = True  # whether to use pickle cache
     pickle_cache_folder_path_str: str = os.environ.get(
         "PICKLE_CACHE_FOLDER_PATH_STR",
-        os.environ.get("DATA_RESULTS_DIR", "data/results") + "/pickle_cache"
+        str(Path(os.environ.get("DATA_RESULTS_DIR", "data/results")) / "pickle_cache")
     )
     use_file_lock: bool = (
         True  # when calling the function with same parameters, whether to use file lock to avoid

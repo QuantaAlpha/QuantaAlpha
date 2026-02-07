@@ -37,7 +37,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold neon-text">QuantaAlpha AI</h1>
+                <h1 className="text-xl font-bold neon-text">QuantaAlpha</h1>
                 <p className="text-xs text-muted-foreground">智能因子挖掘平台 V2</p>
               </div>
             </div>
