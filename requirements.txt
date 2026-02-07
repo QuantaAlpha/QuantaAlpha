@@ -1,61 +1,100 @@
-# Requirements for runtime.
-pydantic-settings
+# =============================================================================
+# QuantaAlpha 依赖清单
+#
+# 通过 `pip install -e .` 安装时自动读取本文件。
+# 仅列出项目代码中实际 import 使用的第三方包。
+# 最后更新: 2026-02-07 系统化审计
+# =============================================================================
 
-python-Levenshtein
-filelock
-loguru
-fire
-fuzzywuzzy
-openai
+# -----------------------------------------------------------------------------
+# 核心框架
+# -----------------------------------------------------------------------------
+rdagent                    # 核心依赖: 日志系统(rdagent.log)、实验框架、qlib场景组件
+pyqlib                     # Qlib 量化研究框架
+python-dotenv              # .env 环境变量加载
+PyYAML                     # YAML 配置文件解析
+jinja2                     # 模板引擎（因子代码模板渲染）
+pydantic-settings          # 配置管理（ExtendedBaseSettings）
 
-scikit-learn==1.6.1
-xgboost==3.0.0
-catboost==1.2.8
-lightgbm  # LightGBM model for backtesting
+# -----------------------------------------------------------------------------
+# 数据处理 & 科学计算
+# -----------------------------------------------------------------------------
+numpy==1.23.5              # 基础数值计算（pinned: Qlib 兼容性）
+pandas==1.5.3              # DataFrame 数据处理（pinned: Qlib 兼容性）
+scipy                      # 统计函数（skew, kurtosis 等）
+h5py                       # HDF5 缓存支持
 
-numpy==1.23.5 # we use numpy as default data format. So we have to install numpy
-pandas==1.5.3 # we use pandas as default data format. So we have to install pandas
-pandarallel # parallelize pandas
-matplotlib
-langchain
-langchain-community
-tiktoken
-pymupdf  # Extract shotsreens from pdf
+# -----------------------------------------------------------------------------
+# 机器学习
+# -----------------------------------------------------------------------------
+scikit-learn               # 聚类(KMeans)、相似度、预处理
+lightgbm                   # LightGBM 模型（Qlib 回测默认模型）
 
-# Qlib quantitative framework (core dependency)
-pyqlib
+# -----------------------------------------------------------------------------
+# LLM & AI 服务
+# -----------------------------------------------------------------------------
+openai                     # LLM API 调用（兼容 DashScope）
+tiktoken                   # Token 计数与分词
 
-# Configuration and templating
-PyYAML
-jinja2
-h5py  # HDF5 file support for caching
+# -----------------------------------------------------------------------------
+# 文档处理
+# -----------------------------------------------------------------------------
+pymupdf                    # PDF 文档解析（import fitz）
+langchain-community        # 文档加载器（PyPDFLoader 等）
 
-# PDF related
-pypdf
-azure-ai-formrecognizer
+# -----------------------------------------------------------------------------
+# Azure（文档分析服务）
+# -----------------------------------------------------------------------------
+azure-ai-formrecognizer    # Azure 文档智能分析
+azure-core                 # Azure SDK 核心（credentials）
 
-# factor implementations
-tables
+# -----------------------------------------------------------------------------
+# CLI & 终端输出
+# -----------------------------------------------------------------------------
+fire                       # CLI 命令行框架
+rich                       # 终端美化输出（Console, Table, Progress）
 
-# CI Fix Tool
-tree-sitter-python
-tree-sitter
+# -----------------------------------------------------------------------------
+# 文本处理 & 解析
+# -----------------------------------------------------------------------------
+fuzzywuzzy                 # 模糊字符串匹配
+python-Levenshtein         # fuzzywuzzy 加速后端
+pyparsing                  # 因子表达式语法解析
 
-python-dotenv
+# -----------------------------------------------------------------------------
+# 并行计算 & 缓存
+# -----------------------------------------------------------------------------
+pandarallel                # pandas 并行化
+joblib                     # 并行计算（Parallel, delayed）
+filelock                   # 文件锁（避免并发冲突）
+dill                       # 高级 pickle 序列化
 
-# infrastructure related.
-docker
+# -----------------------------------------------------------------------------
+# 可视化
+# -----------------------------------------------------------------------------
+matplotlib                 # 基础绑图
+seaborn                    # 统计可视化
 
-# demo related
-streamlit
-plotly
-st-theme
+# -----------------------------------------------------------------------------
+# 基础设施 & 工具
+# -----------------------------------------------------------------------------
+docker                     # Docker 容器管理（远程回测执行）
+requests                   # HTTP 请求
+tqdm                       # 进度条
+Pillow                     # 图像处理（PIL）
 
-# kaggle crawler
-selenium
-kaggle
-nbformat
+# -----------------------------------------------------------------------------
+# 深度学习（contrib/model 扩展模块）
+# -----------------------------------------------------------------------------
+torch                      # PyTorch 深度学习框架
+torch-geometric            # PyTorch Geometric 图神经网络
 
-# tool
-seaborn
-setuptools-scm
+# -----------------------------------------------------------------------------
+# Web 应用（app 模块）
+# -----------------------------------------------------------------------------
+fastapi                    # Web API 框架
+
+# -----------------------------------------------------------------------------
+# 构建 & 版本
+# -----------------------------------------------------------------------------
+setuptools-scm             # 动态版本号管理
