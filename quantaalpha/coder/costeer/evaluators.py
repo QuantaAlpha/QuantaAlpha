@@ -103,7 +103,10 @@ class CoSTEERMultiEvaluator(Evaluator):
             None if single_feedback is None else single_feedback.final_decision
             for single_feedback in multi_implementation_feedback
         ]
-        logger.info(f"Final decisions: {final_decision} True count: {final_decision.count(True)}")
+        true_count = final_decision.count(True)
+        total = len(final_decision)
+        if true_count < total:
+            logger.info(f"Final decisions: {final_decision} ({true_count}/{total} passed)")
 
         for index in range(len(evo.sub_tasks)):
             if final_decision[index]:

@@ -1,7 +1,5 @@
 import React from 'react';
 import { ChatInput } from '@/components/ChatInput';
-import { ProgressSidebar } from '@/components/ProgressSidebar';
-import { LiveCharts } from '@/components/LiveCharts';
 import { Layout } from '@/components/layout/Layout';
 import type { PageId } from '@/components/layout/Layout';
 import { useTaskContext } from '@/context/TaskContext';
@@ -18,9 +16,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const {
     backendAvailable,
     miningTask: task,
-    miningEquityCurve: equityCurve,
-    miningDrawdownCurve: drawdownCurve,
-    bestMetrics,
     startMining,
     stopMining,
   } = useTaskContext();
@@ -31,11 +26,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       onNavigate={onNavigate || (() => {})}
       showNavigation={!!onNavigate}
     >
-      {!task ? (
-        // Welcome Screen
-        <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fade-in-up">
+        {/* Welcome Screen - 底部留一点间距，避免与固定输入区重叠 */}
+        <div className="flex flex-col items-center justify-center min-h-[60vh] pb-8 animate-fade-in-up">
           <div className="text-center mb-10">
-            <h2 className="text-4xl font-bold mb-4 text-foreground">
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
               欢迎使用 QuantaAlpha
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -111,26 +105,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </div>
           </div>
         </div>
-      ) : (
-        // Execution View
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-140px)]">
-          <div className="lg:col-span-1 h-full flex flex-col">
-            <ProgressSidebar progress={task.progress} />
-          </div>
-          <div className="lg:col-span-3 h-full overflow-hidden">
-            <LiveCharts
-              equityCurve={equityCurve}
-              drawdownCurve={drawdownCurve}
-              metrics={task.metrics || null}
-              bestMetrics={bestMetrics}
-              isRunning={task.status === 'running'}
-              logs={task.logs}
-            />
-          </div>
-        </div>
-      )}
 
-      {/* Bottom Chat Input */}
+      {/* Bottom Chat Input - Always visible on Home Page for starting new tasks */}
       <ChatInput
         onSubmit={startMining}
         onStop={stopMining}

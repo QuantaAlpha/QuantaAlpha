@@ -830,8 +830,17 @@ def TS_QUANTILE(df: pd.DataFrame, p: int = 5, q: float = 0.5):
         
     返回:
         pd.DataFrame: 滚动分位数结果
+        
+    注意: 自动检测参数顺序。如果 LLM 误写成 TS_QUANTILE(df, q, p)
+          （即第二个参数是 0~1 的小数，第三个参数是大整数），会自动交换。
     """
-    assert 0 <= q <= 1, "分位数 q 必须在 [0, 1] 之间"
+    # 自动检测并修正参数顺序：如果 p 看起来像分位数而 q 看起来像窗口，交换它们
+    if isinstance(p, float) and 0 < p < 1 and isinstance(q, (int, float)) and q > 1:
+        p, q = int(q), p
+    p = int(p)
+    q = float(q)
+    assert 0 <= q <= 1, f"分位数 q 必须在 [0, 1] 之间，当前值: {q}"
+    assert p >= 1, f"窗口大小 p 必须 >= 1，当前值: {p}"
     return df.groupby('instrument').transform(lambda x: x.rolling(p, min_periods=1).quantile(q))
 
 @datatype_adapter

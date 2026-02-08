@@ -76,7 +76,7 @@ class RAGEvoAgent(EvoAgent):
         5. 评估：如果启用反馈，对进化结果进行评估
         6. 更新轨迹：将本次进化步骤添加到进化轨迹中
         """
-        for _ in tqdm(range(self.max_loop), "Debugging"):
+        for loop_i in tqdm(range(self.max_loop), "Debugging"):
             # 1. 知识自进化 - 如果启用了知识自生成且RAG可用，根据进化轨迹生成新知识
             if self.knowledge_self_gen and self.rag is not None:
                 self.rag.generate_knowledge(self.evolving_trace)
@@ -94,11 +94,12 @@ class RAGEvoAgent(EvoAgent):
                 queried_knowledge=queried_knowledge,
             )
             
-            # 记录进化后的代码工作区
+            # 记录进化后的代码工作区（仅第一轮打印详情，避免重复日志刷屏）
             # TODO: 由于设计问题，我们选择忽略这个mypy错误
             logger.log_object(evo.sub_workspace_list, tag="evolving code")  # type: ignore[attr-defined]
-            for sw in evo.sub_workspace_list:  # type: ignore[attr-defined]
-                logger.info(f"evolving code workspace: {sw}")
+            if loop_i == 0:
+                for sw in evo.sub_workspace_list:  # type: ignore[attr-defined]
+                    logger.info(f"evolving code workspace: {sw}")
 
             # 4. 打包进化结果 - 将进化结果和查询到的知识打包成进化步骤
             es = EvoStep(evo, queried_knowledge)

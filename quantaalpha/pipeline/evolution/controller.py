@@ -829,16 +829,19 @@ class EvolutionController:
                 'RankIC': ['RankIC', 'Rank IC', 'rank_ic'],
                 'RankICIR': ['RankICIR', 'Rank ICIR', 'rank_icir'],
                 'annualized_return': [
+                    '1day.excess_return_with_cost.annualized_return',
                     '1day.excess_return_without_cost.annualized_return',
                     'annualized_return',
                     'Annualized Return'
                 ],
                 'information_ratio': [
+                    '1day.excess_return_with_cost.information_ratio',
                     '1day.excess_return_without_cost.information_ratio',
                     'information_ratio',
                     'Information Ratio'
                 ],
                 'max_drawdown': [
+                    '1day.excess_return_with_cost.max_drawdown',
                     '1day.excess_return_without_cost.max_drawdown',
                     'max_drawdown',
                     'Max Drawdown'

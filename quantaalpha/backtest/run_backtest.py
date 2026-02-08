@@ -18,8 +18,8 @@ import logging
 import sys
 from pathlib import Path
 
-# 添加项目路径
-project_root = Path(__file__).parent.parent
+# 添加项目路径 (从 quantaalpha/backtest/ 向上三级到项目根目录)
+project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
 
 # 加载 .env 文件
@@ -28,6 +28,8 @@ env_file = project_root / ".env"
 if env_file.exists():
     load_dotenv(env_file)
     print(f"✓ 已加载环境变量: {env_file}")
+else:
+    print(f"⚠ 未找到 .env 文件: {env_file}，将使用系统环境变量")
 
 # 设置日志
 logging.basicConfig(
@@ -120,6 +122,8 @@ def main():
     # 验证因子源
     if args.factor_source == 'custom' and not args.factor_json:
         parser.error("使用 --factor-source custom 时必须指定 --factor-json 参数")
+    if args.factor_source == 'combined' and not args.factor_json:
+        parser.error("使用 --factor-source combined 时必须指定 --factor-json 参数")
     
     try:
         from quantaalpha.backtest.runner import BacktestRunner

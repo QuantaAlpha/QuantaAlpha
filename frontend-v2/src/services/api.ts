@@ -40,6 +40,7 @@ export interface MiningStartParams {
   maxLoops?: number;
   factorsPerHypothesis?: number;
   librarySuffix?: string;
+  qualityGateEnabled?: boolean;
 }
 
 export async function startMining(params: MiningStartParams) {

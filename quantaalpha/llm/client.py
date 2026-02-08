@@ -711,7 +711,7 @@ class APIBackend:
             if self.embedding_model and ("qwen" in self.embedding_model.lower() or "text-embedding-v4" in self.embedding_model.lower()):
                 # DashScope text-embedding-v4性能较差，10个线程会打挂，使用更小的批次
                 batch_size = min(batch_size, 3)
-                logger.info(f"检测到DashScope embedding模型 {self.embedding_model}，使用批次大小: {batch_size}")
+                # DashScope embedding 模型使用较小批次（静默处理，不打日志）
             
             batch_wait_seconds = LLM_SETTINGS.embedding_batch_wait_seconds
             batches = [
@@ -741,23 +741,23 @@ class APIBackend:
                     time.sleep(batch_wait_seconds)
         return [content_to_embedding_dict[content] for content in input_content_list]
 
-    def _build_log_messages(self, messages: list[dict], max_prompt_length: int = 200) -> str:
+    def _build_log_messages(self, messages: list[dict], max_prompt_length: int = 100) -> str:
         """
         构建日志消息。
         
         Args:
             messages: 消息列表
-            max_prompt_length: prompt（system/user）内容的最大显示长度，默认200字符。
-                              assistant 角色（LLM返回）的内容始终完整显示。
+            max_prompt_length: prompt（system/user）内容的最大显示长度，默认100字符。
+                              所有角色的内容都会被截断以保持日志简洁。
         """
         log_messages = ""
         for m in messages:
             role = m['role']
             content = m['content']
             
-            # 对 system 和 user role 的 prompt 进行截断，assistant 保持完整
-            if role in ('system', 'user') and len(content) > max_prompt_length:
-                display_content = content[:max_prompt_length] + f"... [truncated, total {len(content)} chars]"
+            # 所有角色的内容都截断显示
+            if len(content) > max_prompt_length:
+                display_content = content[:max_prompt_length] + f"... [{len(content)} chars]"
             else:
                 display_content = content
             
@@ -804,7 +804,8 @@ class APIBackend:
             cache_result = self.cache.chat_get(input_content_json)
             if cache_result is not None:
                 if LLM_SETTINGS.log_llm_chat_content:
-                    logger.info(f"{LogColors.CYAN}Response:{cache_result}{LogColors.END}", tag="llm_messages")
+                    display_cr = cache_result[:200] + f"... [{len(cache_result)} chars]" if len(cache_result) > 200 else cache_result
+                    logger.info(f"{LogColors.CYAN}Response(cached):{display_cr}{LogColors.END}", tag="llm_messages")
                 return cache_result, None
 
         if temperature is None:
@@ -885,30 +886,26 @@ class APIBackend:
             
             if self.chat_stream:
                 resp = ""
-                # TODO: with logger.config(stream=self.chat_stream): and add a `stream_start` flag to add timestamp for first message.
-                if LLM_SETTINGS.log_llm_chat_content:
-                    logger.info(f"{LogColors.CYAN}Response:{LogColors.END}", tag="llm_messages")
-
                 for chunk in response:
                     content = (
                         chunk.choices[0].delta.content
                         if len(chunk.choices) > 0 and chunk.choices[0].delta.content is not None
                         else ""
                     )
-                    if LLM_SETTINGS.log_llm_chat_content:
-                        logger.info(LogColors.CYAN + content + LogColors.END, raw=True, tag="llm_messages")
                     resp += content
                     if len(chunk.choices) > 0 and chunk.choices[0].finish_reason is not None:
                         finish_reason = chunk.choices[0].finish_reason
 
                 if LLM_SETTINGS.log_llm_chat_content:
-                    logger.info("\n", raw=True, tag="llm_messages")
+                    display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
+                    logger.info(f"{LogColors.CYAN}Response:{display_resp}{LogColors.END}", tag="llm_messages")
 
             else:
                 resp = response.choices[0].message.content
                 finish_reason = response.choices[0].finish_reason
                 if LLM_SETTINGS.log_llm_chat_content:
-                    logger.info(f"{LogColors.CYAN}Response:{resp}{LogColors.END}", tag="llm_messages")
+                    display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
+                    logger.info(f"{LogColors.CYAN}Response:{display_resp}{LogColors.END}", tag="llm_messages")
                     logger.info(
                         json.dumps(
                             {

@@ -1,0 +1,129 @@
+# =============================================================================
+# QuantaAlpha 小回测配置 - 组合因子版本
+#
+# 基于老版本 conf_cn_combined_kdd_ver.yaml 配置，适配当前版本：
+#   - 使用 parquet 格式的因子数据（当前版本保存格式）
+#   - 去掉 ProcessInf（pandas 1.5.x 不支持 resample("ME")）
+#   - 保留完整的特征预处理流程（Fillna + DropnaLabel + CSRankNorm）
+#   - learning_rate 0.05 + early_stopping_round 50（老版本稳健配置）
+#   - 开盘价成交（更贴近实际交易）
+#   - 真正的样本外测试集 [2022-2025]
+# =============================================================================
+
+qlib_init:
+    provider_uri: "~/.qlib/qlib_data/cn_data"
+    region: cn
+
+market: &market csi300
+benchmark: &benchmark SH000300
+
+data_handler_config: &data_handler_config
+    start_time: 2016-01-01
+    end_time: 2025-12-26
+    instruments: *market
+    data_loader:
+        class: NestedDataLoader
+        kwargs:
+            dataloader_l:
+                - class: qlib.contrib.data.loader.QlibDataLoader
+                  kwargs:
+                    config:
+                        feature:
+                            - ["($close-$open)/$open", "$volume/Mean($volume, 20)", "($high-$low)/Ref($close, 1)", "$close/Ref($close, 1)-1"]
+                            - ["OPEN_RET", "VOL_RATIO", "RANGE_RET", "CLOSE_RET"]
+                        label:
+                            - ["Ref($close, -2)/Ref($close, -1) - 1"]
+                            - ["LABEL0"]
+                - class: qlib.data.dataset.loader.StaticDataLoader
+                  kwargs:
+                    config: "combined_factors_df.parquet"
+
+    learn_processors:
+        - class: Fillna
+          kwargs:
+              fields_group: feature
+        - class: DropnaLabel
+        - class: CSRankNorm
+          kwargs:
+              fields_group: feature
+        - class: CSRankNorm
+          kwargs:
+              fields_group: label
+
+    infer_processors:
+        - class: Fillna
+          kwargs:
+              fields_group: feature
+        - class: CSRankNorm
+          kwargs:
+              fields_group: feature
+        - class: CSRankNorm
+          kwargs:
+              fields_group: label
+
+port_analysis_config: &port_analysis_config
+    strategy:
+        class: TopkDropoutStrategy
+        module_path: qlib.contrib.strategy
+        kwargs:
+            signal: <PRED>
+            topk: 50
+            n_drop: 5
+    backtest:
+        start_time: 2022-01-01
+        end_time: 2022-12-31
+        account: 100000000
+        benchmark: *benchmark
+        exchange_kwargs:
+            codes: *market
+            limit_threshold: 0.095
+            deal_price: open
+            open_cost: 0.0005
+            close_cost: 0.0015
+            min_cost: 5
+
+task:
+    model:
+        class: LGBModel
+        module_path: qlib.contrib.model.gbdt
+        kwargs:
+            loss: mse
+            colsample_bytree: 0.8879
+            learning_rate: 0.05
+            subsample: 0.8789
+            lambda_l1: 205.6999
+            lambda_l2: 580.9768
+            max_depth: 8
+            num_leaves: 210
+            num_threads: 20
+            early_stopping_round: 50
+            num_boost_round: 500
+
+    dataset:
+        class: DatasetH
+        module_path: qlib.data.dataset
+        kwargs:
+            handler:
+                class: DataHandlerLP
+                module_path: qlib.contrib.data.handler
+                kwargs: *data_handler_config
+            segments:
+                train: [2016-01-01, 2020-12-31]
+                valid: [2021-01-01, 2021-12-31]
+                test: [2022-01-01, 2025-12-26]
+
+    record:
+        - class: SignalRecord
+          module_path: qlib.workflow.record_temp
+          kwargs:
+            model: <MODEL>
+            dataset: <DATASET>
+        - class: SigAnaRecord
+          module_path: qlib.workflow.record_temp
+          kwargs:
+            ana_long_short: False
+            ann_scaler: 252
+        - class: PortAnaRecord
+          module_path: qlib.workflow.record_temp
+          kwargs:
+            config: *port_analysis_config

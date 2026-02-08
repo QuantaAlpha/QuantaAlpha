@@ -20,8 +20,8 @@ from typing import Dict, List, Optional, Any, Tuple
 import numpy as np
 import pandas as pd
 
-# 添加项目路径
-project_root = Path(__file__).parent.parent
+# 添加项目路径 (从 quantaalpha/backtest/ 向上三级到项目根目录)
+project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
 
 logger = logging.getLogger(__name__)

@@ -17,6 +17,8 @@ export type FactorQuality = 'high' | 'medium' | 'low';
 export interface TaskConfig {
   // 基础配置
   userInput: string;
+  /** 为 true 时使用「设置 → 挖掘方向」中的选项（选中/随机），忽略输入框内容 */
+  useCustomMiningDirection?: boolean;
   numDirections?: number;
   maxRounds?: number;
   librarySuffix?: string;
@@ -44,6 +46,24 @@ export interface RealtimeMetrics {
   icir: number;
   rankIc: number;
   rankIcir: number;
+  
+  // Optional factor name if available (e.g. best factor)
+  factorName?: string;
+  
+  // Top 10 factors list
+  top10Factors?: Array<{
+    factorName: string;
+    factorExpression: string;
+    rankIc: number;
+    rankIcir: number;
+    ic: number;
+    icir: number;
+    annualReturn?: number;
+    sharpeRatio?: number;
+    maxDrawdown?: number;
+    calmarRatio?: number;
+    cumulativeCurve?: Array<{date: string, value: number}>;
+  }>;
 
   // 收益指标
   annualReturn: number;

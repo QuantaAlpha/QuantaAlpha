@@ -136,13 +136,14 @@ class UndirectedGraph(Graph):
         elif self.find_node(content=node.content, label=node.label):
             node = self.find_node(content=node.content, label=node.label)
         else:
-            # same_node = self.semantic_search(node=node.content, similarity_threshold=same_node_threshold, topk_k=1)
-            # if len(same_node):
-            #     node = same_node[0]
-            # else:
-            node.create_embedding()
-            self.vector_base.add(document=node)
-            self.nodes.update({node.id: node})
+            try:
+                node.create_embedding()
+                self.vector_base.add(document=node)
+                self.nodes.update({node.id: node})
+            except Exception as e:
+                from quantaalpha.log import logger as _kg_logger
+                _kg_logger.warning(f"知识图谱节点 embedding 创建失败，跳过该节点: {e}")
+                return
 
         if neighbor is not None:
             if self.get_node(neighbor.id):
@@ -150,14 +151,14 @@ class UndirectedGraph(Graph):
             elif self.find_node(content=neighbor.content, label=node.label):
                 neighbor = self.find_node(content=neighbor.content, label=node.label)
             else:
-                # same_node = self.semantic_search(node=neighbor.content,
-                #                                  similarity_threshold=same_node_threshold, topk_k=1)
-                # if len(same_node):
-                #     neighbor = same_node[0]
-                # else:
-                neighbor.create_embedding()
-                self.vector_base.add(document=neighbor)
-                self.nodes.update({neighbor.id: neighbor})
+                try:
+                    neighbor.create_embedding()
+                    self.vector_base.add(document=neighbor)
+                    self.nodes.update({neighbor.id: neighbor})
+                except Exception as e:
+                    from quantaalpha.log import logger as _kg_logger
+                    _kg_logger.warning(f"知识图谱邻居节点 embedding 创建失败，跳过: {e}")
+                    return
 
             node.add_neighbor(neighbor)
 

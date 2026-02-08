@@ -130,13 +130,13 @@
   border-radius: calc(0.5rem - 2px);
 }
 
-/* Shimmer effect */
+/* Shimmer effect (background-position based, for general use) */
 @keyframes shimmer {
   0% {
-    background-position: -1000px 0;
+    transform: translateX(-100%);
   }
   100% {
-    background-position: 1000px 0;
+    transform: translateX(400%);
   }
 }
 
@@ -278,12 +278,9 @@
   animation-delay: 0.4s;
 }
 
-/* Neon glow text */
+/* Neon glow text - Removed */
 .neon-text {
-  text-shadow:
-    0 0 10px rgba(59, 130, 246, 0.8),
-    0 0 20px rgba(59, 130, 246, 0.5),
-    0 0 30px rgba(59, 130, 246, 0.3);
+  /* text-shadow removed */
 }
 
 /* Card hover effect */
@@ -292,8 +289,8 @@
 }
 
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* Progress bar gradient */

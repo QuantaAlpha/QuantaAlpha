@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Settings, Save, RotateCcw, Eye, EyeOff, Check, X, AlertCircle, Loader2, Database, Sliders, Box, Cpu } from 'lucide-react';
+import { Settings, Save, RotateCcw, Eye, EyeOff, Check, X, AlertCircle, Loader2, Database, Sliders, Box, Cpu, Compass, Shuffle } from 'lucide-react';
 import { getSystemConfig, updateSystemConfig, healthCheck } from '@/services/api';
+import { REFERENCE_MINING_DIRECTIONS, getDirectionLabel, type MiningDirectionItem } from '@/utils/miningDirections';
 
 interface SystemConfig {
   // LLM
@@ -22,6 +23,9 @@ interface SystemConfig {
   qualityGateEnabled: boolean;
   backtestTimeout: number;
   defaultLibrarySuffix: string;
+  // 挖掘方向：使用选中的方向 / 随机
+  miningDirectionMode: 'selected' | 'random';
+  selectedMiningDirectionIndices: number[];
 }
 
 const DEFAULT_CONFIG: SystemConfig = {
@@ -37,9 +41,11 @@ const DEFAULT_CONFIG: SystemConfig = {
   qualityGateEnabled: true,
   backtestTimeout: 600,
   defaultLibrarySuffix: '',
+  miningDirectionMode: 'selected',
+  selectedMiningDirectionIndices: [0, 1, 2],
 };
 
-type SettingsTab = 'api' | 'data' | 'params';
+type SettingsTab = 'api' | 'data' | 'params' | 'directions';
 
 export const SettingsPage: React.FC = () => {
   const [config, setConfig] = useState<SystemConfig>(DEFAULT_CONFIG);
@@ -75,6 +81,16 @@ export const SettingsPage: React.FC = () => {
       const resp = await getSystemConfig();
       if (resp.success && resp.data) {
         const env = resp.data.env || {};
+        const saved = localStorage.getItem('quantaalpha_config');
+        let miningDirectionMode = DEFAULT_CONFIG.miningDirectionMode;
+        let selectedMiningDirectionIndices = DEFAULT_CONFIG.selectedMiningDirectionIndices;
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (parsed.miningDirectionMode) miningDirectionMode = parsed.miningDirectionMode;
+            if (Array.isArray(parsed.selectedMiningDirectionIndices)) selectedMiningDirectionIndices = parsed.selectedMiningDirectionIndices;
+          } catch { /* use defaults */ }
+        }
         setConfig({
           apiKey: env.OPENAI_API_KEY || '',
           apiUrl: env.OPENAI_BASE_URL || DEFAULT_CONFIG.apiUrl,
@@ -88,6 +104,8 @@ export const SettingsPage: React.FC = () => {
           qualityGateEnabled: true,
           backtestTimeout: 600,
           defaultLibrarySuffix: '',
+          miningDirectionMode,
+          selectedMiningDirectionIndices,
         });
         setFactorLibraries(resp.data.factorLibraries || []);
       }
@@ -97,7 +115,14 @@ export const SettingsPage: React.FC = () => {
       const saved = localStorage.getItem('quantaalpha_config');
       if (saved) {
         try {
-          setConfig(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          setConfig({
+            ...DEFAULT_CONFIG,
+            ...parsed,
+            selectedMiningDirectionIndices: Array.isArray(parsed.selectedMiningDirectionIndices)
+              ? parsed.selectedMiningDirectionIndices
+              : DEFAULT_CONFIG.selectedMiningDirectionIndices,
+          });
         } catch {
           // use defaults
         }
@@ -227,10 +252,11 @@ export const SettingsPage: React.FC = () => {
       )}
 
       {/* Tabs Navigation */}
-      <div className="flex gap-2 p-1 bg-secondary/20 rounded-xl w-fit">
+      <div className="flex gap-2 p-1 bg-secondary/20 rounded-xl w-fit flex-wrap">
         <TabButton id="api" label="配置 API" icon={Cpu} />
         <TabButton id="data" label="数据路径" icon={Database} />
         <TabButton id="params" label="默认参数" icon={Sliders} />
+        <TabButton id="directions" label="挖掘方向" icon={Compass} />
       </div>
 
       {/* Tab Content */}
@@ -518,6 +544,107 @@ export const SettingsPage: React.FC = () => {
                     </div>
                   </div>
                 </label>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 挖掘方向 Tab */}
+        {activeTab === 'directions' && (
+          <Card className="glass card-hover animate-fade-in-up">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Compass className="h-5 w-5" />
+                挖掘方向（参考 Alpha158(20)）
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                选择作为默认参考的挖掘方向；启动任务时可从中选用或随机一条
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-3">使用方式</label>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="miningDirectionMode"
+                      checked={config.miningDirectionMode === 'selected'}
+                      onChange={() => updateConfigField('miningDirectionMode', 'selected')}
+                      className="h-4 w-4 text-primary focus:ring-primary"
+                    />
+                    <span>使用下方选中的方向（启动时从选中中取一条或按业务逻辑使用）</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="miningDirectionMode"
+                      checked={config.miningDirectionMode === 'random'}
+                      onChange={() => updateConfigField('miningDirectionMode', 'random')}
+                      className="h-4 w-4 text-primary focus:ring-primary"
+                    />
+                    <span className="flex items-center gap-1.5">
+                      <Shuffle className="h-4 w-4" />
+                      随机（从选中方向中随机选一条）
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-medium">参考方向（可多选）</label>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        updateConfigField(
+                          'selectedMiningDirectionIndices',
+                          REFERENCE_MINING_DIRECTIONS.map((_: MiningDirectionItem, i: number) => i)
+                        );
+                      }}
+                    >
+                      全选
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => updateConfigField('selectedMiningDirectionIndices', [])}
+                    >
+                      取消全选
+                    </Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[320px] overflow-y-auto rounded-lg border border-border/50 bg-secondary/10 p-3">
+                  {REFERENCE_MINING_DIRECTIONS.map((item: MiningDirectionItem, idx: number) => {
+                    const label = getDirectionLabel(item);
+                    return (
+                      <label
+                        key={idx}
+                        className="flex items-center gap-2 p-2 rounded-lg hover:bg-secondary/20 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={config.selectedMiningDirectionIndices.includes(idx)}
+                          onChange={(e) => {
+                            const next = e.target.checked
+                              ? [...config.selectedMiningDirectionIndices, idx].sort((a, b) => a - b)
+                              : config.selectedMiningDirectionIndices.filter((i) => i !== idx);
+                            updateConfigField('selectedMiningDirectionIndices', next);
+                          }}
+                          className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm truncate flex-1" title={label}>
+                          {label}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  已选 {config.selectedMiningDirectionIndices.length} / {REFERENCE_MINING_DIRECTIONS.length} 项。
+                </p>
               </div>
             </CardContent>
           </Card>

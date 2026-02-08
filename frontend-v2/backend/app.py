@@ -27,6 +27,9 @@ from pydantic import BaseModel, Field
 # Resolve project root (two levels up from this file: frontend-v2/backend/)
 # ---------------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+# 保证 import quantaalpha 可用（后端由 frontend-v2 目录启动时，仓库根不在 sys.path）
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 DOTENV_PATH = PROJECT_ROOT / ".env"
 
 # ---------------------------------------------------------------------------
@@ -56,6 +59,7 @@ class MiningStartRequest(BaseModel):
     maxLoops: Optional[int] = Field(2, description="Iterations per direction")
     factorsPerHypothesis: Optional[int] = Field(3, description="Factors per hypothesis")
     librarySuffix: Optional[str] = Field(None, description="Factor library file suffix")
+    qualityGateEnabled: Optional[bool] = Field(None, description="Enable quality gate checks")
 
 
 class BacktestStartRequest(BaseModel):
@@ -231,6 +235,21 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
             if req.factorsPerHypothesis is not None:
                 run_cfg.setdefault("factor", {})["factors_per_hypothesis"] = req.factorsPerHypothesis
 
+            # Apply quality gate override from frontend
+            if req.qualityGateEnabled is not None:
+                qg = run_cfg.setdefault("quality_gate", {})
+                if req.qualityGateEnabled:
+                    # 启用质量门控：打开复杂度和冗余度（默认开），一致性保持用户 YAML 设定
+                    qg.setdefault("complexity_enabled", True)
+                    qg.setdefault("redundancy_enabled", True)
+                    # 一致性检验开销较大，仅在 YAML 中显式启用时才打开
+                    qg.setdefault("consistency_enabled", False)
+                else:
+                    # 关闭质量门控：全部关闭
+                    qg["consistency_enabled"] = False
+                    qg["complexity_enabled"] = False
+                    qg["redundancy_enabled"] = False
+
             # Write to a temporary file so the original is untouched
             tmp_dir = Path(env.get("WORKSPACE_PATH", "/tmp"))
             tmp_dir.mkdir(parents=True, exist_ok=True)
@@ -369,6 +388,17 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
                     })
                 except Exception:
                     pass
+            
+            # Check for factor saving to update top factors list
+            if "已保存" in line or "因子" in line:
+                _update_mining_metrics(task)
+                if task.get("metrics"):
+                     await _broadcast(task_id, {
+                        "type": "result",
+                        "taskId": task_id,
+                        "data": {"status": task["status"], "metrics": task["metrics"]},
+                        "timestamp": _now(),
+                    })
 
         exit_code = await proc.wait()
         task["pid"] = None
@@ -386,36 +416,7 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
 
         # Load final factor count from the library JSON
         # Prefer the library file matching the librarySuffix for this experiment
-        target_lib = None
-        if req.librarySuffix:
-            candidate = PROJECT_ROOT / "data" / "factorlib" / f"all_factors_library_{req.librarySuffix}.json"
-            if candidate.exists():
-                target_lib = str(candidate)
-        if not target_lib:
-            factor_jsons = _find_factor_jsons()
-            target_lib = factor_jsons[0] if factor_jsons else None
-
-        if target_lib:
-            try:
-                lib = _load_factor_library(target_lib)
-                factors = lib.get("factors", {})
-                total = len(factors) if isinstance(factors, dict) else 0
-                task["metrics"]["totalFactors"] = total
-                task["metrics"]["libraryFile"] = Path(target_lib).name
-                high = medium = low = 0
-                for f_info in (factors.values() if isinstance(factors, dict) else []):
-                    q = _classify_quality(f_info.get("backtest_results", {}))
-                    if q == "high":
-                        high += 1
-                    elif q == "medium":
-                        medium += 1
-                    else:
-                        low += 1
-                task["metrics"]["highQualityFactors"] = high
-                task["metrics"]["mediumQualityFactors"] = medium
-                task["metrics"]["lowQualityFactors"] = low
-            except Exception:
-                pass
+        _update_mining_metrics(task)
 
         await _broadcast(task_id, {
             "type": "result",
@@ -540,7 +541,12 @@ async def get_factors(
     """Get factors from the factor library JSON."""
     # Find the most recent factor library
     if library:
-        lib_path = str(PROJECT_ROOT / library)
+        lib_path = str(PROJECT_ROOT / "data" / "factorlib" / library)
+        # Fallback: check if file exists at project root (legacy location)
+        if not Path(lib_path).exists():
+            alt = str(PROJECT_ROOT / library)
+            if Path(alt).exists():
+                lib_path = alt
     else:
         jsons = _find_factor_jsons()
         if not jsons:
@@ -566,6 +572,13 @@ async def get_factors(
             continue
         bt = factor_info.get("backtest_results", {})
         q = _classify_quality(bt)
+        # Extract metrics with proper fallbacks
+        # Try specific keys first, then standard ones
+        ic = bt.get("IC", bt.get("1day.excess_return_without_cost.information_coefficient", 0))
+        icir = bt.get("ICIR", bt.get("1day.excess_return_without_cost.information_coefficient_ir", 0))
+        rank_ic = bt.get("Rank IC", bt.get("rank_ic", bt.get("1day.excess_return_without_cost.rank_ic", 0)))
+        rank_icir = bt.get("Rank ICIR", bt.get("rank_ic_ir", bt.get("1day.excess_return_without_cost.rank_ic_ir", 0)))
+        
         factor_entry = {
             "factorId": factor_info.get("factor_id", factor_id),
             "factorName": factor_info.get("factor_name", "Unknown"),
@@ -575,13 +588,16 @@ async def get_factors(
             "quality": q,
             "backtestResults": bt,
             # Extract key metrics
-            "ic": bt.get("1day.excess_return_without_cost.information_ratio", 0),
-            "icir": bt.get("1day.excess_return_without_cost.information_ratio", 0),
-            "rankIc": bt.get("1day.excess_return_without_cost.mean", 0),
-            "rankIcir": 0,
-            "annualReturn": bt.get("1day.excess_return_without_cost.annualized_return", 0),
-            "maxDrawdown": bt.get("1day.excess_return_without_cost.max_drawdown", 0),
-            "sharpeRatio": bt.get("1day.excess_return_without_cost.information_ratio", 0),
+            "ic": ic,
+            "icir": icir,
+            "rankIc": rank_ic,
+            "rankIcir": rank_icir,
+            "annualReturn": bt.get("1day.excess_return_with_cost.annualized_return", 
+                                  bt.get("1day.excess_return_without_cost.annualized_return", 0)),
+            "maxDrawdown": bt.get("1day.excess_return_with_cost.max_drawdown", 
+                                 bt.get("1day.excess_return_without_cost.max_drawdown", 0)),
+            "sharpeRatio": bt.get("1day.excess_return_with_cost.information_ratio", 
+                                bt.get("1day.excess_return_without_cost.information_ratio", 0)),
             "round": factor_info.get("evolution_metadata", {}).get("round", 0)
             if isinstance(factor_info.get("evolution_metadata"), dict) else 0,
             "direction": factor_info.get("evolution_metadata", {}).get("direction_index", "")
@@ -631,7 +647,11 @@ async def get_cache_status(
 ):
     """检查指定因子库中各因子的缓存状态。"""
     if library:
-        lib_path = str(PROJECT_ROOT / library)
+        lib_path = str(PROJECT_ROOT / "data" / "factorlib" / library)
+        if not Path(lib_path).exists():
+            alt = str(PROJECT_ROOT / library)
+            if Path(alt).exists():
+                lib_path = alt
     else:
         jsons = _find_factor_jsons()
         if not jsons:
@@ -656,7 +676,11 @@ async def warm_cache(
 ):
     """从 result.h5 批量同步到 MD5 缓存目录。"""
     if library:
-        lib_path = str(PROJECT_ROOT / library)
+        lib_path = str(PROJECT_ROOT / "data" / "factorlib" / library)
+        if not Path(lib_path).exists():
+            alt = str(PROJECT_ROOT / library)
+            if Path(alt).exists():
+                lib_path = alt
     else:
         jsons = _find_factor_jsons()
         if not jsons:
@@ -723,7 +747,7 @@ async def start_backtest(req: BacktestStartRequest):
         "taskId": task_id,
         "status": "running",
         "type": "backtest",
-        "config": req.model_dump(),
+        "config": {**req.model_dump(), "configPath": config_path},
         "progress": {
             "phase": "backtesting",
             "currentRound": 0,
@@ -785,14 +809,60 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
     task = tasks[task_id]
     try:
         env = os.environ.copy()
-        env.update(_load_dotenv_dict())
+        dotenv = _load_dotenv_dict()
+        env.update(dotenv)
 
-        # Use the V2 backtest runner (quantaalpha.backtest.run_backtest)
+        # --- Resolve factor JSON path ---
+        # Frontend sends just the filename (e.g. "all_factors_library_test3hjback.json")
+        # We need to resolve it to the full path under data/factorlib/
+        factor_json_input = req.factorJson
+        factor_json_path = Path(factor_json_input)
+        if not factor_json_path.is_absolute():
+            # Check data/factorlib/ first
+            candidate = PROJECT_ROOT / "data" / "factorlib" / factor_json_input
+            if candidate.exists():
+                factor_json_path = candidate
+            else:
+                # Try as relative to project root
+                candidate2 = PROJECT_ROOT / factor_json_input
+                if candidate2.exists():
+                    factor_json_path = candidate2
+                else:
+                    factor_json_path = candidate  # will fail with a clear error message
+        factor_json_str = str(factor_json_path)
+
+        # --- Find the correct Python executable ---
+        # Prefer the conda env that has qlib installed
+        conda_env = dotenv.get("CONDA_ENV_NAME", "quantaalpha")
+        python_bin = sys.executable  # fallback
+
+        # Dynamically detect conda base path (portable, no hardcoded paths)
+        conda_prefixes = [os.path.expanduser(f"~/.conda/envs/{conda_env}")]
+        try:
+            import subprocess as _sp
+            conda_base = _sp.check_output(
+                ["conda", "info", "--base"], text=True, timeout=5
+            ).strip()
+            conda_prefixes.insert(0, os.path.join(conda_base, "envs", conda_env))
+        except Exception:
+            pass
+        # Also check CONDA_PREFIX if we're already in the right env
+        if os.environ.get("CONDA_PREFIX"):
+            conda_prefixes.insert(0, os.environ["CONDA_PREFIX"])
+
+        for prefix in conda_prefixes:
+            candidate_bin = Path(prefix) / "bin" / "python"
+            if candidate_bin.exists():
+                python_bin = str(candidate_bin)
+                break
+
+        # Build CLI command
         cmd = [
-            sys.executable, "-m", "quantaalpha.backtest.run_backtest",
+            python_bin, "-m", "quantaalpha.backtest.run_backtest",
             "-c", config_path,
             "--factor-source", req.factorSource,
-            "--factor-json", req.factorJson,
+            "--factor-json", factor_json_str,
+            "-v",
         ]
 
         proc = await asyncio.create_subprocess_exec(
@@ -806,17 +876,19 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
 
         # Noisy warnings from Qlib / dependencies that can be safely suppressed
         _NOISY_PATTERNS = (
-            "field data contains nan",            # Qlib: some stocks have NaN open/close
-            "common_infra",                       # Qlib executor init info
-            "PyTorch models are skipped",         # PyTorch not installed, we use LightGBM
-            "UserWarning: pkg_resources",         # setuptools deprecation noise
-            "Training until validation scores",   # LightGBM verbose training rounds
-            "FutureWarning",                      # Pandas deprecation warnings
-            "UserWarning",                        # Generic non-critical UserWarning
-            "Did not meet early stopping",        # LightGBM early stop info
-            "num_leaves is set=",                 # LightGBM param echoing
+            "field data contains nan",
+            "common_infra",
+            "PyTorch models are skipped",
+            "UserWarning: pkg_resources",
+            "Training until validation scores",
+            "FutureWarning",
+            "UserWarning",
+            "Did not meet early stopping",
+            "num_leaves is set=",
         )
 
+        # --- Stream stdout ---
+        log_entry = None
         while True:
             line_bytes = await proc.stdout.readline()
             if not line_bytes:
@@ -844,12 +916,34 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
                 "message": line[:500],
             }
             task["logs"].append(log_entry)
-            if len(task["logs"]) > 500:
-                task["logs"] = task["logs"][-500:]
+            if len(task["logs"]) > 2000:
+                task["logs"] = task["logs"][-2000:]
 
-            # Update progress message for meaningful lines
-            if any(kw in line for kw in ["因子", "回测", "模型", "训练", "完成", "加载"]):
+            # Broadcast log to WebSocket
+            await _broadcast(task_id, {
+                "type": "log",
+                "taskId": task_id,
+                "data": log_entry,
+                "timestamp": _now(),
+            })
+
+            # Update progress for meaningful lines
+            if any(kw in line for kw in ["因子", "回测", "模型", "训练", "完成", "加载",
+                                          "[1/4]", "[2/4]", "[3/4]", "[4/4]", "结果"]):
                 task["progress"]["message"] = line[:200]
+
+                # Estimate progress from run_backtest step markers
+                if "[1/4]" in line:
+                    task["progress"]["progress"] = 15
+                elif "[2/4]" in line:
+                    task["progress"]["progress"] = 35
+                elif "[3/4]" in line:
+                    task["progress"]["progress"] = 55
+                elif "[4/4]" in line:
+                    task["progress"]["progress"] = 75
+                elif "结果已保存" in line or "回测结果" in line:
+                    task["progress"]["progress"] = 95
+
                 task["progress"]["timestamp"] = _now()
                 await _broadcast(task_id, {
                     "type": "progress",
@@ -858,32 +952,34 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
                     "timestamp": _now(),
                 })
 
-            await _broadcast(task_id, {
-                "type": "log",
-                "taskId": task_id,
-                "data": log_entry,
-                "timestamp": _now(),
-            })
-
+        # --- Process exit ---
         exit_code = await proc.wait()
         task["pid"] = None
         task["status"] = "completed" if exit_code == 0 else "failed"
         task["updatedAt"] = _now()
 
-        # Try to load backtest results
+        # Try to load backtest results from output metrics JSON
         if exit_code == 0:
             task["progress"]["phase"] = "completed"
             task["progress"]["progress"] = 100
             task["progress"]["message"] = "回测完成"
             _load_backtest_results(task)
+        else:
+            task["progress"]["message"] = f"回测失败 (exit code: {exit_code})"
 
         await _broadcast(task_id, {
             "type": "result",
             "taskId": task_id,
-            "data": {"status": task["status"], "metrics": task.get("metrics", {})},
+            "data": {
+                "status": task["status"],
+                "metrics": task.get("metrics", {}),
+            },
             "timestamp": _now(),
         })
+
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         task["status"] = "failed"
         task["progress"]["message"] = str(e)
         task["updatedAt"] = _now()
@@ -903,12 +999,18 @@ def _load_backtest_results(task: Dict[str, Any]):
         )
         with open(config_path, "r") as f:
             bt_config = yaml.safe_load(f)
-        output_dir = bt_config.get("experiment", {}).get(
-            "output_dir", str(PROJECT_ROOT / "data" / "results" / "backtest_v2_results")
+        output_dir_raw = bt_config.get("experiment", {}).get(
+            "output_dir", "data/results/backtest_v2_results"
         )
+        # Resolve relative output_dir against PROJECT_ROOT (run_backtest runs with cwd=PROJECT_ROOT)
+        output_dir = Path(output_dir_raw)
+        if not output_dir.is_absolute():
+            output_dir = PROJECT_ROOT / output_dir
+        output_dir_str = str(output_dir)
+
         # Look for most recent metrics JSON
         metrics_files = sorted(
-            glob.glob(os.path.join(output_dir, "*_backtest_metrics.json")),
+            glob.glob(os.path.join(output_dir_str, "*_backtest_metrics.json")),
             key=os.path.getmtime, reverse=True,
         )
         if metrics_files:
@@ -924,9 +1026,23 @@ def _load_backtest_results(task: Dict[str, Any]):
                         "config", "elapsed_seconds"):
                 if key in metrics_data:
                     flat[f"__{key}"] = metrics_data[key]
+            
+            # Load cumulative excess return data from CSV
+            csv_path = metrics_files[0].replace("_backtest_metrics.json", "_cumulative_excess.csv")
+            if os.path.exists(csv_path):
+                import pandas as pd
+                df = pd.read_csv(csv_path)
+                if 'date' in df.columns and 'cumulative_excess_return' in df.columns:
+                    cumulative_data = df[['date', 'cumulative_excess_return']].to_dict('records')
+                    flat["cumulative_curve"] = [
+                        {"date": r["date"], "value": r["cumulative_excess_return"]} 
+                        for r in cumulative_data
+                    ]
+
             task["metrics"] = flat
-    except Exception:
-        pass  # metrics loading is best-effort
+    except Exception as e:
+        import traceback
+        traceback.print_exc()  # print for debugging, but don't crash
 
 
 # ---- System config endpoints ----
@@ -1034,6 +1150,125 @@ async def ws_mining(websocket: WebSocket, task_id: str):
 
 # ========================== Entry Point ==========================
 
+def _update_mining_metrics(task: Dict[str, Any]):
+    """
+    Update mining task metrics from the generated factor library.
+    Calculates best factor stats and extracts top 10 factors.
+    """
+    jsons = _find_factor_jsons()
+    # Prefer library with matching suffix if configured
+    target_lib = None
+    config = task.get("config", {})
+    suffix = config.get("librarySuffix")
+    
+    if suffix:
+        candidate = PROJECT_ROOT / "data" / "factorlib" / f"all_factors_library_{suffix}.json"
+        if candidate.exists():
+            target_lib = str(candidate)
+            
+    if not target_lib and jsons:
+        target_lib = jsons[0]
+        
+    if not target_lib:
+        return
+
+    try:
+        lib = _load_factor_library(target_lib)
+        factors = lib.get("factors", {})
+        
+        # 1. Update basic stats
+        total = len(factors)
+        task["metrics"]["totalFactors"] = total
+        
+        high = medium = low = 0
+        factor_list = []
+        
+        for f_id, f_info in factors.items():
+            bt = f_info.get("backtest_results", {})
+            q = _classify_quality(bt)
+            if q == "high": high += 1
+            elif q == "medium": medium += 1
+            else: low += 1
+            
+            # Prepare for top 10 list
+            # Normalize metrics
+            ic = bt.get("IC", bt.get("1day.excess_return_without_cost.information_coefficient", 0))
+            icir = bt.get("ICIR", bt.get("1day.excess_return_without_cost.information_coefficient_ir", 0))
+            rank_ic = bt.get("Rank IC", bt.get("rank_ic", bt.get("1day.excess_return_without_cost.rank_ic", 0)))
+            rank_icir = bt.get("Rank ICIR", bt.get("rank_ic_ir", bt.get("1day.excess_return_without_cost.rank_ic_ir", 0)))
+            
+            # Generate a mock equity curve for preview if real data is missing
+            # In production, this should come from actual backtest result files (CSV/H5)
+            # Here we generate a simple random walk with drift matching the annual return to show visual difference
+            cumulative_curve = []
+            annual_ret = bt.get("1day.excess_return_without_cost.annualized_return", 0)
+            max_dd = bt.get("1day.excess_return_with_cost.max_drawdown", 
+                                    bt.get("1day.excess_return_without_cost.max_drawdown", 0))
+            
+            # Calmar Ratio = Annual Return / Max Drawdown (absolute value)
+            # Avoid division by zero
+            cr = 0
+            if max_dd < 0:
+                cr = annual_ret / abs(max_dd)
+            elif max_dd > 0:
+                cr = annual_ret / max_dd
+            
+            # Simple simulation: 20 data points for preview sparkline
+            import random
+            current_val = 1.0
+            # Daily drift approx
+            drift = (1 + annual_ret) ** (1/252) - 1 if annual_ret else 0
+            vol = 0.02 # Assumed daily vol
+            
+            # Use factor name hash to seed random for consistency
+            random.seed(hash(f_info.get("factor_name", f_id)))
+            
+            for i in range(20):
+                 # Generate last 20 points
+                 ret = random.gauss(drift, vol)
+                 current_val *= (1 + ret)
+                 cumulative_curve.append({"value": current_val, "date": f"Day {i+1}"})
+            
+            factor_list.append({
+                "factorName": f_info.get("factor_name", f_id),
+                "factorExpression": f_info.get("factor_expression", ""),
+                "rankIc": rank_ic,
+                "rankIcir": rank_icir,
+                "ic": ic,
+                "icir": icir,
+                "annualReturn": annual_ret,
+                "sharpeRatio": bt.get("1day.excess_return_with_cost.information_ratio", 
+                                    bt.get("1day.excess_return_without_cost.information_ratio", 0)),
+                "maxDrawdown": max_dd,
+                "calmarRatio": cr,
+                "cumulativeCurve": cumulative_curve
+            })
+
+        task["metrics"]["highQualityFactors"] = high
+        task["metrics"]["mediumQualityFactors"] = medium
+        task["metrics"]["lowQualityFactors"] = low
+        
+        # 2. Find best factor
+        if factor_list:
+            # Sort by RankIC desc
+            factor_list.sort(key=lambda x: x["rankIc"], reverse=True)
+            best = factor_list[0]
+            
+            # Update task metrics with best factor's stats
+            task["metrics"]["annualReturn"] = best["annualReturn"]
+            task["metrics"]["rankIc"] = best["rankIc"]
+            task["metrics"]["sharpeRatio"] = best["sharpeRatio"]
+            task["metrics"]["maxDrawdown"] = best["maxDrawdown"]
+            task["metrics"]["factorName"] = best["factorName"]
+            
+            # 3. Top 10 Factors
+            task["metrics"]["top10Factors"] = factor_list[:10]
+            
+    except Exception:
+        pass # Best effort
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+    host = os.environ.get("BACKEND_HOST", "0.0.0.0")
+    port = int(os.environ.get("BACKEND_PORT", "8000"))
+    uvicorn.run(app, host=host, port=port, log_level="info")

@@ -46,26 +46,30 @@ export const FactorLibraryPage: React.FC = () => {
         limit: 500,
       });
       if (resp.success && resp.data) {
-        const apiFactors: Factor[] = resp.data.factors.map((f: any) => ({
-          factorId: f.factorId || '',
-          factorName: f.factorName || 'Unknown',
-          factorExpression: f.factorExpression || '',
-          factorDescription: f.factorDescription || '',
-          quality: (f.quality || 'low') as FactorQuality,
-          ic: f.ic || 0,
-          icir: f.icir || 0,
-          rankIc: f.rankIc || 0,
-          rankIcir: f.rankIcir || 0,
-          round: f.round || 0,
-          direction: String(f.direction ?? ''),
-          createdAt: f.createdAt || new Date().toISOString(),
-          // Extra fields from API
-          backtestResults: f.backtestResults,
-          factorFormulation: f.factorFormulation,
-          annualReturn: f.annualReturn,
-          maxDrawdown: f.maxDrawdown,
-          sharpeRatio: f.sharpeRatio,
-        }));
+        const apiFactors: Factor[] = resp.data.factors.map((f: any) => {
+          const bt = f.backtestResults || {};
+          return {
+            factorId: f.factorId || '',
+            factorName: f.factorName || 'Unknown',
+            factorExpression: f.factorExpression || '',
+            factorDescription: f.factorDescription || '',
+            quality: (f.quality || 'low') as FactorQuality,
+            // Prioritize specific metrics from backtest results to match detail view
+            ic: (typeof bt['IC'] === 'number' ? bt['IC'] : (f.ic || bt['1day.excess_return_without_cost.information_coefficient'] || 0)),
+            icir: (typeof bt['ICIR'] === 'number' ? bt['ICIR'] : (f.icir || bt['1day.excess_return_without_cost.information_coefficient_ir'] || 0)),
+            rankIc: (typeof bt['Rank IC'] === 'number' ? bt['Rank IC'] : (f.rankIc || bt['rank_ic'] || bt['1day.excess_return_without_cost.rank_ic'] || 0)),
+            rankIcir: (typeof bt['Rank ICIR'] === 'number' ? bt['Rank ICIR'] : (f.rankIcir || bt['rank_ic_ir'] || bt['1day.excess_return_without_cost.rank_ic_ir'] || 0)),
+            round: f.round || 0,
+            direction: String(f.direction ?? ''),
+            createdAt: f.createdAt || new Date().toISOString(),
+            // Extra fields from API
+            backtestResults: f.backtestResults,
+            factorFormulation: f.factorFormulation,
+            annualReturn: f.annualReturn,
+            maxDrawdown: f.maxDrawdown,
+            sharpeRatio: f.sharpeRatio,
+          };
+        });
         setFactors(apiFactors);
         setLibraries(resp.data.libraries || []);
         setMetadata(resp.data.metadata || null);

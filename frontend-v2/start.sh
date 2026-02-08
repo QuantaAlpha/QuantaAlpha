@@ -2,6 +2,7 @@
 
 # QuantaAlpha AI V2 启动脚本
 # 同时启动 FastAPI 后端 + Vite 前端开发服务器
+# 多用户共享服务器场景：如果服务已在运行，复用现有服务而非互相杀掉
 
 echo "🚀 启动 QuantaAlpha AI V2..."
 echo ""
@@ -67,60 +68,124 @@ fi
 # =============================================================================
 # 安装后端依赖（在 conda 环境中）
 # =============================================================================
-pip install fastapi uvicorn websockets python-multipart python-dotenv pyyaml 2>/dev/null | grep -v "already satisfied"
+echo "📦 检查/安装后端 Python 依赖..."
+pip install -q fastapi uvicorn websockets python-multipart python-dotenv pyyaml 2>/dev/null || true
+echo "✅ 后端依赖就绪"
 
 # =============================================================================
-# 启动后端
+# 获取本机 IP（用于多用户访问提示）
 # =============================================================================
-echo ""
-echo "🔧 启动后端服务 (端口 8000)..."
-cd "${SCRIPT_DIR}"
-python backend/app.py &
-BACKEND_PID=$!
-
-# 等待后端启动
-sleep 3
-
-# 检查后端是否启动成功
-if curl -s http://localhost:8000/api/health > /dev/null 2>&1; then
-    echo "✅ 后端服务启动成功"
-else
-    echo "❌ 后端启动失败，请检查日志"
-    kill $BACKEND_PID 2>/dev/null
-    exit 1
+HOST_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+if [ -z "$HOST_IP" ]; then
+    HOST_IP="localhost"
 fi
 
 # =============================================================================
-# 启动前端
+# 检测并启动后端（复用已有服务 or 重新启动）
 # =============================================================================
-echo ""
-echo "🎨 启动前端服务 (端口 3000)..."
-cd "${SCRIPT_DIR}"
-npm run dev &
-FRONTEND_PID=$!
+BACKEND_PID=""
+BACKEND_REUSED=false
 
-sleep 3
+echo ""
+echo "🔍 检测后端服务 (端口 8000)..."
+if curl -s --connect-timeout 2 http://localhost:8000/api/health > /dev/null 2>&1; then
+    echo "✅ 后端服务已在运行中 (端口 8000)，复用现有服务"
+    BACKEND_REUSED=true
+    BACKEND_PID=$(lsof -ti:8000 2>/dev/null | head -1)
+else
+    # 清理可能占用端口但未正常服务的残留进程
+    OLD_PID=$(lsof -ti:8000 2>/dev/null)
+    if [ -n "$OLD_PID" ]; then
+        echo "⚠️  端口 8000 被占用但服务异常，清理残留进程 (PID: $OLD_PID)..."
+        kill $OLD_PID 2>/dev/null
+        sleep 1
+        kill -9 $OLD_PID 2>/dev/null 2>&1
+    fi
+
+    echo "🔧 启动后端服务 (端口 8000)..."
+    cd "${SCRIPT_DIR}"
+    python backend/app.py &
+    BACKEND_PID=$!
+
+    # 等待后端启动
+    sleep 3
+
+    if curl -s http://localhost:8000/api/health > /dev/null 2>&1; then
+        echo "✅ 后端服务启动成功 (PID: $BACKEND_PID)"
+    else
+        echo "❌ 后端启动失败，请检查日志"
+        kill $BACKEND_PID 2>/dev/null
+        exit 1
+    fi
+fi
+
+# =============================================================================
+# 检测并启动前端（复用已有服务 or 重新启动）
+# =============================================================================
+FRONTEND_PID=""
+FRONTEND_REUSED=false
+
+echo ""
+echo "🔍 检测前端服务 (端口 3000)..."
+if curl -s --connect-timeout 2 http://localhost:3000 > /dev/null 2>&1; then
+    echo "✅ 前端服务已在运行中 (端口 3000)，复用现有服务"
+    FRONTEND_REUSED=true
+    FRONTEND_PID=$(lsof -ti:3000 2>/dev/null | head -1)
+else
+    # 清理可能占用端口但未正常服务的残留进程
+    OLD_PID=$(lsof -ti:3000 2>/dev/null)
+    if [ -n "$OLD_PID" ]; then
+        echo "⚠️  端口 3000 被占用但服务异常，清理残留进程 (PID: $OLD_PID)..."
+        kill $OLD_PID 2>/dev/null
+        sleep 1
+        kill -9 $OLD_PID 2>/dev/null 2>&1
+    fi
+
+    echo "🎨 启动前端服务 (端口 3000)..."
+    cd "${SCRIPT_DIR}"
+    npm run dev &
+    FRONTEND_PID=$!
+    sleep 3
+fi
 
 echo ""
 echo "============================================"
 echo "✅ 所有服务启动完成!"
 echo ""
 echo "📍 访问地址:"
-echo "   前端:     http://localhost:3000"
+echo "   本机:     http://localhost:3000"
+if [ "$HOST_IP" != "localhost" ]; then
+echo "   局域网:   http://${HOST_IP}:3000"
+fi
 echo "   后端 API: http://localhost:8000"
 echo "   API 文档: http://localhost:8000/docs"
 echo ""
-echo "按 Ctrl+C 停止所有服务"
+if [ "$BACKEND_REUSED" = true ] || [ "$FRONTEND_REUSED" = true ]; then
+echo "ℹ️  部分服务为复用已有进程（多用户共享模式）"
+echo "   Ctrl+C 仅停止本脚本启动的服务，不影响其他用户"
+fi
+echo ""
+echo "按 Ctrl+C 停止服务"
 echo "============================================"
 echo ""
 
-# 捕获退出信号
+# 捕获退出信号 — 只杀自己启动的进程，不杀复用的
 cleanup() {
     echo ""
     echo "🛑 停止服务..."
-    kill $BACKEND_PID 2>/dev/null
-    kill $FRONTEND_PID 2>/dev/null
-    echo "✅ 已停止所有服务"
+    if [ "$BACKEND_REUSED" = false ] && [ -n "$BACKEND_PID" ]; then
+        kill $BACKEND_PID 2>/dev/null
+        echo "  已停止后端 (PID: $BACKEND_PID)"
+    else
+        echo "  后端为共享服务，保持运行"
+    fi
+    if [ "$FRONTEND_REUSED" = false ] && [ -n "$FRONTEND_PID" ]; then
+        kill $FRONTEND_PID 2>/dev/null
+        echo "  已停止前端 (PID: $FRONTEND_PID)"
+    else
+        echo "  前端为共享服务，保持运行"
+    fi
+    echo "✅ 完成"
     exit 0
 }
 trap cleanup SIGINT SIGTERM

@@ -24,9 +24,108 @@ import {
   warmCache,
 } from '@/services/api';
 import type { CacheStatusResponse } from '@/services/api';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
+import { formatDate, formatNumber, formatPercent } from '@/utils';
+
+// ... (existing MetricCard component)
+
+const CumulativeReturnChart: React.FC<{ data: { date: string; value: number }[] }> = ({ data }) => {
+  if (!data || data.length === 0) return null;
+
+  // Generate ticks for every 6 months
+  const ticks = [];
+  if (data.length > 0) {
+    const startDate = new Date(data[0].date);
+    const endDate = new Date(data[data.length - 1].date);
+    let currentDate = new Date(startDate);
+    
+    // Align to start of month
+    currentDate.setDate(1);
+    
+    while (currentDate <= endDate) {
+      ticks.push(currentDate.toISOString().split('T')[0]);
+      // Add 6 months
+      currentDate.setMonth(currentDate.getMonth() + 6);
+    }
+  }
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="glass-strong rounded-lg p-3 shadow-xl border border-border/50">
+          <p className="text-xs text-muted-foreground mb-1">{formatDate(label)}</p>
+          <p className="text-sm font-bold text-primary">
+            超额收益: {formatPercent(payload[0].value)}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div className="h-[300px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="colorReturn" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} vertical={false} />
+          <XAxis 
+            dataKey="date" 
+            tick={{ fill: '#9CA3AF', fontSize: 11 }}
+            tickLine={false}
+            axisLine={false}
+            ticks={ticks}
+            tickFormatter={(value) => formatDate(value).split('/').slice(0, 2).join('/')} 
+          />
+          <YAxis 
+            tick={{ fill: '#9CA3AF', fontSize: 11 }}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#374151', strokeWidth: 1, strokeDasharray: '4 4' }} />
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="#10B981"
+            strokeWidth={2}
+            fill="url(#colorReturn)"
+            animationDuration={1000}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
 import { useTaskContext } from '@/context/TaskContext';
 
 // ========================== Component ==========================
+
+// Helper component for metrics
+const MetricCard = ({ label, value, unit = '' }: { label: string; value?: number; unit?: string }) => (
+  <div className="bg-secondary/30 rounded-lg p-3">
+    <div className="text-xs text-muted-foreground mb-1">{label}</div>
+    <div className="text-lg font-bold font-mono">
+      {typeof value === 'number' 
+        ? `${formatNumber(value, 4)}${unit}`
+        : '--'}
+    </div>
+  </div>
+);
 
 export const BacktestPage: React.FC = () => {
   const {
@@ -39,7 +138,8 @@ export const BacktestPage: React.FC = () => {
 
   // -- Local UI State --
   const [libraries, setLibraries] = useState<string[]>([]);
-  const [selectedLibrary, setSelectedLibrary] = useState('');
+  // Initialize with saved library from localStorage if available
+  const [selectedLibrary, setSelectedLibrary] = useState(localStorage.getItem('quantaalpha_active_library') || '');
   const [factorSource, setFactorSource] = useState<'custom' | 'combined'>('custom');
   const [factorCount, setFactorCount] = useState(0);
   const [isStarting, setIsStarting] = useState(false);
@@ -423,11 +523,22 @@ export const BacktestPage: React.FC = () => {
 
       {/* Progress + Status */}
       {task && (
-        <Card className="glass card-hover">
+        <Card className={`glass card-hover ${isRunning ? 'border-primary/50' : ''}`}>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
+                {isRunning ? (
+                  <div className="relative h-5 w-5">
+                    <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
+                    <BarChart3 className="relative h-5 w-5 text-primary" />
+                  </div>
+                ) : task.status === 'completed' ? (
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                ) : task.status === 'failed' ? (
+                  <AlertCircle className="h-5 w-5 text-red-500" />
+                ) : (
+                  <Clock className="h-5 w-5" />
+                )}
                 回测进度
               </div>
               <Badge
@@ -445,27 +556,56 @@ export const BacktestPage: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Running animation banner */}
+            {isRunning && (
+              <div className="mb-4 rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-center gap-3">
+                <Loader2 className="h-5 w-5 text-primary animate-spin flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-primary">
+                    回测正在执行中
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {task.progress?.message || '正在加载因子数据并训练模型...'}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Progress bar */}
             <div className="mb-4">
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-muted-foreground">{task.progress?.message || '等待中...'}</span>
                 <span className="text-muted-foreground">
-                  {task.status === 'completed' ? '100%' : isRunning ? '运行中...' : ''}
+                  {task.status === 'completed' ? '100%' :
+                   task.status === 'failed' ? '失败' :
+                   task.progress?.progress > 0 ? `${Math.round(task.progress.progress)}%` :
+                   isRunning ? '运行中...' : ''}
                 </span>
               </div>
               <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    task.status === 'completed' ? 'bg-green-500 w-full' :
-                    task.status === 'failed' ? 'bg-red-500 w-full' :
-                    'bg-primary animate-pulse'
-                  }`}
-                  style={{
-                    width: task.status === 'completed' ? '100%' :
-                           task.status === 'failed' ? '100%' :
-                           isRunning ? '60%' : '0%',
-                  }}
-                />
+                {isRunning && (!task.progress?.progress || task.progress.progress <= 0) ? (
+                  /* Indeterminate shimmer animation when no progress % */
+                  <div
+                    className="h-full w-1/3 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent"
+                    style={{
+                      animation: 'shimmer 1.5s ease-in-out infinite',
+                    }}
+                  />
+                ) : (
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      task.status === 'completed' ? 'bg-green-500' :
+                      task.status === 'failed' ? 'bg-red-500' :
+                      'bg-primary'
+                    }`}
+                    style={{
+                      width: task.status === 'completed' ? '100%' :
+                             task.status === 'failed' ? '100%' :
+                             task.progress?.progress > 0 ? `${task.progress.progress}%` :
+                             '0%',
+                    }}
+                  />
+                )}
               </div>
             </div>
 
@@ -482,7 +622,7 @@ export const BacktestPage: React.FC = () => {
 
       {/* Results */}
       {isFinished && task?.status === 'completed' && Object.keys(metrics).length > 0 && (
-        <Card className="glass card-hover">
+        <Card className="glass card-hover animate-fade-in-up">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -496,7 +636,7 @@ export const BacktestPage: React.FC = () => {
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <MetricCard label="IC" value={metrics.IC || metrics.ic} />
               <MetricCard label="ICIR" value={metrics.ICIR || metrics.icir} />
@@ -515,6 +655,17 @@ export const BacktestPage: React.FC = () => {
               <MetricCard label="信息比率" value={metrics.information_ratio} />
               <MetricCard label="Calmar" value={metrics.calmar_ratio} />
             </div>
+
+            {/* Cumulative Excess Return Chart */}
+            {metrics.cumulative_curve && (
+              <div className="pt-4 border-t border-border/50">
+                <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  超额累计收益曲线
+                </h4>
+                <CumulativeReturnChart data={metrics.cumulative_curve} />
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

@@ -24,8 +24,8 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress }) =>
   return (
     <div className="space-y-4">
       {/* Phase Status */}
-      <Card className="glass card-hover animate-fade-in-left">
-        <CardContent className="p-4">
+      <Card className="glass card-hover animate-fade-in-left h-[140px]">
+        <CardContent className="p-4 h-full flex flex-col justify-center">
           <div className="flex items-center gap-3 mb-4">
             <div className={`p-3 rounded-xl bg-secondary/50 ${currentPhase.color}`}>
               <Icon className="h-6 w-6 animate-pulse" />
@@ -52,24 +52,27 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress }) =>
       </Card>
 
       {/* Timeline */}
-      <Card className="glass card-hover animate-fade-in-left" style={{ animationDelay: '0.1s' }}>
-        <CardContent className="p-4">
-          <div className="text-sm font-medium mb-3">执行时间线</div>
-          <div className="space-y-3">
+      <Card className="glass card-hover animate-fade-in-left h-[400px]" style={{ animationDelay: '0.1s' }}>
+        <CardContent className="p-4 h-full flex flex-col">
+          <div className="text-sm font-medium mb-4">执行时间线</div>
+          <div className="flex-1 flex flex-col justify-between relative">
+            {/* Vertical Connecting Line */}
+            <div className="absolute left-[15px] top-4 bottom-4 w-[2px] bg-gradient-to-b from-secondary/50 via-secondary to-secondary/50" />
+            
             {Object.entries(phaseConfig).map(([phase, config]) => {
               const isActive = phase === progress.phase;
               const isPassed = Object.keys(phaseConfig).indexOf(phase) < Object.keys(phaseConfig).indexOf(progress.phase);
               const PhaseIcon = config.icon;
 
               return (
-                <div key={phase} className="flex items-center gap-3">
+                <div key={phase} className="flex items-center gap-4 relative z-10 bg-background/50 backdrop-blur-[2px] rounded-lg p-1 -ml-1">
                   <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all ${
                       isActive
-                        ? 'bg-primary text-primary-foreground scale-110'
+                        ? 'border-primary bg-primary text-primary-foreground shadow-[0_0_10px_rgba(59,130,246,0.5)] scale-110'
                         : isPassed
-                        ? 'bg-success/20 text-success'
-                        : 'bg-secondary/30 text-muted-foreground'
+                        ? 'border-success bg-success/10 text-success'
+                        : 'border-muted bg-background text-muted-foreground'
                     }`}
                   >
                     {isPassed ? (
@@ -79,12 +82,17 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({ progress }) =>
                     )}
                   </div>
                   <div className="flex-1">
-                    <div className={`text-sm ${isActive ? 'font-medium' : ''}`}>
+                    <div className={`text-sm transition-colors ${isActive ? 'font-bold text-primary' : isPassed ? 'text-foreground' : 'text-muted-foreground'}`}>
                       {config.label}
                     </div>
                   </div>
                   {isActive && (
-                    <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                      </span>
+                    </div>
                   )}
                 </div>
               );

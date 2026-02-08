@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Square } from 'lucide-react';
+import { Send, Sparkles, Square, Compass } from 'lucide-react';
 import { TaskConfig } from '@/types';
 
 interface ChatInputProps {
@@ -10,6 +10,7 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunning = false }) => {
   const [input, setInput] = useState('');
+  const [useCustomMiningDirection, setUseCustomMiningDirection] = useState(false);
   const [config] = useState<Partial<TaskConfig>>({
     librarySuffix: '',
   });
@@ -22,10 +23,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
   ];
 
   const handleSubmit = () => {
-    if (!input.trim() || isRunning) return;
+    if (isRunning) return;
     const suffix = config.librarySuffix?.trim() || undefined;
     onSubmit({
       userInput: input.trim(),
+      useCustomMiningDirection,
       ...config,
       librarySuffix: suffix,
     } as TaskConfig);
@@ -51,7 +53,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
         
         {/* Example Prompts */}
         {!input && !isRunning && (
-          <div className="flex gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex flex-wrap justify-center gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
             {examplePrompts.map((prompt, idx) => (
               <button
                 key={idx}
@@ -69,6 +71,28 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
         <div className="gradient-border">
           <div className="gradient-border-content">
             <div className="glass-strong rounded-xl p-4">
+              {/* 图标栏：自选挖掘方向等 */}
+              <div className="flex items-center gap-1 mb-3">
+                <button
+                  type="button"
+                  onClick={() => setUseCustomMiningDirection((v) => !v)}
+                  title={useCustomMiningDirection ? '使用设置中的挖掘方向（已开）' : '使用设置中的挖掘方向（点击开启）'}
+                  className={`p-2 rounded-lg transition-all ${
+                    useCustomMiningDirection
+                      ? 'bg-primary/15 text-primary ring-1 ring-primary/30'
+                      : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
+                  }`}
+                >
+                  <Compass className="h-4 w-4" />
+                </button>
+                <span
+                  className={`text-xs ml-1 ${
+                    useCustomMiningDirection ? 'text-primary font-medium' : 'text-muted-foreground'
+                  }`}
+                >
+                  自选挖掘方向
+                </span>
+              </div>
               <div className="flex items-end gap-3">
                 <div className="flex-1">
                   <textarea
@@ -76,7 +100,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder={isRunning ? "实验运行中...可以切换到其他页面，任务不会中断" : "描述你的因子挖掘需求... (Shift+Enter 换行，Enter 发送)"}
+                    placeholder={
+                      isRunning
+                        ? '实验运行中...可以切换到其他页面，任务不会中断'
+                        : useCustomMiningDirection
+                        ? '已开启自选挖掘方向，将使用「设置 → 挖掘方向」中的选项'
+                        : '描述因子挖掘需求，或开启「自选挖掘方向」使用设置中的方向 (Shift+Enter 换行，Enter 发送)'
+                    }
                     disabled={isRunning}
                     className="w-full bg-transparent text-base placeholder:text-muted-foreground focus:outline-none resize-none"
                     rows={1}
@@ -96,7 +126,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, onStop, isRunnin
                   ) : (
                     <button
                       onClick={handleSubmit}
-                      disabled={!input.trim() || isRunning}
+                      disabled={isRunning}
                       className="p-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95"
                       title="发送 (Enter)"
                     >

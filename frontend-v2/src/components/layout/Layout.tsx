@@ -2,7 +2,7 @@ import React from 'react';
 import { Sparkles, Database, BarChart3, Settings as SettingsIcon, LogOut } from 'lucide-react';
 import { useTaskContext } from '@/context/TaskContext';
 
-export type PageId = 'home' | 'library' | 'backtest' | 'settings';
+export type PageId = 'home' | 'library' | 'backtest' | 'settings' | 'mining_dashboard';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,6 +19,21 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const { miningTask, resetMiningTask } = useTaskContext();
 
+  // Helper to determine where 'Factor Mining' nav item should go
+  const handleNavClick = (itemId: PageId) => {
+    if (itemId === 'home') {
+      // If there is an active mining task (running, completed, or failed), go to dashboard
+      // Only go to home welcome screen if task is null or idle
+      if (miningTask && miningTask.status !== 'idle') {
+        onNavigate('mining_dashboard');
+      } else {
+        onNavigate('home');
+      }
+    } else {
+      onNavigate(itemId);
+    }
+  };
+
   const navItems = [
     { id: 'home' as const, label: '因子挖掘', icon: Sparkles },
     { id: 'library' as const, label: '因子库', icon: Database },
@@ -32,14 +47,17 @@ export const Layout: React.FC<LayoutProps> = ({
       <header className="fixed top-0 left-0 right-0 z-40 glass-strong border-b border-border/50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => onNavigate('home')}
+            >
               <div className="relative">
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
               </div>
               <div>
-                <h1 className="text-xl font-bold neon-text">QuantaAlpha</h1>
+                <h1 className="text-xl font-bold">QuantaAlpha</h1>
                 <p className="text-xs text-muted-foreground">智能因子挖掘平台</p>
               </div>
             </div>
@@ -50,11 +68,12 @@ export const Layout: React.FC<LayoutProps> = ({
                 <nav className="flex items-center gap-2">
                   {navItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = currentPage === item.id;
+                    // Highlight 'Factor Mining' if we are on dashboard OR home
+                    const isActive = currentPage === item.id || (item.id === 'home' && currentPage === 'mining_dashboard');
                     return (
                       <button
                         key={item.id}
-                        onClick={() => onNavigate(item.id)}
+                        onClick={() => handleNavClick(item.id)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                           isActive
                             ? 'bg-primary text-primary-foreground'
@@ -67,18 +86,6 @@ export const Layout: React.FC<LayoutProps> = ({
                     );
                   })}
                 </nav>
-              )}
-              
-              {/* Reset Button (Only visible when mining task exists) */}
-              {miningTask && (
-                <button
-                  onClick={resetMiningTask}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all border border-destructive/20"
-                  title="结束任务并返回主界面"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="text-sm font-medium">返回主页</span>
-                </button>
               )}
             </div>
           </div>

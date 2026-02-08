@@ -22,8 +22,8 @@ from typing import Dict, List, Optional, Tuple, Any
 import numpy as np
 import pandas as pd
 
-# 添加项目路径
-project_root = Path(__file__).parent.parent
+# 添加项目路径 (从 quantaalpha/backtest/ 向上三级到项目根目录)
+project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
 
 # 抑制一些不必要的警告
@@ -47,25 +47,47 @@ class CustomFactorCalculator:
     支持自动从主程序日志中提取缓存
     """
     
-    def __init__(self, data_df: pd.DataFrame, cache_dir: Optional[Path] = None, auto_extract_cache: bool = True):
+    def __init__(self, data_df: Optional[pd.DataFrame] = None, cache_dir: Optional[Path] = None, 
+                 auto_extract_cache: bool = True, config: Optional[Dict] = None):
         """
         初始化因子计算器
         
         Args:
-            data_df: 股票数据 DataFrame，需要有 MultiIndex (datetime, instrument)
-                    列包含: $open, $high, $low, $close, $volume, $vwap
+            data_df: 股票数据 DataFrame (可选，延迟加载)
             cache_dir: 缓存目录路径 (可选)
             auto_extract_cache: 是否自动从主程序日志中提取缓存 (默认 True)
+            config: 配置字典，用于延迟加载数据 (可选)
         """
-        self.data_df = data_df
+        self._raw_data_df = data_df
+        self._data_prepared = False
+        self._config = config
         self.cache_dir = cache_dir or DEFAULT_CACHE_DIR
         self.auto_extract_cache = auto_extract_cache
         self._cache_extracted = False  # 标记是否已执行过自动提取
-        self._prepare_data()
+        
+        # 如果已经提供了数据，立即准备
+        if data_df is not None and len(data_df) > 0:
+            self._prepare_data()
+    
+    @property
+    def data_df(self) -> pd.DataFrame:
+        """延迟加载股票数据"""
+        if not self._data_prepared:
+            if self._raw_data_df is None or len(self._raw_data_df) == 0:
+                if self._config is not None:
+                    print("  加载股票数据（需要从表达式计算因子）...")
+                    self._raw_data_df = get_qlib_stock_data(self._config)
+                else:
+                    raise ValueError("未提供股票数据且无配置用于加载")
+            self._prepare_data()
+        return self._raw_data_df
         
     def _prepare_data(self):
         """准备数据，添加常用衍生列"""
-        df = self.data_df.copy()
+        if self._data_prepared:
+            return
+        
+        df = self._raw_data_df.copy()
         
         # 添加 $return 列 (如果不存在)
         if '$return' not in df.columns:
@@ -79,7 +101,8 @@ class CustomFactorCalculator:
             logger.warning(f"数据存在 {dup_count} 个重复索引，已自动去重")
             df = df[~df.index.duplicated(keep='last')]
         
-        self.data_df = df
+        self._raw_data_df = df
+        self._data_prepared = True
         logger.debug(f"数据准备完成: {len(df)} 行, 列: {list(df.columns)}")
     
     def _get_cache_key(self, expr: str) -> str:
@@ -122,7 +145,7 @@ class CustomFactorCalculator:
             return None
     
     def _process_cached_result(self, result: Any, source: str) -> Optional[pd.Series]:
-        """处理缓存结果，统一格式"""
+        """处理缓存结果，统一格式（不访问 self.data_df，避免触发延迟加载）"""
         try:
             # 处理可能的 DataFrame 格式
             if isinstance(result, pd.DataFrame):
@@ -134,11 +157,11 @@ class CustomFactorCalculator:
                     result = result.iloc[:, 0]
             
             # 处理索引顺序不一致的问题
+            # 标准顺序应该是 (datetime, instrument)
             if isinstance(result.index, pd.MultiIndex):
                 cache_idx_names = list(result.index.names)
-                data_idx_names = list(self.data_df.index.names)
-                
-                if cache_idx_names != data_idx_names and set(cache_idx_names) == set(data_idx_names):
+                expected_order = ['datetime', 'instrument']
+                if cache_idx_names != expected_order and set(cache_idx_names) == set(expected_order):
                     result = result.swaplevel()
                     result = result.sort_index()
             
@@ -311,6 +334,8 @@ class CustomFactorCalculator:
         2. MD5 缓存（factor_cache 目录）
         3. 使用 factor_expression 重新计算
         """
+        import time as _time
+        
         # 自动从主程序日志中提取缓存
         if use_cache and self.auto_extract_cache:
             self._auto_extract_cache_from_logs()
@@ -323,7 +348,9 @@ class CustomFactorCalculator:
         compute_count = 0
         failed_names = []
         total = len(factors)
+        need_compute_factors = []  # 记录需要从表达式计算的因子
         
+        # === Pass 1: 尝试从缓存加载所有因子 ===
         for i, factor_info in enumerate(factors):
             factor_name = factor_info.get('factor_name', 'unknown')
             factor_expr = factor_info.get('factor_expression', '')
@@ -334,8 +361,6 @@ class CustomFactorCalculator:
                 failed_names.append(factor_name)
                 continue
             
-            logger.debug(f"  计算因子 [{i+1}/{total}]: {factor_name}")
-            
             result = None
             
             # 1. 优先检查 cache_location (从 result.h5 直接读取)
@@ -345,70 +370,151 @@ class CustomFactorCalculator:
                     result = self._load_from_cache_location(cache_location)
                     if result is not None:
                         cache_location_hit_count += 1
-                        result = self._validate_and_align_result(result, factor_name)
-                        if result is not None:
-                            results[factor_name] = result
-                            success_count += 1
-                            logger.debug(f"    H5缓存命中: {factor_name}")
-                            continue
+                        results[factor_name] = result
+                        success_count += 1
+                        print(f"  [{i+1}/{total}] ✓ H5缓存: {factor_name}")
+                        continue
             
             # 2. 检查 MD5 缓存
             if use_cache:
                 result = self._load_from_cache(factor_expr)
                 if result is not None:
                     cache_hit_count += 1
-                    result = self._validate_and_align_result(result, factor_name)
-                    if result is not None:
-                        results[factor_name] = result
-                        success_count += 1
-                        logger.debug(f"    MD5缓存命中: {factor_name}")
-                        continue
-            
-            # 3. 缓存未命中，使用 factor_expression 进行计算
-            logger.debug(f"    从表达式计算: {factor_expr[:60]}...")
-            result = self.calculate_factor(factor_name, factor_expr)
-            
-            if result is not None and len(result) > 0:
-                if not result.isna().all():
                     results[factor_name] = result
                     success_count += 1
-                    compute_count += 1
-                    # 保存到 MD5 缓存
-                    if use_cache:
-                        self._save_to_cache(factor_expr, result)
+                    print(f"  [{i+1}/{total}] ✓ MD5缓存: {factor_name}")
+                    continue
+            
+            # 3. 需要从表达式计算，记录下来
+            need_compute_factors.append((i, factor_info))
+            print(f"  [{i+1}/{total}] ⏳ 待计算: {factor_name}")
+        
+        # === Pass 2: 从表达式计算未缓存的因子 ===
+        if need_compute_factors:
+            print(f"  开始从表达式计算 {len(need_compute_factors)} 个因子...")
+            
+            for idx, (orig_i, factor_info) in enumerate(need_compute_factors):
+                factor_name = factor_info.get('factor_name', 'unknown')
+                factor_expr = factor_info.get('factor_expression', '')
+                
+                print(f"  计算 [{idx+1}/{len(need_compute_factors)}]: {factor_name} ...", end='', flush=True)
+                t0 = _time.time()
+                
+                try:
+                    # 超时保护：单个因子计算最多 120 秒
+                    import signal as _signal
+                    
+                    class _FactorTimeout(Exception):
+                        pass
+                    
+                    def _timeout_handler(signum, frame):
+                        raise _FactorTimeout()
+                    
+                    old_handler = None
+                    try:
+                        old_handler = _signal.signal(_signal.SIGALRM, _timeout_handler)
+                        _signal.alarm(120)  # 120 秒超时
+                    except (AttributeError, ValueError):
+                        pass  # Windows 或非主线程不支持 SIGALRM
+                    
+                    result = self.calculate_factor(factor_name, factor_expr)
+                    
+                    try:
+                        _signal.alarm(0)  # 取消超时
+                        if old_handler is not None:
+                            _signal.signal(_signal.SIGALRM, old_handler)
+                    except (AttributeError, ValueError):
+                        pass
+                    
+                except _FactorTimeout:
+                    elapsed = _time.time() - t0
+                    print(f" ✗ 超时 ({elapsed:.1f}s)")
+                    fail_count += 1
+                    failed_names.append(f"{factor_name}(超时)")
+                    try:
+                        _signal.alarm(0)
+                        if old_handler is not None:
+                            _signal.signal(_signal.SIGALRM, old_handler)
+                    except (AttributeError, ValueError):
+                        pass
+                    continue
+                except Exception as e:
+                    elapsed = _time.time() - t0
+                    print(f" ✗ 异常 ({elapsed:.1f}s): {str(e)[:80]}")
+                    fail_count += 1
+                    failed_names.append(factor_name)
+                    continue
+                
+                elapsed = _time.time() - t0
+                
+                if result is not None and len(result) > 0:
+                    if not result.isna().all():
+                        results[factor_name] = result
+                        success_count += 1
+                        compute_count += 1
+                        print(f" ✓ ({elapsed:.1f}s)")
+                        # 保存到 MD5 缓存
+                        if use_cache:
+                            self._save_to_cache(factor_expr, result)
+                    else:
+                        fail_count += 1
+                        failed_names.append(factor_name)
+                        print(f" ✗ 全NaN ({elapsed:.1f}s)")
                 else:
                     fail_count += 1
                     failed_names.append(factor_name)
-                    logger.warning(f"因子 {factor_name} 全为 NaN")
-            else:
-                fail_count += 1
-                failed_names.append(factor_name)
-                logger.warning(f"因子 {factor_name} 计算失败或为空")
+                    print(f" ✗ 失败 ({elapsed:.1f}s)")
         
-        # 只打印一行摘要
-        print(f"因子计算完成: 成功 {success_count}, 失败 {fail_count} | "
-              f"H5命中 {cache_location_hit_count}, MD5命中 {cache_hit_count}, 重算 {compute_count}")
+        # 摘要
+        print(f"因子加载完成: 成功 {success_count}, 失败 {fail_count} | "
+              f"H5缓存 {cache_location_hit_count}, MD5缓存 {cache_hit_count}, 重算 {compute_count}")
         if failed_names:
             print(f"  失败因子: {', '.join(failed_names)}")
         
-        if results:
-            result_df = pd.DataFrame(results, index=self.data_df.index)
+        # === 构建 DataFrame ===
+        if not results:
+            return pd.DataFrame()
+        
+        # 对齐所有结果到统一索引
+        # 如果有缓存结果，可能需要对齐索引
+        aligned_results = {}
+        reference_index = None
+        
+        for name, series in results.items():
+            if reference_index is None:
+                reference_index = series.index
+            validated = self._validate_and_align_result(series, name, reference_index)
+            if validated is not None:
+                aligned_results[name] = validated
+        
+        if aligned_results:
+            result_df = pd.DataFrame(aligned_results)
             logger.debug(f"  结果 DataFrame: {result_df.shape}")
             return result_df
         
         return pd.DataFrame()
     
-    def _validate_and_align_result(self, result: pd.Series, factor_name: str) -> Optional[pd.Series]:
+    def _validate_and_align_result(self, result: pd.Series, factor_name: str, 
+                                    reference_index: Optional[pd.Index] = None) -> Optional[pd.Series]:
         """验证并对齐缓存结果的索引"""
         if result is None:
             return None
         
+        # 确定目标索引
+        target_idx = reference_index
+        if target_idx is None:
+            # 只有在需要对齐时才访问 data_df（触发延迟加载）
+            try:
+                target_idx = self.data_df.index
+            except Exception:
+                # 如果无法加载数据，直接返回原始结果
+                return result if len(result) > 0 and not result.isna().all() else None
+        
         # 确保索引对齐 (duplicate-safe)
-        if not result.index.equals(self.data_df.index):
+        if not result.index.equals(target_idx):
             try:
                 if result.index.duplicated().any():
                     result = result[~result.index.duplicated(keep='last')]
-                target_idx = self.data_df.index
                 if target_idx.duplicated().any():
                     target_idx = target_idx[~target_idx.duplicated(keep='last')]
                 
@@ -479,7 +585,13 @@ def get_qlib_stock_data(config: Dict) -> pd.DataFrame:
     
     data_config = config.get('data', {})
     
-    provider_uri = data_config.get('provider_uri', os.path.expanduser('~/.qlib/qlib_data/cn_data'))
+    # 优先使用环境变量中的 QLIB_DATA_DIR，与 runner.py 保持一致
+    provider_uri = (
+        os.environ.get('QLIB_DATA_DIR')
+        or os.environ.get('QLIB_PROVIDER_URI')
+        or data_config.get('provider_uri', os.path.expanduser('~/.qlib/qlib_data/cn_data'))
+    )
+    provider_uri = os.path.expanduser(provider_uri)
     region = data_config.get('region', 'cn')
     
     try:

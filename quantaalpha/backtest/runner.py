@@ -25,8 +25,8 @@ import numpy as np
 import pandas as pd
 import yaml
 
-# 添加项目路径
-project_root = Path(__file__).parent.parent
+# 添加项目路径 (从 quantaalpha/backtest/ 向上三级到项目根目录)
+project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
 
 logger = logging.getLogger(__name__)
@@ -157,18 +157,11 @@ class BacktestRunner:
         计算自定义因子
         使用 AlphaAgent 的 expr_parser 和 function_lib
         支持从缓存加载预计算的因子值
+        
+        优化: 先尝试从缓存加载，只有需要从表达式计算时才加载股票数据
         """
-        from .custom_factor_calculator import CustomFactorCalculator, get_qlib_stock_data
+        from .custom_factor_calculator import CustomFactorCalculator
         from pathlib import Path
-        
-        # 获取数据
-        data_df = get_qlib_stock_data(self.config)
-        
-        if data_df is None or data_df.empty:
-            logger.error("无法获取股票数据")
-            return None
-        
-        logger.debug(f"  加载股票数据: {len(data_df)} 条记录")
         
         # 获取缓存配置
         llm_config = self.config.get('llm', {})
@@ -179,10 +172,16 @@ class BacktestRunner:
         # 是否自动从主程序日志提取缓存
         auto_extract = llm_config.get('auto_extract_cache', True)
         
-        # 创建计算器 (传递缓存目录和自动提取配置)
-        calculator = CustomFactorCalculator(data_df, cache_dir=cache_dir, auto_extract_cache=auto_extract)
+        # 创建计算器 — 延迟加载股票数据
+        # 只有当因子需要从表达式计算时，才会加载股票数据
+        calculator = CustomFactorCalculator(
+            data_df=None,  # 延迟加载
+            cache_dir=cache_dir, 
+            auto_extract_cache=auto_extract,
+            config=self.config,  # 传入配置用于按需加载
+        )
         
-        # 计算因子 (会优先检查缓存，缓存不存在会自动提取)
+        # 计算因子 (会优先检查缓存，缓存不存在才加载数据并计算)
         result_df = calculator.calculate_factors_batch(factors, use_cache=True)
         
         # 验证结果
@@ -201,9 +200,6 @@ class BacktestRunner:
         # 确保索引正确
         if not isinstance(result_df.index, pd.MultiIndex):
             logger.warning("因子数据索引不是 MultiIndex，尝试修复...")
-            # 尝试使用原始数据的索引
-            if isinstance(data_df.index, pd.MultiIndex):
-                result_df.index = data_df.index
         
         logger.debug(f"  因子计算完成: {len(result_df.columns)} 个因子, {len(result_df)} 行数据")
         
@@ -321,13 +317,128 @@ class BacktestRunner:
         
         logger.debug(f"  总因子数量: {len(features_df.columns)}")
         
-        # 合并特征和标签
-        # 确保索引对齐
+        # ---- 标准化 MultiIndex level 名称 ----
+        # Qlib label 通常是 (datetime, instrument), 但自定义因子缓存可能
+        # 有不同的 level 名称 (如 None, 或 'date'). 统一规范化为 (datetime, instrument).
+        def _normalize_multiindex(df, df_name):
+            """确保 DataFrame 的 MultiIndex 具有标准的 (datetime, instrument) level 名称"""
+            if not isinstance(df.index, pd.MultiIndex):
+                logger.warning(f"  {df_name} 索引不是 MultiIndex: {type(df.index)}")
+                return df
+            
+            names = list(df.index.names)
+            logger.debug(f"  {df_name} index levels: {names}, "
+                        f"dtypes: {[str(df.index.get_level_values(i).dtype) for i in range(len(names))]}, "
+                        f"len: {len(df)}")
+            
+            # 检测哪个 level 是 datetime, 哪个是 instrument
+            new_names = list(names)
+            for i, name in enumerate(names):
+                level_vals = df.index.get_level_values(i)
+                if name == 'datetime' or name == 'date':
+                    new_names[i] = 'datetime'
+                elif name == 'instrument' or name == 'stock':
+                    new_names[i] = 'instrument'
+                elif name is None:
+                    # 通过 dtype 推断
+                    if pd.api.types.is_datetime64_any_dtype(level_vals):
+                        new_names[i] = 'datetime'
+                    elif level_vals.dtype == object or pd.api.types.is_string_dtype(level_vals):
+                        new_names[i] = 'instrument'
+            
+            if new_names != names:
+                logger.debug(f"  {df_name} index 重命名: {names} → {new_names}")
+                df.index = df.index.set_names(new_names)
+            
+            # 确保 (datetime, instrument) 顺序
+            actual_names = list(df.index.names)
+            if len(actual_names) == 2 and actual_names == ['instrument', 'datetime']:
+                df = df.swaplevel()
+                df = df.sort_index()
+                logger.debug(f"  {df_name} index 已交换为 (datetime, instrument) 顺序")
+            
+            return df
+        
+        features_df = _normalize_multiindex(features_df, "features")
+        label_df = _normalize_multiindex(label_df, "label")
+        
+        # ---- 对齐索引 ----
+        # 先尝试直接 intersection
         common_index = features_df.index.intersection(label_df.index)
-        features_df = features_df.loc[common_index]
-        label_df = label_df.loc[common_index]
+        
+        # 如果直接 intersection 为空，尝试对齐 datetime 类型
+        if len(common_index) == 0 and len(features_df) > 0 and len(label_df) > 0:
+            logger.warning("  直接索引交集为空，尝试对齐 datetime 类型...")
+            
+            # 获取两侧的 datetime level 样本
+            feat_dt = features_df.index.get_level_values('datetime')
+            label_dt = label_df.index.get_level_values('datetime')
+            logger.debug(f"  features datetime dtype={feat_dt.dtype}, sample={feat_dt[:3].tolist()}")
+            logger.debug(f"  label    datetime dtype={label_dt.dtype}, sample={label_dt[:3].tolist()}")
+            
+            feat_inst = features_df.index.get_level_values('instrument')
+            label_inst = label_df.index.get_level_values('instrument')
+            logger.debug(f"  features instrument sample={feat_inst[:3].tolist()}")
+            logger.debug(f"  label    instrument sample={label_inst[:3].tolist()}")
+            
+            # 尝试统一 datetime 为 pandas Timestamp
+            try:
+                if not pd.api.types.is_datetime64_any_dtype(feat_dt):
+                    features_df.index = features_df.index.set_levels(
+                        pd.to_datetime(feat_dt.unique()), level='datetime'
+                    )
+                    logger.debug("  features datetime 已转换为 Timestamp")
+                if not pd.api.types.is_datetime64_any_dtype(label_dt):
+                    label_df.index = label_df.index.set_levels(
+                        pd.to_datetime(label_dt.unique()), level='datetime'
+                    )
+                    logger.debug("  label datetime 已转换为 Timestamp")
+            except Exception as e:
+                logger.warning(f"  datetime 类型转换失败: {e}")
+            
+            # 重新计算交集
+            common_index = features_df.index.intersection(label_df.index)
+            logger.debug(f"  类型对齐后交集大小: {len(common_index)}")
+        
+        if len(common_index) == 0:
+            # 最后兜底：使用 pd.merge 基于 reset_index 做 inner join
+            logger.warning("  索引交集仍为空，尝试使用 merge 对齐...")
+            feat_reset = features_df.reset_index()
+            label_reset = label_df.reset_index()
+            
+            # 找到共同的 datetime 和 instrument 列
+            dt_col = 'datetime' if 'datetime' in feat_reset.columns else feat_reset.columns[0]
+            inst_col = 'instrument' if 'instrument' in feat_reset.columns else feat_reset.columns[1]
+            
+            merged = pd.merge(
+                feat_reset, label_reset,
+                on=[dt_col, inst_col],
+                how='inner'
+            )
+            logger.debug(f"  merge 后行数: {len(merged)}")
+            
+            if len(merged) == 0:
+                raise ValueError(
+                    f"因子数据和标签数据无法对齐。"
+                    f"features: {len(features_df)} 行, index names={list(features_df.index.names)}; "
+                    f"label: {len(label_df)} 行, index names={list(label_df.index.names)}"
+                )
+            
+            merged = merged.set_index([dt_col, inst_col])
+            merged.index.names = ['datetime', 'instrument']
+            
+            feature_cols = [c for c in features_df.columns if c in merged.columns]
+            label_cols = [c for c in label_df.columns if c in merged.columns]
+            features_df = merged[feature_cols]
+            label_df = merged[label_cols]
+        else:
+            features_df = features_df.loc[common_index]
+            label_df = label_df.loc[common_index]
         
         logger.debug(f"  数据行数: {len(features_df)}")
+        
+        if len(features_df) == 0:
+            raise ValueError("索引对齐后数据行数为 0，无法进行回测")
         
         # 直接使用 DataHandler 构建数据集
         # 合并 feature 和 label
@@ -345,8 +456,10 @@ class BacktestRunner:
         combined_df[feature_cols] = combined_df[feature_cols].replace([np.inf, -np.inf], 0)
         
         # 对 feature 做 CSRankNorm
+        # 使用实际的第一个 index level 名称，以防万一
+        dt_level = combined_df.index.names[0] if combined_df.index.names[0] else 0
         for col in feature_cols:
-            combined_df[col] = combined_df.groupby(level='datetime')[col].transform(
+            combined_df[col] = combined_df.groupby(level=dt_level)[col].transform(
                 lambda x: (x.rank(pct=True) - 0.5) if len(x) > 1 else 0
             )
         
@@ -355,7 +468,7 @@ class BacktestRunner:
         
         # 对 label 做 CSRankNorm  
         for col in label_cols:
-            combined_df[col] = combined_df.groupby(level='datetime')[col].transform(
+            combined_df[col] = combined_df.groupby(level=dt_level)[col].transform(
                 lambda x: (x.rank(pct=True) - 0.5) if len(x) > 1 else 0
             )
         
@@ -385,7 +498,11 @@ class BacktestRunner:
             
             @property
             def instruments(self):
-                return list(self._data.index.get_level_values('instrument').unique())
+                # 使用 level name 或 position fallback
+                try:
+                    return list(self._data.index.get_level_values('instrument').unique())
+                except KeyError:
+                    return list(self._data.index.get_level_values(1).unique())
             
             def fetch(self, selector=None, level='datetime', col_set='feature', 
                      data_key=None, squeeze=False, proc_func=None):
@@ -404,13 +521,15 @@ class BacktestRunner:
                 
                 # 过滤日期范围
                 if selector is not None:
+                    try:
+                        dates = result.index.get_level_values('datetime')
+                    except KeyError:
+                        dates = result.index.get_level_values(0)
                     if isinstance(selector, tuple) and len(selector) == 2:
                         start, end = selector
-                        dates = result.index.get_level_values('datetime')
                         mask = (dates >= pd.Timestamp(start)) & (dates <= pd.Timestamp(end))
                         result = result.loc[mask]
                     elif isinstance(selector, slice):
-                        dates = result.index.get_level_values('datetime')
                         start = selector.start
                         end = selector.stop
                         if start is not None and end is not None:
