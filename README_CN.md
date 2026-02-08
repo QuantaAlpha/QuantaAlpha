@@ -1,19 +1,22 @@
 <div align="center">
+  <img src="docs/images/overview.jpg" alt="QuantaAlpha 框架概览" width="90%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 10px 0;"/>
+</div>
 
-  <img src="images/overview.jpg" alt="QuantaAlpha Logo" width="100%"/>
+<div align="center">
 
   <h1 align="center" style="color: #2196F3; font-size: 32px; font-weight: 700; margin: 20px 0; line-height: 1.4;">
-    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>面向因子挖掘与回测的 LLM 驱动实验框架</em></span>
+    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>LLM 驱动的自进化因子挖掘框架</em></span>
   </h1>
 
-  <p align="center" style="font-size: 16px; color: #666; margin: 10px 0; font-weight: 500;">
-    🚀 <em>基于轨迹的自进化范式：规划 - 进化 - 约束</em>
+  <p align="center" style="font-size: 14px; color: #888; max-width: 700px; margin: 10px auto;">
+    🧬 <em>基于轨迹的自进化范式，通过多样化规划初始化、轨迹级进化和结构化假设-代码约束，实现卓越的量化 Alpha 因子挖掘</em>
   </p>
 
   <p style="margin: 20px 0;">
+    <a href="https://arxiv.org/abs/2601.06789"><img src="https://img.shields.io/badge/arXiv-2601.06789-b31b1b.svg?style=flat-square&logo=arxiv&logoColor=white" /></a>
     <a href="#"><img src="https://img.shields.io/badge/License-MIT-00A98F.svg?style=flat-square&logo=opensourceinitiative&logoColor=white" /></a>
     <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/Platform-Linux-FCC624.svg?style=flat-square&logo=linux&logoColor=black" /></a>
+    <a href="https://github.com/QuantaAlpha/QuantaAlpha"><img src="https://img.shields.io/github/stars/QuantaAlpha/QuantaAlpha?style=flat-square&logo=github&logoColor=white&color=yellow" /></a>
   </p>
 
   <p style="font-size: 16px; color: #666; margin: 15px 0; font-weight: 500;">
@@ -22,287 +25,75 @@
 
 </div>
 
----
-
-## 🚀 核心框架：基于轨迹的自进化范式
-
-<div align="center">
-  <h3>🎯 规划 · 进化 · 约束 - 让 AI 在真实金融市场中生存</h3>
-  
-  <p style="font-size: 16px; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6;">
-    QuantaAlpha 不满足于单次挖掘的成功，而是追求<strong>轨迹级 (Trajectory) 的进化</strong>。通过模拟真实市场中的研究迭代，它构建了一个具备逻辑自洽性与环境适应力的 Agentic Science 实验平台。
-  </p>
+<div align="center" style="margin: 30px 0;">
+  <a href="#quick-start" style="text-decoration: none; margin: 0 4px;">
+    <img src="https://img.shields.io/badge/🚀_快速开始-立即体验-4CAF50?style=flat-square&logo=rocket&logoColor=white&labelColor=2E7D32" alt="快速开始" />
+  </a>
+  <a href="#web-ui" style="text-decoration: none; margin: 0 4px;">
+    <img src="https://img.shields.io/badge/🖥️_Web_界面-立即体验-FF9800?style=flat-square&logo=play&logoColor=white&labelColor=F57C00" alt="Web 界面" />
+  </a>
+  <a href="docs/user_guide.md" style="text-decoration: none; margin: 0 4px;">
+    <img src="https://img.shields.io/badge/📖_用户指南-完整文档-2196F3?style=flat-square&logo=gitbook&logoColor=white&labelColor=1565C0" alt="用户指南" />
+  </a>
 </div>
 
-<br/>
+---
 
-### ✨ 关键特性
+## 🎯 概述
 
-- **🧩 多样化规划初始化**: 初始化 Agent 不依赖盲目随机，而是通过 `planning` 算子并行生成差异显著的研究方向（如"微观结构动量" vs "基本面异象"），从源头规避局部最优。
-- **🧬 轨迹级进化**: 
-    - **变异 (Mutation)**：精准定位失效节点（如过时的市场假设），对局部逻辑进行**定向修正**，而非全盘推翻。
-    - **交叉 (Crossover)**：跨轨迹融合优势基因，例如将**机构资金流**与**散户情绪**因子非线性重组，涌现出更具鲁棒性的新逻辑。
-- **🛡️ 结构化约束**: 引入 AST 符号校验与一致性验证器，强制要求"投资假设—语言描述—代码实现"三位一体，确保进化出的不仅是高收益代码，更是**可解释的经济学假设**。
+**QuantaAlpha** 将大语言模型（LLM）与进化策略结合，通过自进化轨迹自动完成量化 Alpha 因子的挖掘、进化与验证。你只需输入研究方向，其余流程将自动运行。
+
+<p align="center">💬 研究方向 → 🧩 多样化规划 → 🔄 轨迹进化 → ✅ 已验证的 Alpha 因子</p>
 
 ---
 
-## 📊 实证表现
+## 📊 实验结果
 
-### 1. 巅峰性能指标
+### 1. 核心指标
+
+<div align="center">
 
 | 维度 | 指标 | 表现 |
-| :--- | :--- | :--- |
+| :---: | :---: | :---: |
 | **预测效能** | 信息系数 (IC) | **0.1501** |
 | | Rank IC | **0.1465** |
 | **策略回报** | 年化超额收益 (ARR) | **27.75%** |
 | | 最大回撤 (MDD) | **7.98%** |
 | | 卡玛比率 (Calmar Ratio) | **3.4774** |
 
+</div>
+
 <div align="center">
-  <img src="images/主实验.png" width="90%" alt="主实验结果" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <img src="docs/images/主实验.png" width="90%" alt="主实验结果" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
 </div>
 
-### 2. 零样本迁移 & 3. 韧性考验
+### 2. 因子泛化能力
 
-<div align="center" style="display: flex; justify-content: center; gap: 20px;">
-  <div style="flex: 1; text-align: center;">
-    <p><strong>零样本迁移 (Zero-Shot Transfer)</strong></p>
-    <img src="images/figure3.png" width="95%" alt="零样本迁移" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-    <p style="font-size: 12px; color: #666;">CSI 300 挖掘因子直接迁移至 CSI 500/S&P 500</p>
-  </div>
-  <div style="flex: 1; text-align: center;">
-    <p><strong>韧性考验 (Resilience)</strong></p>
-    <img src="images/figure4.png" width="95%" alt="韧性测试" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-  </div>
+<div align="center">
+  <img src="docs/images/figure3.png" width="90%" alt="零样本迁移" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <p style="font-size: 12px; color: #666;">CSI 300 挖掘因子直接迁移至 CSI 500 / S&P 500</p>
 </div>
 
-<br/>
-
-## 系统要求
-
-| 需求 | 说明 |
-| :--- | :--- |
-| **操作系统** | Linux（推荐 Ubuntu 20.04+）。Windows / macOS 支持将在未来版本提供 |
-| **Python** | 3.10+（推荐使用 Conda） |
-| **Node.js** | 18+（仅 Web 看板需要） |
-| **内存** | 32 GB+（LightGBM 训练 + 因子计算） |
-| **磁盘** | Qlib 数据约 50 GB，建议预留 100 GB 用于实验缓存 |
-| **LLM API** | 任何 OpenAI 兼容 API（DashScope、OpenAI 等） |
-
 ---
 
-## 项目架构
+<a id="quick-start"></a>
+## 🚀 快速开始
 
-```
-QuantaAlpha/
-├── configs/                          # 集中配置（唯一需要修改的地方）
-│   ├── .env.example                  #   环境变量模板（复制为 .env 使用）
-│   ├── experiment.yaml               #   主实验参数（方向数/轮次/进化策略）
-│   └── backtest.yaml                 #   独立回测参数（市场/时段/模型/策略）
-│
-├── quantaalpha/                      # ===== 核心 Python 包 =====
-│   ├── cli.py                        #   CLI 入口（quantaalpha mine / backtest）
-│   │
-│   ├── pipeline/                     #   主实验工作流
-│   │   ├── factor_mining.py          #     因子挖掘主入口 (@force_timeout)
-│   │   ├── loop.py                   #     单方向执行循环 (propose → construct → calculate → backtest → feedback)
-│   │   ├── planning.py              #     多样化方向规划（LLM 生成 N 个探索方向）
-│   │   ├── settings.py               #     配置解析与环境变量注入
-│   │   └── evolution/                #     进化引擎
-│   │       ├── controller.py         #       进化控制器（调度 original → mutation → crossover 轮次）
-│   │       ├── trajectory.py         #       轨迹池管理（评分/排序/父代选择）
-│   │       ├── mutation.py           #       变异算子（定向修正失效假设）
-│   │       └── crossover.py          #       交叉算子（跨轨迹基因融合）
-│   │
-│   ├── factors/                      #   因子定义、生成与评估
-│   │   ├── proposal.py               #     假设提出（LLM 生成投资假设 + 因子描述）
-│   │   ├── library.py                #     因子库管理（JSON 读写 + 缓存状态检查）
-│   │   ├── runner.py                 #     因子回测运行器（验证集上快速评估）
-│   │   ├── workspace.py              #     因子工作空间（文件组织与隔离）
-│   │   ├── coder/                    #     因子代码生成
-│   │   │   ├── factor.py             #       因子表达式生成（LLM → Qlib 表达式）
-│   │   │   ├── expr_parser.py        #       表达式解析器（文本 → AST）
-│   │   │   ├── factor_ast.py         #       AST 分析（复杂度/冗余度检测）
-│   │   │   └── function_lib.py       #       支持的算子库（TS_MEAN, RANK, ZSCORE 等）
-│   │   └── regulator/                #     质量门控
-│   │       ├── factor_regulator.py   #       主调度器（复杂度 + 冗余度检验）
-│   │       └── consistency_checker.py#       一致性检验（假设↔描述↔公式↔表达式）
-│   │
-│   ├── backtest/                     #   独立回测模块 (V2)
-│   │   ├── run_backtest.py           #     CLI 入口（argparse）
-│   │   ├── runner.py                 #     回测运行器（Qlib DataHandler → LGBModel → TopK 策略）
-│   │   ├── factor_loader.py          #     因子加载器（JSON → Qlib 表达式 / 自定义计算）
-│   │   └── custom_factor_calculator.py#    自定义因子计算（三级缓存：H5 → MD5 → 重算）
-│   │
-│   ├── llm/                          #   LLM 客户端
-│   │   ├── client.py                 #     统一 API 客户端（支持 OpenAI 兼容接口）
-│   │   └── config.py                 #     模型配置（从 .env 读取）
-│   │
-│   └── core/                         #   核心抽象层
-│       ├── evolving_agent.py         #     进化 Agent 基类
-│       ├── experiment.py             #     实验抽象
-│       ├── proposal.py               #     提案基类
-│       └── prompts.py                #     提示词管理
-│
-├── frontend-v2/                      # ===== Web 看板 (React + TypeScript) =====
-│   ├── src/
-│   │   ├── main.tsx                  #   React 入口
-│   │   ├── App.tsx                   #   路由（display:none 保活，切页不丢状态）
-│   │   ├── context/
-│   │   │   └── TaskContext.tsx        #   全局状态（Mining + Backtest 任务/WS/轮询）
-│   │   ├── services/
-│   │   │   └── api.ts                #   API 客户端（REST + WebSocket）
-│   │   ├── pages/
-│   │   │   ├── HomePage.tsx          #     因子挖掘页（ChatInput + 实时图表）
-│   │   │   ├── FactorLibraryPage.tsx #     因子库浏览页（搜索/筛选/详情）
-│   │   │   ├── BacktestPage.tsx      #     独立回测页（选库 → 运行 → 结果展示）
-│   │   │   └── SettingsPage.tsx      #     系统设置页（API/路径/参数配置）
-│   │   ├── components/               #   UI 组件
-│   │   │   ├── ChatInput.tsx         #     对话式输入框（高级设置面板）
-│   │   │   ├── LiveCharts.tsx        #     实时图表（Recharts 折线图）
-│   │   │   ├── ProgressSidebar.tsx   #     进度侧栏（阶段 + 日志流）
-│   │   │   ├── ParticleBackground.tsx#     粒子动画背景
-│   │   │   └── layout/Layout.tsx     #     主布局（Header + 导航 + 内容区）
-│   │   └── types/index.ts            #   TypeScript 类型定义
-│   │
-│   ├── backend/                      #   FastAPI 后端 API
-│   │   └── app.py                    #     REST + WebSocket 服务
-│   │                                 #     Mining: 启动子进程 → 流式日志 → WS 推送
-│   │                                 #     Backtest: 启动子进程 → 读取 metrics JSON
-│   │                                 #     Factors: 读取因子库 JSON → 分页/搜索/缓存状态
-│   │
-│   ├── start.sh                      #   一键启动脚本（后端 8000 + 前端 3000）
-│   ├── vite.config.ts                #   Vite 配置（/api → 8000, /ws → WS 8000）
-│   └── package.json                  #   前端依赖
-│
-├── run.sh                            # 主实验启动脚本（加载 .env → 隔离工作空间 → quantaalpha mine）
-├── launcher.py                       # Python 启动器
-├── pyproject.toml                    # 包定义（setuptools-scm）
-├── requirements.txt                  # Python 依赖清单
-└── images/                           # 文档图片
-```
-
-### 数据流架构
-
-```
-用户需求 (自然语言)
-    │
-    ▼
-┌─────────────────────────────────────────────────────────┐
-│  Planning 模块                                          │
-│  LLM 将用户需求扩展为 N 个差异化探索方向                  │
-└──────────────────┬──────────────────────────────────────┘
-                   │  方向 1, 2, ..., N
-                   ▼
-┌─────────────────────────────────────────────────────────┐
-│  Evolution 控制器                                       │
-│                                                         │
-│  Round 0: 原始轮 ─── 对每个方向执行完整的 5 步循环         │
-│  Round 1: 变异轮 ─── 定向修正表现不佳的假设               │
-│  Round 2: 交叉轮 ─── 融合不同方向的优势因子               │
-│  Round 3: 变异轮 ─── ...                                │
-│  ...                                                    │
-│                                                         │
-│  ┌──────────────── 5 步循环 ────────────────┐           │
-│  │ 1. factor_propose   : LLM 提出假设+表达式 │           │
-│  │ 2. factor_construct : 解析/校验/去重       │           │
-│  │ 3. factor_calculate : Qlib 计算因子值     │           │
-│  │ 4. factor_backtest  : 验证集回测评估       │           │
-│  │ 5. factor_feedback  : LLM 分析结果反馈     │           │
-│  └────────────────────────────────────────────┘          │
-│                                                         │
-│  每步完成后 → 因子入库 (all_factors_library*.json)        │
-└──────────────────┬──────────────────────────────────────┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────────────┐
-│  独立回测模块 (Backtest V2)                              │
-│                                                         │
-│  加载因子库 → 三级缓存加载因子值 → LightGBM 训练          │
-│  → TopK Dropout 策略 → 测试集 (2022-2025) 全周期评估     │
-│                                                         │
-│  三级缓存策略：                                          │
-│    1. result.h5  (实验工作空间中的原始计算结果)            │
-│    2. MD5 cache  (集中缓存目录，按表达式哈希索引)          │
-│    3. 重算       (从表达式通过 Qlib 重新计算)             │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 前后端交互架构
-
-```
-┌──────────────────────────────────────────┐
-│           React 前端 (:3000)              │
-│                                          │
-│  HomePage ──→ POST /api/v1/mining/start  │
-│      ↕  WebSocket /ws/mining/{taskId}    │
-│      └── 实时接收 progress/log/metrics    │
-│                                          │
-│  BacktestPage → POST /api/v1/backtest/start
-│      ↕  WebSocket /ws/mining/{taskId}    │
-│      └── 完成后读取 metrics JSON          │
-│                                          │
-│  FactorLibraryPage → GET /api/v1/factors │
-│  SettingsPage → GET/PUT /api/v1/system/* │
-└────────────┬─────────────────────────────┘
-             │ Vite Proxy (/api → :8000)
-             ▼
-┌──────────────────────────────────────────┐
-│       FastAPI 后端 (:8000)                │
-│                                          │
-│  Mining:                                 │
-│    asyncio.subprocess → quantaalpha mine │
-│    逐行读取 stdout → 解析阶段 → WS 广播   │
-│                                          │
-│  Backtest:                               │
-│    asyncio.subprocess → run_backtest     │
-│    完成后读取 *_backtest_metrics.json      │
-│                                          │
-│  Factors:                                │
-│    直接读取 all_factors_library*.json      │
-│    分页 + 搜索 + 质量分级                  │
-└──────────────────────────────────────────┘
-```
-
----
-
-## 核心功能
-
-- **因子挖掘**：LLM 提出假设与因子表达式，自动进行小规模回测评分
-- **轨迹进化**：变异 + 交叉机制，在多个探索方向上实现因子自我进化
-- **因子库**：生成 `all_factors_library*.json`，包含回测指标，供后续组合使用
-- **独立回测**：从因子库自由组合因子，进行完整周期的回测评估
-- **质量门控**：一致性检验、冗余度检验、复杂度检验（可配置）
-- **Web 看板**：基于 React 的前端，用于实验监控、因子库浏览和独立回测
-
----
-
-## 快速开始
-
-### 1. 克隆仓库
+### 1. 克隆与安装
 
 ```bash
 git clone https://github.com/QuantaAlpha/QuantaAlpha.git
 cd QuantaAlpha
-```
-
-### 2. 创建 Python 环境
-
-```bash
 conda create -n quantaalpha python=3.10
 conda activate quantaalpha
-```
-
-### 3. 安装依赖
-
-```bash
-# 以开发模式安装（会自动读取 requirements.txt 并安装所有依赖）
+# 以开发模式安装包
 SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0 pip install -e .
+
+# 安装额外依赖
+pip install -r requirements.txt
 ```
 
-> **说明**：`pip install -e .` 会读取 `pyproject.toml`，其中配置了 `dependencies = {file = ["requirements.txt"]}`，因此所有依赖会被自动安装，无需再单独执行 `pip install -r requirements.txt`。`SETUPTOOLS_SCM_PRETEND_VERSION` 环境变量用于在没有 git tag 的情况下提供版本号。
-
-### 4. 配置环境变量
+### 2. 配置环境变量
 
 ```bash
 cp configs/.env.example .env
@@ -322,7 +113,7 @@ CHAT_MODEL=deepseek-v3                         # 或 gpt-4, qwen-max 等
 REASONING_MODEL=deepseek-v3
 ```
 
-### 5. 准备 Qlib 数据
+### 3. 准备 Qlib 数据
 
 QuantaAlpha 使用微软的 [Qlib](https://github.com/microsoft/qlib) 作为金融数据引擎。你需要 A 股市场数据，覆盖 **2016-2025 年**：
 
@@ -338,82 +129,23 @@ qlib.init(provider_uri='~/.qlib/qlib_data/cn_data', region='cn')
 # 目录需包含 calendars/、features/、instruments/ 子目录
 ```
 
-### 6. 运行第一个实验
+### 4. 运行因子挖掘
 
 ```bash
+./run.sh "<你的输入>"
+
+# 示例：指定研究方向运行
 ./run.sh "价量因子挖掘"
-```
 
-大功告成！实验会自动：
-1. 通过 LLM 生成多样化的研究方向
-2. 为每个方向提出因子假设
-3. 生成并验证因子表达式
-4. 在验证集（2021年）上运行回测
-5. 通过变异和交叉进化因子
-6. 将所有发现的因子保存到 `all_factors_library*.json`
-
----
-
-## 主实验：因子挖掘
-
-### 基本用法
-
-```bash
-# 指定研究方向运行
-./run.sh "动量反转因子挖掘"
-
-# 指定因子库后缀（输出到 all_factors_library_exp_micro.json）
+# 示例：指定因子库后缀
 ./run.sh "微观结构因子" "exp_micro"
 ```
 
-### 核心配置 (configs/experiment.yaml)
+实验会自动挖掘、进化和验证 Alpha 因子，并将所有发现的因子保存到 `all_factors_library*.json`。
 
-```yaml
-planning:
-  num_directions: 2          # 并行探索方向数量
+### 5. 独立回测
 
-execution:
-  max_loops: 3               # 每个方向的迭代次数
-
-evolution:
-  max_rounds: 5              # 总进化轮数
-  mutation_enabled: true     # 启用变异阶段
-  crossover_enabled: true    # 启用交叉阶段
-
-factor:
-  factors_per_hypothesis: 3  # 每个假设生成的因子数
-```
-
-### 时间段说明
-
-| 数据集 | 时间范围 | 用途 |
-| :--- | :--- | :--- |
-| **训练集** | 2016-01-01 ~ 2020-12-31 | 模型训练 |
-| **验证集** | 2021-01-01 ~ 2021-12-31 | 挖掘过程中初步回测 |
-| **测试集** | 2022-01-01 ~ 2025-12-26 | 独立回测（样本外评估） |
-
-### 基础因子
-
-主实验中，新挖掘的因子会与 **4 个基础因子** 组合后在验证集上进行初步回测评估：
-
-| 名称 | 表达式 | 说明 |
-| :--- | :--- | :--- |
-| OPEN_RET | `($close-$open)/$open` | 日内开盘到收盘的收益率 |
-| VOL_RATIO | `$volume/Mean($volume, 20)` | 成交量相对 20 日均值的比率 |
-| RANGE_RET | `($high-$low)/Ref($close, 1)` | 日振幅相对前日收盘价 |
-| CLOSE_RET | `$close/Ref($close, 1)-1` | 日收益率（收盘价变化率） |
-
-### 输出
-
-- **因子库**：`all_factors_library*.json` — 所有发现的因子及其回测指标
-- **日志**：`log/` 目录下的详细执行日志
-- **缓存**：由 `.env` 中的 `DATA_RESULTS_DIR` 控制
-
----
-
-## 独立回测（组合因子）
-
-挖掘完成后，从因子库中组合因子进行全周期回测，在**测试集（2022-2025）**上评估样本外表现：
+挖掘完成后，从因子库中组合因子进行全周期回测：
 
 ```bash
 # 仅使用自定义因子回测
@@ -438,89 +170,109 @@ python -m quantaalpha.backtest.run_backtest \
 
 结果保存在 `configs/backtest.yaml` 中 `experiment.output_dir` 指定的目录。
 
+> 📘 需要帮助？请查阅完整的 **[用户指南](docs/user_guide.md)**，了解高级配置、实验复现和详细使用示例。
+
 ---
 
-## Web 看板
+<a id="web-ui"></a>
+## 🖥️ Web 界面
 
-QuantaAlpha 包含基于 Web 的看板，用于实验监控、因子库浏览和独立回测。
-
-### 一键启动
+QuantaAlpha 提供基于 Web 的可视化界面，你可以在界面中完成全部工作流——无需命令行操作。
 
 ```bash
 conda activate quantaalpha
 cd frontend-v2
 bash start.sh
+# 访问 http://localhost:3000
 ```
 
-该脚本会同时启动 FastAPI 后端（端口 8000）和 Vite 前端开发服务器（端口 3000）。
-
-### 手动启动
-
-```bash
-# 终端 1：启动后端
-conda activate quantaalpha
-cd frontend-v2
-pip install fastapi uvicorn websockets python-multipart python-dotenv
-python backend/app.py
-
-# 终端 2：启动前端
-cd frontend-v2
-npm install
-npm run dev
-```
-
-访问 `http://localhost:3000` 即可使用看板。
-
-### 功能
-
-| 页面 | 功能 | 说明 |
-| :--- | :--- | :--- |
-| **因子挖掘** | 自然语言启动实验 | WebSocket 实时推送进度、日志、指标图表 |
-| **因子库** | 浏览已挖掘因子 | 搜索、质量筛选（高/中/低）、详情查看 |
-| **独立回测** | 选库运行回测 | 选择因子库 JSON → Custom/Combined 模式 → 结果指标展示 |
-| **系统设置** | 配置管理 | LLM API、数据路径、实验参数 |
-
-### API 端点
-
-| 方法 | 路径 | 说明 |
-| :--- | :--- | :--- |
-| POST | `/api/v1/mining/start` | 启动因子挖掘实验 |
-| GET | `/api/v1/mining/{taskId}` | 获取挖掘任务状态 |
-| POST | `/api/v1/backtest/start` | 启动独立回测 |
-| GET | `/api/v1/backtest/{taskId}` | 获取回测任务状态 |
-| GET | `/api/v1/factors` | 分页查询因子库 |
-| GET | `/api/v1/factors/libraries` | 列出所有因子库文件 |
-| GET | `/api/v1/factors/cache-status` | 因子缓存状态 |
-| POST | `/api/v1/factors/warm-cache` | 预热因子缓存 |
-| WS | `/ws/mining/{taskId}` | WebSocket 实时推送 |
+- **⚙️ 系统设置**：在界面中直接配置 LLM API、数据路径和实验参数
+- **⛏️ 因子挖掘**：通过自然语言输入启动实验，实时监控进度
+- **📚 因子库**：浏览、搜索和筛选所有已挖掘因子，支持质量分级
+- **📈 独立回测**：选择因子库，运行全周期回测并查看可视化结果
 
 ---
 
-## 质量门控
+## 🤝 参与贡献
 
-在 `configs/experiment.yaml` 中配置：
+我们欢迎任何形式的贡献，让 QuantaAlpha 变得更好！以下是参与方式：
 
-```yaml
-quality_gate:
-  consistency_enabled: false     # LLM 验证 假设-描述-公式-表达式 一致性检验 默认关闭，开启会增加耗时及api消耗
-  complexity_enabled: true       # 限制表达式长度和过度参数化
-  redundancy_enabled: true       # 防止与已有因子高度相关
-  consistency_strict_mode: false # 严格模式会拒绝不一致的因子
-  max_correction_attempts: 3    # LLM 最大修正重试次数
+- **🐛 Bug 反馈**：发现了 Bug？[提交 Issue](https://github.com/QuantaAlpha/QuantaAlpha/issues) 帮助我们修复。
+- **💡 功能建议**：有好的想法？[发起讨论](https://github.com/QuantaAlpha/QuantaAlpha/discussions) 提出新功能建议。
+- **📝 文档与教程**：改进文档、添加使用示例或编写教程。
+- **🔧 代码贡献**：提交 PR 修复 Bug、优化性能或添加新功能。
+- **🧬 因子分享**：分享你在实验中发现的高质量因子，造福社区。
+
+---
+
+## 🙏 致谢
+
+特别感谢：
+- [Qlib](https://github.com/microsoft/qlib) - 微软开源的量化投资平台
+- [RD-Agent](https://github.com/microsoft/RD-Agent) - 微软的自动化研发框架 (NeurIPS 2025)
+- [AlphaAgent](https://github.com/RndmVariableQ/AlphaAgent) - 多智能体 Alpha 因子挖掘框架 (KDD 2025)
+
+---
+
+## 🌐 关于 QuantaAlpha
+
+- QuantaAlpha 团队成立于 **2025 年 4 月**，由来自**清华大学、北京大学、中国科学院、CMU、HKUST** 等高校的教授、博士后、博士生和硕士生组成。
+
+🌟 我们的使命是探索智能的 **"量子 (Quantum)"** 本质，开拓 Agent 研究的 **"Alpha"** 前沿——从 **CodeAgent** 到**自进化智能**，再到**金融及跨领域专用 Agent**，致力于重新定义 AI 的边界。
+
+✨ **2026 年**，我们将持续在以下方向产出高质量研究：
+- **CodeAgent**：端到端自主执行真实世界任务
+- **DeepResearch**：深度推理与检索增强智能
+- **Agentic Reasoning / Agentic RL**：基于 Agent 的推理与强化学习
+- **自进化与协作学习**：多智能体系统的进化与协调
+
+📢 欢迎对以上方向感兴趣的同学和研究者加入我们！
+
+🔗 **团队主页**：[QuantaAlpha](https://quantaalpha.github.io/)
+📧 **邮箱**：quantaalpha.ai@gmail.com
+
+---
+
+## 💬 用户社区
+
+<div align="center">
+
+| 微信群 | Discord 频道 |
+| :---: | :---: |
+| <img src="docs/images/wechat_qr.png" width="250" alt="微信群" /> | [https://discord.gg/FfXtbREb](https://discord.gg/FfXtbREb) |
+
+</div>
+
+---
+
+## 📖 引用
+
+如果 QuantaAlpha 对你的研究有帮助，请引用我们的工作：
+
+```bibtex
+@article{zhang2025quantaalpha,
+  title={QuantaAlpha: LLM-Driven Self-Evolving Framework for Factor Mining},
+  author={Shuo Zhang and others},
+  journal={arXiv preprint arXiv:2601.06789},
+  year={2025},
+  doi={10.48550/arXiv.2601.06789},
+  url={https://arxiv.org/abs/2601.06789}
+}
 ```
 
 ---
 
+## ⭐ Star 历史
 
-## 常见问题
+[![Star History Chart](https://api.star-history.com/svg?repos=QuantaAlpha/QuantaAlpha&type=Date)](https://www.star-history.com/#QuantaAlpha/QuantaAlpha&Date)
 
-| 问题 | 解决方案 |
-| :--- | :--- |
-| **Qlib 报错找不到数据** | 确认 `.env` 中 `QLIB_DATA_DIR` 指向包含 `calendars/`、`features/`、`instruments/` 的有效 Qlib 数据目录 |
-| **LLM API 报错** | 检查 `.env` 中的 `OPENAI_API_KEY` 和 `OPENAI_BASE_URL`。QuantaAlpha 支持任何 OpenAI 兼容 API |
-| **因子无法解析** | 检查表达式函数是否在 parser 支持范围内。参见 `quantaalpha/factors/coder/function_lib.py` |
-| **缓存读取失败** | 确保 `DATA_RESULTS_DIR` 目录存在且可写 |
-| **回测结果为空** | 确保 Qlib 数据覆盖配置的时间段（train: 2016-2020，valid: 2021） |
-| **setuptools-scm 版本错误** | 使用 `SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0 pip install -e .` |
-| **后端仅支持 Linux** | Windows 和 macOS 支持将在未来版本提供。Windows 用户可使用 WSL2 |
-| **前端无法连接后端** | 确保后端运行在 8000 端口，Vite 代理配置正确 |
+---
+
+<div align="center">
+
+**⭐ 如果 QuantaAlpha 对你有帮助，请给我们一个 Star！**
+
+由 QuantaAlpha 团队用 ❤️ 打造
+
+
+</div>
