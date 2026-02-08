@@ -271,21 +271,35 @@ Special thanks to:
 ---
 
 ## 🌐 About QuantaAlpha
-
 - QuantaAlpha was founded in **April 2025** by a team of professors, postdocs, PhDs, and master's students from **Tsinghua University, Peking University, CAS, CMU, HKUST**, and more.  
 
 🌟 Our mission is to explore the **"quantum"** of intelligence and pioneer the **"alpha"** frontier of agent research — from **CodeAgents** to **self-evolving intelligence**, and further to **financial and cross-domain specialized agents**, we are committed to redefining the boundaries of AI. 
 
 ✨ In **2026**, we will continue to produce high-quality research in the following directions:  
+
 - **CodeAgent**: End-to-end autonomous execution of real-world tasks  
+
 - **DeepResearch**: Deep reasoning and retrieval-augmented intelligence  
-- **Agentic Reasoning / Agentic RL**: Agent-based reasoning and reinforcement learning  
+
+- **Agentic Reasoning / Agentic RL**: Agent-based reasoning and reinforcement learning 
+
 - **Self-evolution and collaborative learning**: Evolution and coordination of multi-agent systems  
 
 📢 We welcome students and researchers interested in these directions to join us!  
 
 🔗 **Team Homepage**: [QuantaAlpha](https://quantaalpha.github.io/)
+
 📧 **Email**: quantaalpha.ai@gmail.com
+
+## 🌐 About AIFin Lab
+
+Initiated by Professor Liwen Zhang from Shanghai University of Finance and Economics (SUFE), **AIFin Lab** is deeply rooted in the interdisciplinary fields of **AI + Finance, Statistics, and Data Science**. The team brings together cutting-edge scholars from top institutions such as SUFE, FDU, SEU, CMU, and CUHK. We are dedicated to building a comprehensive "full-link" system covering data, models, benchmarks, and intelligent prompting. 
+
+📢 We are actively looking for talented students (UG/Master/PhD) and researchers worldwide who are passionate about AI Agent security and financial intelligence to join **AIFin Lab**! 
+
+📧 **Email**: [aifinlab.sufe@gmail.com](mailto:aifinlab.sufe@gmail.com) (please CC to [zhang.liwen@shufe.edu.cn](mailto:zhang.liwen@shufe.edu.cn))
+
+We look forward to hearing from you!
 
 ---
 
