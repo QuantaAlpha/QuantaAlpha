@@ -45,7 +45,9 @@
 
 <p align="center">💬 Research Direction → 🧩 Diversified Planning → 🔄 Trajectory → ✅ Validated Alpha Factors</p>
 
-**Demo**: Below is a short demo of the full flow from research direction to factor mining and backtesting UI. [📹 Watch demo video](docs/images/demo.mp4)
+**Demo**: Below is a short demo of the full flow from research direction to factor mining and backtesting UI. 
+https://github.com/user-attachments/assets/726511ce-a384-4727-a7be-948a2cf05e4b
+[📹 Watch demo video](docs/images/demo.mp4)
 
 ---
 
