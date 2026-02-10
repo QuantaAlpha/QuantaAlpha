@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# QuantaAlpha AI V2 启动脚本
-# 同时启动 FastAPI 后端 + Vite 前端开发服务器
-# 多用户共享服务器场景：如果服务已在运行，复用现有服务而非互相杀掉
 
 echo "🚀 启动 QuantaAlpha AI V2..."
 echo ""
