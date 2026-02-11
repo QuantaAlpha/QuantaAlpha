@@ -242,6 +242,87 @@ bash start.sh
 
 ---
 
+<a id="windows-deploy"></a>
+## 🪟 Windows 部署指南
+
+QuantaAlpha 原生为 Linux 开发。以下是在 **Windows 10/11** 上部署运行的指南。
+
+> 技术细节请参阅 [`docs/WINDOWS_COMPAT.md`](docs/WINDOWS_COMPAT.md)。
+
+### 与 Linux 的主要差异
+
+| 功能 | Linux | Windows |
+| :--- | :--- | :--- |
+| 启动挖掘 | `./run.sh "方向"` | `python launcher.py mine --direction "方向"` |
+| 启动前端 | `bash start.sh` | 分别启动后端和前端（见下文） |
+| `.env` 路径格式 | `/home/user/data` | `C:/Users/user/data`（用正斜杠） |
+| 额外配置 | 无 | 需设置 `CONDA_DEFAULT_ENV`（见下文） |
+| rdagent 补丁 | 无 | 自动应用（`quantaalpha/compat/rdagent_patches.py`） |
+
+### 安装步骤
+
+```powershell
+# 1. 安装 Miniconda (安装时勾选 "Add to PATH")
+# 2. 创建 conda 环境
+conda create -n quantaalpha python=3.11 -y
+conda activate quantaalpha
+
+# 3. 克隆并安装
+git clone https://github.com/QuantaAlpha/QuantaAlpha.git
+cd QuantaAlpha
+set SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0
+pip install -e .
+```
+
+### 配置 `.env`
+
+```powershell
+copy configs\.env.example .env
+```
+
+编辑 `.env`，路径使用**正斜杠**：
+
+```bash
+QLIB_DATA_DIR=C:/Users/yourname/path/to/cn_data
+DATA_RESULTS_DIR=C:/Users/yourname/path/to/results
+CONDA_ENV_NAME=quantaalpha
+CONDA_DEFAULT_ENV=quantaalpha    # ← Windows 必须手动设置
+```
+
+### 运行
+
+```powershell
+# 因子挖掘
+python launcher.py mine --direction "price-volume factor mining"
+
+# 独立回测
+python -m quantaalpha.backtest.run_backtest -c configs/backtest.yaml --factor-source custom --factor-json data/factorlib/all_factors_library.json -v
+```
+
+### 启动 Web 前端（可选）
+
+需要 Node.js（v18+）。两个终端分别启动：
+
+```powershell
+# 终端 1 — 后端 API
+cd frontend-v2 && python backend/app.py
+
+# 终端 2 — 前端
+cd frontend-v2 && npm install && npm run dev
+```
+
+访问 http://localhost:3000。
+
+### 常见问题
+
+| 错误 | 解决 |
+| :--- | :--- |
+| `CondaConf conda_env_name: Input should be a valid string` | `.env` 中添加 `CONDA_DEFAULT_ENV=quantaalpha` |
+| `UnicodeEncodeError: 'gbk'` | 运行 `chcp 65001` 或设 `PYTHONIOENCODING=utf-8` |
+| `Failed to resolve import "@radix-ui/react-hover-card"` | `cd frontend-v2 && npm install` |
+
+---
+
 ## 💬 用户社区
 
 <div align="center">

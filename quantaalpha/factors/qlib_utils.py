@@ -35,7 +35,7 @@ def generate_data_folder_from_qlib(use_local: bool = True):
     assert daily_pv_debug.exists(), "daily_pv_debug.h5 is not generated."
 
     # Create data dir and copy files
-    logger.info("Copying generated data files to workspace")
+    logger.info("Copying generated full A-share data files to workspace")
     Path(FACTOR_COSTEER_SETTINGS.data_folder).mkdir(parents=True, exist_ok=True)
     shutil.copy(
         daily_pv_all,

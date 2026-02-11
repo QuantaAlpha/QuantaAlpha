@@ -25,7 +25,8 @@
     "zod": "^3.22.4",
     "@hookform/resolvers": "^3.3.4",
     "date-fns": "^3.3.1",
-    "framer-motion": "^11.0.5"
+    "framer-motion": "^11.0.5",
+    "@radix-ui/react-hover-card": "^1.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

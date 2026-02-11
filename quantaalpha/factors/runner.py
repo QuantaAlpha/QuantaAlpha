@@ -212,6 +212,22 @@ class QlibFactorRunner(CachedRunner[QlibFactorExperiment]):
             for idx, (message, df) in enumerate(message_and_df_list):
                 # Check if factor generation was successful
                 if df is not None and "datetime" in df.index.names:
+                    # ----------------------------------------------------------
+                    # Ensure on-disk result.h5 is up-to-date.
+                    # When execute("All") returns from the pickle cache the
+                    # subprocess does NOT re-run, so the file on disk may still
+                    # contain stale Debug data.  Re-save the authoritative "All"
+                    # DataFrame here so that cache_location in the factor
+                    # library always points to the correct data.
+                    # ----------------------------------------------------------
+                    if idx < len(exp.sub_workspace_list):
+                        ws = exp.sub_workspace_list[idx]
+                        result_h5 = ws.workspace_path / "result.h5"
+                        try:
+                            df.to_hdf(str(result_h5), key="data")
+                        except Exception as e:
+                            logger.debug(f"Could not refresh result.h5 for {ws.workspace_path}: {e}")
+
                     # Convert Series to DataFrame if needed
                     if isinstance(df, pd.Series):
                         # Get factor name from the corresponding workspace (order should match)

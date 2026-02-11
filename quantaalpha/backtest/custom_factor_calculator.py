@@ -136,7 +136,13 @@ class CustomFactorCalculator:
             return None
     
     def _process_cached_result(self, result: Any, source: str) -> Optional[pd.Series]:
-        """Normalize cached result format (does not touch self.data_df to avoid lazy load)."""
+        """Normalize cached result format (does not touch self.data_df to avoid lazy load).
+
+        Ensures the returned Series has a MultiIndex in standard
+        ``(datetime, instrument)`` order.  Detection is based on **dtypes**
+        (not index names) so it works even when the h5 file stores
+        ``[None, None]`` names.
+        """
         try:
             if isinstance(result, pd.DataFrame):
                 if len(result.columns) == 1:
@@ -147,12 +153,30 @@ class CustomFactorCalculator:
                     result = result.iloc[:, 0]
             
             # Standard order: (datetime, instrument)
-            if isinstance(result.index, pd.MultiIndex):
+            if isinstance(result.index, pd.MultiIndex) and result.index.nlevels == 2:
+                level0 = result.index.get_level_values(0)
+                level1 = result.index.get_level_values(1)
+                l0_is_dt = pd.api.types.is_datetime64_any_dtype(level0)
+                l1_is_dt = pd.api.types.is_datetime64_any_dtype(level1)
+
+                needs_swap = False
+
+                # Case 1: names are known — use them
                 cache_idx_names = list(result.index.names)
                 expected_order = ['datetime', 'instrument']
-                if cache_idx_names != expected_order and set(cache_idx_names) == set(expected_order):
+                if set(cache_idx_names) == set(expected_order):
+                    if cache_idx_names != expected_order:
+                        needs_swap = True
+                # Case 2: names unknown / None — infer from dtypes
+                elif not l0_is_dt and l1_is_dt:
+                    needs_swap = True
+
+                if needs_swap:
                     result = result.swaplevel()
                     result = result.sort_index()
+
+                # Enforce canonical names so downstream code can use them
+                result.index.names = ['datetime', 'instrument']
             
             return result
         except Exception as e:
@@ -347,7 +371,7 @@ class CustomFactorCalculator:
                         cache_location_hit_count += 1
                         results[factor_name] = result
                         success_count += 1
-                        print(f"  [{i+1}/{total}] ✓ H5 cache: {factor_name}")
+                        print(f"  [{i+1}/{total}] [OK] H5 cache: {factor_name}")
                         continue
             
             if use_cache:
@@ -356,11 +380,11 @@ class CustomFactorCalculator:
                     cache_hit_count += 1
                     results[factor_name] = result
                     success_count += 1
-                    print(f"  [{i+1}/{total}] ✓ MD5 cache: {factor_name}")
+                    print(f"  [{i+1}/{total}] [OK] MD5 cache: {factor_name}")
                     continue
             
             need_compute_factors.append((i, factor_info))
-            print(f"  [{i+1}/{total}] ⏳ Pending: {factor_name}")
+            print(f"  [{i+1}/{total}] [..] Pending: {factor_name}")
         
         # Pass 2: compute uncached factors
         if need_compute_factors:
@@ -407,7 +431,7 @@ class CustomFactorCalculator:
                         
                     except _FactorTimeout:
                         elapsed = _time.time() - t0
-                        print(f" ✗ Timeout ({elapsed:.1f}s)")
+                        print(f" [FAIL] Timeout ({elapsed:.1f}s)")
                         fail_count += 1
                         failed_names.append(f"{factor_name}(timeout)")
                         try:
@@ -419,7 +443,7 @@ class CustomFactorCalculator:
                         continue
                     except Exception as e:
                         elapsed = _time.time() - t0
-                        print(f" ✗ Error ({elapsed:.1f}s): {str(e)[:80]}")
+                        print(f" [FAIL] Error ({elapsed:.1f}s): {str(e)[:80]}")
                         fail_count += 1
                         failed_names.append(factor_name)
                         continue
@@ -431,37 +455,110 @@ class CustomFactorCalculator:
                             results[factor_name] = result
                             success_count += 1
                             compute_count += 1
-                            print(f" ✓ ({elapsed:.1f}s)")
+                            print(f" [OK] ({elapsed:.1f}s)")
                             if use_cache:
                                 self._save_to_cache(factor_expr, result)
                         else:
                             fail_count += 1
                             failed_names.append(factor_name)
-                            print(f" ✗ All NaN ({elapsed:.1f}s)")
+                            print(f" [FAIL] All NaN ({elapsed:.1f}s)")
                     else:
                         fail_count += 1
                         failed_names.append(factor_name)
-                        print(f" ✗ Failed ({elapsed:.1f}s)")
+                        print(f" [FAIL] Failed ({elapsed:.1f}s)")
         
         print(f"Factor load done: success {success_count}, failed {fail_count} | "
               f"H5 cache {cache_location_hit_count}, MD5 cache {cache_hit_count}, computed {compute_count}")
         if failed_names:
             print(f"  Failed: {', '.join(failed_names)}")
         
-        if not results:
+        if not results and not need_compute_factors:
             return pd.DataFrame()
-        
-        # Align results to common index
-        aligned_results = {}
+
+        # ------------------------------------------------------------------
+        # Validate & align cached results against the backtest target index.
+        # Use self.data_df.index (csi300 full date range) as the reference so
+        # that all factors are guaranteed to cover the training / valid / test
+        # periods the model needs.
+        #
+        # IMPORTANT: cached result.h5 files may contain factor values for ALL
+        # A-share stocks (if daily_pv.h5 was full-market).  We explicitly
+        # filter each factor to the target market (e.g. csi300) instruments
+        # BEFORE running the alignment check.
+        # ------------------------------------------------------------------
         reference_index = None
-        
+        target_instruments = None
+        try:
+            reference_index = self.data_df.index
+            # Extract the target instrument set (e.g. csi300 stocks)
+            _inst_level = 'instrument' if 'instrument' in reference_index.names else 1
+            target_instruments = set(reference_index.get_level_values(_inst_level).unique())
+            logger.info(f"  Target market: {len(target_instruments)} instruments, "
+                        f"{len(reference_index)} rows")
+        except Exception:
+            pass
+
+        aligned_results = {}
+        need_recompute = []  # factors whose cache didn't match
+
         for name, series in results.items():
-            if reference_index is None:
-                reference_index = series.index
+            # --- Explicit instrument filtering ---
+            # If the cache covers more stocks than the target market (e.g.
+            # full A-share cache vs csi300 backtest), slice down first so
+            # that the alignment step is fast and unambiguous.
+            if target_instruments is not None and isinstance(series.index, pd.MultiIndex):
+                try:
+                    _si_level = 'instrument' if 'instrument' in series.index.names else 1
+                    cache_instruments = set(series.index.get_level_values(_si_level).unique())
+                    extra = cache_instruments - target_instruments
+                    if extra:
+                        logger.info(f"    [{name}] Filtering cache: "
+                                    f"{len(cache_instruments)} -> {len(target_instruments)} instruments "
+                                    f"(dropping {len(extra)} non-target stocks)")
+                        mask = series.index.get_level_values(_si_level).isin(target_instruments)
+                        series = series.loc[mask]
+                except Exception as _filt_err:
+                    logger.debug(f"    [{name}] Instrument filter skipped: {_filt_err}")
+
             validated = self._validate_and_align_result(series, name, reference_index)
             if validated is not None:
                 aligned_results[name] = validated
-        
+            else:
+                # Cache was stale / wrong stock universe → schedule recomputation
+                factor_info = next(
+                    (f for f in factors if f.get('factor_name') == name), None
+                )
+                if factor_info and not skip_compute:
+                    need_recompute.append(factor_info)
+
+        # Pass 3: recompute factors whose cached data didn't pass validation
+        if need_recompute:
+            print(f"  Recomputing {len(need_recompute)} factors (cache index mismatch) ...")
+            for recomp_info in need_recompute:
+                fname = recomp_info.get('factor_name', 'unknown')
+                fexpr = recomp_info.get('factor_expression', '')
+                if not fexpr:
+                    continue
+                print(f"  Recompute: {fname} ...", end='', flush=True)
+                t0 = _time.time()
+                try:
+                    recomp_result = self.calculate_factor(fname, fexpr)
+                except Exception as e:
+                    print(f" [FAIL] {str(e)[:80]}")
+                    continue
+                elapsed = _time.time() - t0
+                if recomp_result is not None and len(recomp_result) > 0 and not recomp_result.isna().all():
+                    validated = self._validate_and_align_result(recomp_result, fname, reference_index)
+                    if validated is not None:
+                        aligned_results[fname] = validated
+                        success_count += 1
+                        compute_count += 1
+                        print(f" [OK] ({elapsed:.1f}s)")
+                        if use_cache:
+                            self._save_to_cache(fexpr, recomp_result)
+                        continue
+                print(f" [FAIL] ({elapsed:.1f}s)")
+
         if aligned_results:
             result_df = pd.DataFrame(aligned_results)
             logger.debug(f"  Result DataFrame: {result_df.shape}")
@@ -471,38 +568,81 @@ class CustomFactorCalculator:
     
     def _validate_and_align_result(self, result: pd.Series, factor_name: str, 
                                     reference_index: Optional[pd.Index] = None) -> Optional[pd.Series]:
-        """Validate and align cached result index."""
+        """Validate and align cached result against *reference_index*.
+
+        *reference_index* should be ``self.data_df.index`` (the csi300 backtest
+        target data) so that we can detect stock-universe or date-range
+        mismatches between the cache and the actual backtest scope.
+
+        When the cache is a superset (e.g. full A-share factors) this method
+        will ``reindex`` to the target, effectively extracting only the csi300
+        portion.  When the cache is a small subset (e.g. debug data for 100
+        stocks) the match rate will be too low and recomputation is triggered.
+
+        Returns the aligned Series on success, ``None`` when the cache is
+        unusable (caller should schedule recomputation).
+        """
         if result is None:
             return None
         
         target_idx = reference_index
         if target_idx is None:
-            try:
-                target_idx = self.data_df.index
-            except Exception:
-                return result if len(result) > 0 and not result.isna().all() else None
+            # Fallback: accept as-is if we have no reference
+            return result if len(result) > 0 and not result.isna().all() else None
         
         # Align index (duplicate-safe)
         if not result.index.equals(target_idx):
             try:
                 if result.index.duplicated().any():
                     result = result[~result.index.duplicated(keep='last')]
+                dedup_target = target_idx
                 if target_idx.duplicated().any():
-                    target_idx = target_idx[~target_idx.duplicated(keep='last')]
+                    dedup_target = target_idx[~target_idx.duplicated(keep='last')]
                 
-                common_idx = result.index.intersection(target_idx)
-                if len(common_idx) > len(target_idx) * 0.5:
+                common_idx = result.index.intersection(dedup_target)
+
+                # Fallback: if intersection is 0 and both are MultiIndex,
+                # the level order may be swapped (instrument, datetime) vs
+                # (datetime, instrument).  Try swapping and check again.
+                if (len(common_idx) == 0
+                        and isinstance(result.index, pd.MultiIndex)
+                        and result.index.nlevels == 2
+                        and len(result) > 0):
+                    swapped = result.swaplevel().sort_index()
+                    swapped.index.names = ['datetime', 'instrument']
+                    common_swap = swapped.index.intersection(dedup_target)
+                    if len(common_swap) > 0:
+                        logger.info(f"    [{factor_name}] Auto-swapped index levels "
+                                    f"(0 → {len(common_swap)} common after swap)")
+                        result = swapped
+                        common_idx = common_swap
+
+                match_rate = len(common_idx) / max(len(dedup_target), 1)
+
+                # Log instrument-level detail for diagnostics
+                if isinstance(result.index, pd.MultiIndex):
+                    _il = 'instrument' if 'instrument' in result.index.names else 1
+                    _tl = 'instrument' if 'instrument' in dedup_target.names else 1
+                    _cache_n = result.index.get_level_values(_il).nunique()
+                    _target_n = dedup_target.get_level_values(_tl).nunique()
+                    logger.debug(f"    [{factor_name}] cache instruments={_cache_n}, "
+                                 f"target instruments={_target_n}")
+
+                if match_rate > 0.5:
                     result = result.reindex(target_idx)
-                    logger.debug(f"    Index align: common {len(common_idx)}, target {len(target_idx)}")
+                    logger.debug(f"    [{factor_name}] Index align OK: "
+                                f"common {len(common_idx)}/{len(dedup_target)} ({match_rate:.1%})")
                 else:
-                    logger.warning(f"    Cache index match rate too low ({len(common_idx)}/{len(target_idx)}), will recompute")
+                    logger.warning(f"    [{factor_name}] Cache index match rate too low "
+                                  f"({len(common_idx)}/{len(dedup_target)}, {match_rate:.1%}), "
+                                  f"will recompute")
                     return None
             except Exception as e:
-                logger.warning(f"    Index align failed: {e}, will recompute")
+                logger.warning(f"    [{factor_name}] Index align failed: {e}, will recompute")
                 return None
         
         # Validate data
-        if result is None or len(result) == 0 or result.isna().all():
+        if len(result) == 0 or result.isna().all():
             return None
         
         return result

@@ -29,6 +29,10 @@ else:
     print("=" * 60)
     sys.exit(1)
 
+# Apply Windows compatibility patches to rdagent (no-op on Linux)
+from quantaalpha.compat.rdagent_patches import apply as _apply_rdagent_patches
+_apply_rdagent_patches()
+
 from quantaalpha.cli import app
 
 if __name__ == "__main__":

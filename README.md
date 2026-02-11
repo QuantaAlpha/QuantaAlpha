@@ -251,6 +251,87 @@ bash start.sh
 
 ---
 
+<a id="windows-deploy"></a>
+## 🪟 Windows Deployment
+
+QuantaAlpha is natively developed for Linux. Below is a guide to run it on **Windows 10/11**.
+
+> For technical details, see [`docs/WINDOWS_COMPAT.md`](docs/WINDOWS_COMPAT.md).
+
+### Key Differences from Linux
+
+| Feature | Linux | Windows |
+| :--- | :--- | :--- |
+| Start mining | `./run.sh "direction"` | `python launcher.py mine --direction "direction"` |
+| Start frontend | `bash start.sh` | Start backend & frontend separately (see below) |
+| `.env` path format | `/home/user/data` | `C:/Users/user/data` (use forward slashes) |
+| Extra config | None | Must set `CONDA_DEFAULT_ENV` (see below) |
+| rdagent patches | None | Auto-applied (`quantaalpha/compat/rdagent_patches.py`) |
+
+### Installation
+
+```powershell
+# 1. Install Miniconda (check "Add to PATH" during setup)
+# 2. Create conda environment
+conda create -n quantaalpha python=3.11 -y
+conda activate quantaalpha
+
+# 3. Clone and install
+git clone https://github.com/QuantaAlpha/QuantaAlpha.git
+cd QuantaAlpha
+set SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0
+pip install -e .
+```
+
+### Configure `.env`
+
+```powershell
+copy configs\.env.example .env
+```
+
+Edit `.env` — use **forward slashes** for paths:
+
+```bash
+QLIB_DATA_DIR=C:/Users/yourname/path/to/cn_data
+DATA_RESULTS_DIR=C:/Users/yourname/path/to/results
+CONDA_ENV_NAME=quantaalpha
+CONDA_DEFAULT_ENV=quantaalpha    # ← Required on Windows
+```
+
+### Run
+
+```powershell
+# Factor mining
+python launcher.py mine --direction "price-volume factor mining"
+
+# Standalone backtest
+python -m quantaalpha.backtest.run_backtest -c configs/backtest.yaml --factor-source custom --factor-json data/factorlib/all_factors_library.json -v
+```
+
+### Web Frontend (Optional)
+
+Requires Node.js (v18+). Start in two terminals:
+
+```powershell
+# Terminal 1 — Backend API
+cd frontend-v2 && python backend/app.py
+
+# Terminal 2 — Frontend
+cd frontend-v2 && npm install && npm run dev
+```
+
+Visit http://localhost:3000.
+
+### Troubleshooting
+
+| Error | Fix |
+| :--- | :--- |
+| `CondaConf conda_env_name: Input should be a valid string` | Add `CONDA_DEFAULT_ENV=quantaalpha` to `.env` |
+| `UnicodeEncodeError: 'gbk'` | Run `chcp 65001` or set `PYTHONIOENCODING=utf-8` |
+| `Failed to resolve import "@radix-ui/react-hover-card"` | `cd frontend-v2 && npm install` |
+
+---
+
 ## 💬 User Community
 
 <div align="center">

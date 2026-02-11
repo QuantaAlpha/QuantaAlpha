@@ -7,7 +7,8 @@ from quantaalpha.factors.coder.function_lib import *
 
 
 def calculate_factor(expr: str, name: str):
-    # stock dataframe
+    # stock dataframe (full A-share data; cross-sectional operators like
+    # RANK / CS_RANK are computed over the entire market, not just csi300)
     df = pd.read_hdf('./daily_pv.h5', key='data')
     
     expr = parse_symbol(expr, df.columns)

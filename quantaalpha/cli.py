@@ -19,6 +19,10 @@ if _env_path.exists():
 else:
     load_dotenv(".env")
 
+# Apply Windows compatibility patches to rdagent (no-op on Linux)
+from quantaalpha.compat.rdagent_patches import apply as _apply_rdagent_patches
+_apply_rdagent_patches()
+
 import fire
 from quantaalpha.pipeline.factor_mining import main as mine
 from quantaalpha.pipeline.factor_backtest import main as backtest

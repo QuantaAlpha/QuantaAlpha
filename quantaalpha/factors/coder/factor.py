@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import sys
 import uuid
 from pathlib import Path
 from typing import Tuple, Union
@@ -170,8 +171,9 @@ class FactorFBWorkspace(FBWorkspace):
                 env = os.environ.copy()
                 project_root = Path(__file__).parent.parent.parent.parent.parent
                 pythonpath = str(project_root)
+                sep = ';' if sys.platform == 'win32' else ':'
                 if 'PYTHONPATH' in env:
-                    env['PYTHONPATH'] = pythonpath + ':' + env['PYTHONPATH']
+                    env['PYTHONPATH'] = pythonpath + sep + env['PYTHONPATH']
                 else:
                     env['PYTHONPATH'] = pythonpath
                 
