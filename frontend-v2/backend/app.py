@@ -99,6 +99,88 @@ ws_connections: Dict[str, List[WebSocket]] = {}  # task_id -> list of WS
 
 # ========================== Utility Helpers ==========================
 
+IS_WIN = sys.platform == "win32"
+
+
+def _is_junction(path: Path) -> bool:
+    """Check if a path is a Windows directory junction."""
+    if not IS_WIN:
+        return False
+    try:
+        import ctypes
+        attrs = ctypes.windll.kernel32.GetFileAttributesW(str(path))
+        if attrs == -1:
+            return False
+        FILE_ATTRIBUTE_REPARSE_POINT = 0x400
+        return bool(attrs & FILE_ATTRIBUTE_REPARSE_POINT)
+    except Exception:
+        return False
+
+
+def _remove_link_or_junction(path: Path):
+    """Remove a symlink or junction in a cross-platform way."""
+    if IS_WIN and _is_junction(path):
+        # Junctions on Windows appear as directories; use os.rmdir (not shutil.rmtree!)
+        os.rmdir(str(path))
+    elif path.is_symlink():
+        path.unlink()
+    elif path.is_dir():
+        os.rmdir(str(path))
+
+
+def _kill_process_tree(pid: int):
+    """Kill a process and its children in a cross-platform way."""
+    if IS_WIN:
+        # On Windows, use taskkill /F /T to kill the whole process tree
+        try:
+            subprocess.run(
+                ["taskkill", "/F", "/T", "/PID", str(pid)],
+                capture_output=True, timeout=10,
+            )
+        except Exception:
+            pass
+    else:
+        # Unix: try graceful SIGTERM first
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except ProcessLookupError:
+            return
+
+
+async def _kill_process_tree_async(pid: int):
+    """Async version: kill a process tree with graceful shutdown attempt."""
+    if IS_WIN:
+        # On Windows, taskkill /F /T kills the process tree immediately
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                "taskkill", "/F", "/T", "/PID", str(pid),
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL,
+            )
+            await asyncio.wait_for(proc.wait(), timeout=10)
+        except Exception:
+            pass
+    else:
+        try:
+            # Try graceful termination first
+            os.kill(pid, signal.SIGTERM)
+            # Wait briefly for cleanup
+            for _ in range(5):
+                try:
+                    os.kill(pid, 0)  # Check if alive
+                    await asyncio.sleep(0.1)
+                except ProcessLookupError:
+                    return
+            # Force kill if still running
+            try:
+                os.kill(pid, 0)
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        except ProcessLookupError:
+            pass
+
+
 def _gen_id() -> str:
     return str(uuid.uuid4())[:8]
 
@@ -217,16 +299,38 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
         os.makedirs(env["WORKSPACE_PATH"], exist_ok=True)
         os.makedirs(env["PICKLE_CACHE_FOLDER_PATH_STR"], exist_ok=True)
 
-        # Qlib symlink
+        # Qlib symlink / junction
         qlib_data = dotenv.get("QLIB_DATA_DIR", "")
         if qlib_data:
             qlib_symlink_dir = Path.home() / ".qlib" / "qlib_data"
             qlib_symlink_dir.mkdir(parents=True, exist_ok=True)
             cn_data_link = qlib_symlink_dir / "cn_data"
-            if not cn_data_link.exists() or os.readlink(str(cn_data_link)) != qlib_data:
-                if cn_data_link.is_symlink():
-                    cn_data_link.unlink()
-                cn_data_link.symlink_to(qlib_data)
+            try:
+                need_create = False
+                if cn_data_link.exists() or cn_data_link.is_symlink() or _is_junction(cn_data_link):
+                    # Check if current link/junction already points to the correct target
+                    try:
+                        current_target = str(Path(os.readlink(str(cn_data_link))).resolve())
+                        expected_target = str(Path(qlib_data).resolve())
+                        if current_target != expected_target:
+                            _remove_link_or_junction(cn_data_link)
+                            need_create = True
+                    except OSError:
+                        _remove_link_or_junction(cn_data_link)
+                        need_create = True
+                else:
+                    need_create = True
+
+                if need_create:
+                    if sys.platform == "win32":
+                        # Windows: use directory junction (no admin privileges required)
+                        import _winapi
+                        _winapi.CreateJunction(str(Path(qlib_data).resolve()), str(cn_data_link))
+                    else:
+                        cn_data_link.symlink_to(qlib_data)
+            except Exception as link_err:
+                print(f"[WARN] Failed to create qlib data link: {link_err}")
+                print(f"[WARN] Please manually create a link: {cn_data_link} -> {qlib_data}")
 
         # Build a temporary config with frontend parameter overrides
         base_config_path = PROJECT_ROOT / "configs" / "experiment.yaml"
@@ -522,27 +626,7 @@ async def cancel_mining(task_id: str):
         raise HTTPException(status_code=404, detail="Task not found")
     task = tasks[task_id]
     if task.get("pid"):
-        try:
-            pid = task["pid"]
-            # Try graceful termination first
-            os.kill(pid, signal.SIGTERM)
-            
-            # Wait briefly for cleanup (0.5s)
-            for _ in range(5):
-                try:
-                    os.kill(pid, 0) # Check if alive
-                    await asyncio.sleep(0.1)
-                except ProcessLookupError:
-                    break
-            
-            # Force kill if still running
-            try:
-                os.kill(pid, 0)
-                os.kill(pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-        except ProcessLookupError:
-            pass
+        await _kill_process_tree_async(task["pid"])
     task["status"] = "cancelled"
     task["updatedAt"] = _now()
     await _broadcast(task_id, {
@@ -822,10 +906,7 @@ async def cancel_backtest(task_id: str):
         raise HTTPException(status_code=404, detail="Task not found")
     task = tasks[task_id]
     if task.get("pid"):
-        try:
-            os.kill(task["pid"], signal.SIGTERM)
-        except ProcessLookupError:
-            pass
+        await _kill_process_tree_async(task["pid"])
     task["status"] = "cancelled"
     task["updatedAt"] = _now()
     await _broadcast(task_id, {
