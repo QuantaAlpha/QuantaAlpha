@@ -110,7 +110,7 @@ class LocalEnv(Env[LocalConf]):
         cwd = None
         if local_path:
             cwd = Path(local_path).resolve()
-        result = subprocess.run(command, cwd=cwd, env={**os.environ, **env}, capture_output=True, text=True)
+        result = subprocess.run(command, cwd=cwd, env={**os.environ, **env}, capture_output=True, text=True, encoding='utf-8', errors='replace')
 
         if result.returncode != 0:
             raise RuntimeError(f"Error while running the command: {result.stderr}")
@@ -203,6 +203,8 @@ class QlibLocalEnv(LocalEnv):
                 env={**os.environ, **env}, 
                 capture_output=True, 
                 text=True,
+                encoding='utf-8',
+                errors='replace',  # Replace invalid characters instead of raising error
                 timeout=exec_timeout
             )
             

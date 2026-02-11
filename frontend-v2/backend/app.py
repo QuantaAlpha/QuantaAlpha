@@ -18,10 +18,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import colorama
 import yaml
 from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+
+# Initialize colorama for ANSI color support on Windows
+colorama.init()
 
 # ---------------------------------------------------------------------------
 # Resolve project root (two levels up from this file: frontend-v2/backend/)
@@ -1120,6 +1124,8 @@ async def update_system_config(update: SystemConfigUpdate):
         # Replace existing line or append
         pattern = rf"^{re.escape(key)}\s*=.*$"
         replacement = f"{key}={val}"
+        # Escape backslashes for Windows paths in regex replacement
+        replacement = replacement.replace("\\", "\\\\")
         new_content, n = re.subn(pattern, replacement, content, flags=re.MULTILINE)
         if n > 0:
             content = new_content

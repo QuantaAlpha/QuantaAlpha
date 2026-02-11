@@ -15,6 +15,7 @@ fire                       # CLI framework
 fuzzywuzzy                 # Fuzzy string matching
 openai                     # LLM API (DashScope-compatible)
 python-dotenv              # .env loading
+colorama                   # ANSI color support on Windows
 
 # -----------------------------------------------------------------------------
 # Data & scientific computing
