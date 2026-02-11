@@ -31,8 +31,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 DOTENV_PATH = PROJECT_ROOT / ".env"
-# Factor library directory (default: ./data/factorlib relative to CWD)
-FACTORLIB_DIR = Path(os.environ.get("FACTOR_LIBRARY_DIR", "./data/factorlib")).resolve()
 
 # ---------------------------------------------------------------------------
 # FastAPI app
@@ -121,7 +119,8 @@ def _load_dotenv_dict() -> Dict[str, str]:
 
 def _find_factor_jsons() -> List[str]:
     """Find all factor library JSON files in data/factorlib/."""
-    pattern = str(FACTORLIB_DIR / "all_factors_library*.json")
+    factorlib_dir = PROJECT_ROOT / "data" / "factorlib"
+    pattern = str(factorlib_dir / "all_factors_library*.json")
     results = sorted(glob.glob(pattern), key=os.path.getmtime, reverse=True)
 
     old_pattern = str(PROJECT_ROOT / "all_factors_library*.json")
@@ -571,7 +570,7 @@ async def get_factors(
     """Get factors from the factor library JSON."""
     # Find the most recent factor library
     if library:
-        lib_path = str(FACTORLIB_DIR / library)
+        lib_path = str(PROJECT_ROOT / "data" / "factorlib" / library)
         # Fallback: check if file exists at project root (legacy location)
         if not Path(lib_path).exists():
             alt = str(PROJECT_ROOT / library)
@@ -677,7 +676,7 @@ async def get_cache_status(
 ):
     """Check cache status of factors in the specified factor library."""
     if library:
-        lib_path = str(FACTORLIB_DIR / library)
+        lib_path = str(PROJECT_ROOT / "data" / "factorlib" / library)
         if not Path(lib_path).exists():
             alt = str(PROJECT_ROOT / library)
             if Path(alt).exists():
@@ -706,7 +705,7 @@ async def warm_cache(
 ):
     """Batch sync from result.h5 to MD5 cache directory."""
     if library:
-        lib_path = str(FACTORLIB_DIR / library)
+        lib_path = str(PROJECT_ROOT / "data" / "factorlib" / library)
         if not Path(lib_path).exists():
             alt = str(PROJECT_ROOT / library)
             if Path(alt).exists():
@@ -849,7 +848,7 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
         factor_json_path = Path(factor_json_input)
         if not factor_json_path.is_absolute():
             # Check data/factorlib/ first
-            candidate = FACTORLIB_DIR / factor_json_input
+            candidate = PROJECT_ROOT / "data" / "factorlib" / factor_json_input
             if candidate.exists():
                 factor_json_path = candidate
             else:
@@ -1193,7 +1192,7 @@ def _update_mining_metrics(task: Dict[str, Any]):
     suffix = config.get("librarySuffix")
     
     if suffix:
-        candidate = FACTORLIB_DIR / f"all_factors_library_{suffix}.json"
+        candidate = PROJECT_ROOT / "data" / "factorlib" / f"all_factors_library_{suffix}.json"
         # Fix: If suffix is specified, we ONLY look at this file.
         # If it doesn't exist yet, it means no factors have been mined yet for this task.
         if candidate.exists():
