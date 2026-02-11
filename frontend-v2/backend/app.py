@@ -107,7 +107,7 @@ def _load_dotenv_dict() -> Dict[str, str]:
     """Parse the .env file into a dict (simple key=value, ignoring comments)."""
     env: Dict[str, str] = {}
     if DOTENV_PATH.exists():
-        for line in DOTENV_PATH.read_text().splitlines():
+        for line in DOTENV_PATH.read_text(encoding="utf-8").splitlines():
             stripped = line.strip()
             if not stripped or stripped.startswith("#"):
                 continue
