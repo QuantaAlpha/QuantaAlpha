@@ -43,13 +43,13 @@ def force_timeout():
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # 优先选择timeout参数
+            # Prefer the timeout parameter
             seconds = LLM_SETTINGS.factor_mining_timeout
 
             if sys.platform != "win32":
-                # Unix/Linux: 使用 SIGALRM 信号
+                # Unix/Linux: Use SIGALRM signal
                 def handle_timeout(signum, frame):
-                    logger.error(f"强制终止程序执行，已超过{seconds}秒")
+                    logger.error(f"Force terminating execution, exceeded {seconds} seconds")
                     sys.exit(1)
 
                 signal.signal(signal.SIGALRM, handle_timeout)
@@ -61,7 +61,7 @@ def force_timeout():
                     signal.alarm(0)
                 return result
             else:
-                # Windows: 使用守护线程实现超时
+                # Windows: Use daemon thread for timeout
                 result_container = [None]
                 exception_container = [None]
 
@@ -76,7 +76,7 @@ def force_timeout():
                 worker.join(timeout=seconds)
 
                 if worker.is_alive():
-                    logger.error(f"强制终止程序执行，已超过{seconds}秒")
+                    logger.error(f"Force terminating execution, exceeded {seconds} seconds")
                     os._exit(1)
 
                 if exception_container[0] is not None:
