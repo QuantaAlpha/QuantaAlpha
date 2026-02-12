@@ -145,6 +145,22 @@ class QlibLocalEnv(LocalEnv):
         if not qlib_data_path.exists():
             logger.warning(f"Qlib data directory does not exist: {qlib_data_path}; please ensure data is downloaded")
         
+    @staticmethod
+    def _safe_print(text: str) -> None:
+        """Print text safely on Windows (GBK) consoles.
+        
+        Falls back to plain ``builtins.print`` with ``errors='replace'`` when
+        Rich / colorama raise ``UnicodeEncodeError`` on the GBK console.
+        """
+        import builtins as _builtins
+        try:
+            print(text)
+        except UnicodeEncodeError:
+            # Rich -> colorama -> GBK codec fails on special chars; fallback
+            _builtins.print(
+                text.encode("utf-8", errors="replace").decode("utf-8", errors="replace")
+            )
+
     def run(
         self, 
         entry: str | None = None, 
@@ -175,15 +191,19 @@ class QlibLocalEnv(LocalEnv):
         if entry is None:
             entry = self.conf.default_entry
             
-        # Log run info
-        table = Table(title="Local Run Info", show_header=False)
-        table.add_column("Key", style="bold cyan")
-        table.add_column("Value", style="bold magenta")
-        table.add_row("Entry", entry)
-        table.add_row("Working Directory", local_path)
-        table.add_row("Timeout", f"{exec_timeout} seconds")
-        table.add_row("Environment Variables", "\n".join(f"{k}:{v}" for k, v in env.items()))
-        print(table)
+        # Log run info — use safe console to avoid GBK UnicodeEncodeError on Windows
+        try:
+            table = Table(title="Local Run Info", show_header=False)
+            table.add_column("Key", style="bold cyan")
+            table.add_column("Value", style="bold magenta")
+            table.add_row("Entry", entry)
+            table.add_row("Working Directory", local_path)
+            table.add_row("Timeout", f"{exec_timeout} seconds")
+            table.add_row("Environment Variables", "\n".join(f"{k}:{v}" for k, v in env.items()))
+            _console = Console(force_terminal=False, highlight=False, markup=True, legacy_windows=False)
+            _console.print(table)
+        except UnicodeEncodeError:
+            logger.info(f"[Local Run] entry={entry}  cwd={local_path}  timeout={exec_timeout}s")
         
         # Split command
         command = entry.split()
@@ -193,7 +213,11 @@ class QlibLocalEnv(LocalEnv):
         if local_path:
             cwd = Path(local_path).resolve()
             
-        print(Rule("[bold green]Starting local execution[/bold green]", style="dark_orange"))
+        try:
+            _console = Console(force_terminal=False, highlight=False, legacy_windows=False)
+            _console.print(Rule("[bold green]Starting local execution[/bold green]", style="dark_orange"))
+        except UnicodeEncodeError:
+            logger.info("--- Starting local execution ---")
         
         try:
             # Run command with timeout
@@ -210,10 +234,10 @@ class QlibLocalEnv(LocalEnv):
             
             # Output result
             output = result.stdout
-            print(output)
+            self._safe_print(output)
             
             if result.stderr:
-                print(f"[stderr]: {result.stderr}")
+                self._safe_print(f"[stderr]: {result.stderr}")
             
             if result.returncode != 0:
                 error_msg = f"Command failed with return code {result.returncode}"
