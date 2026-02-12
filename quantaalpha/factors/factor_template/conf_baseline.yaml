@@ -85,6 +85,8 @@ task:
             max_depth: 8
             num_leaves: 210
             num_threads: 20
+            seed: 42
+            random_state: 42
             early_stopping_round: 50
             num_boost_round: 500
 
