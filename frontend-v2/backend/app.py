@@ -382,9 +382,9 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
             import traceback
             traceback.print_exc()
 
-        # Build CLI args
+        # Build CLI args — use -u for unbuffered stdout/stderr so output streams in real time
         cmd = [
-            sys.executable, "-m", "quantaalpha.cli", "mine",
+            sys.executable, "-u", "-m", "quantaalpha.cli", "mine",
             "--direction", req.direction,
             "--config_path", config_path_to_use,
         ]
@@ -400,6 +400,9 @@ async def _run_mining(task_id: str, req: MiningStartRequest):
             "data": task["progress"],
             "timestamp": _now(),
         })
+
+        # Force unbuffered output so parent can read lines in real time
+        env["PYTHONUNBUFFERED"] = "1"
 
         # Launch subprocess
         proc = await asyncio.create_subprocess_exec(
@@ -970,15 +973,18 @@ async def _run_backtest(task_id: str, req: BacktestStartRequest, config_path: st
                 python_bin = str(candidate_bin)
                 break
 
-        # Build CLI command
+        # Build CLI command — use -u for unbuffered output
         cmd = [
-            python_bin, "-m", "quantaalpha.backtest.run_backtest",
+            python_bin, "-u", "-m", "quantaalpha.backtest.run_backtest",
             "-c", config_path,
             "--factor-source", req.factorSource,
             "--factor-json", factor_json_str,
             "--skip-uncached",
             "-v",
         ]
+
+        # Force unbuffered output so parent can read lines in real time
+        env["PYTHONUNBUFFERED"] = "1"
 
         proc = await asyncio.create_subprocess_exec(
             *cmd,
