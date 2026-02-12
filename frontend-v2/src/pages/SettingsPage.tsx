@@ -313,19 +313,28 @@ export const SettingsPage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-2">模型名称</label>
-                <select
+                <input
+                  type="text"
                   value={config.modelName}
                   onChange={(e) => updateConfigField('modelName', e.target.value)}
+                  placeholder="例如：deepseek-v3、deepseek-r1、qwen-max、gpt-4o"
                   className="w-full rounded-lg border border-input bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                >
-                  <option value="deepseek-v3">DeepSeek V3</option>
-                  <option value="deepseek-r1">DeepSeek R1</option>
-                  <option value="qwen-max">Qwen Max</option>
-                  <option value="qwen-plus">Qwen Plus</option>
-                  <option value="gpt-4">GPT-4</option>
-                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                </select>
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  示例模型：deepseek-v3、deepseek-r1、qwen-max、qwen-plus、gpt-4o、gpt-4.0-mini 等；可填写任意兼容 OpenAI 协议的模型名称。
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {['deepseek-v3', 'deepseek-r1', 'qwen-max', 'qwen-plus', 'gpt-4o', 'gpt-4.0-mini'].map((name) => (
+                    <Badge
+                      key={name}
+                      variant="outline"
+                      className="cursor-pointer hover:bg-secondary/60"
+                      onClick={() => updateConfigField('modelName', name)}
+                    >
+                      {name}
+                    </Badge>
+                  ))}
+                </div>
               </div>
 
               {/* Connection Status */}
