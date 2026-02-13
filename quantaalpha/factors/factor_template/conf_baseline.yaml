@@ -31,6 +31,7 @@ data_handler_config: &data_handler_config
         - class: Fillna
           kwargs:
               fields_group: feature
+        - class: ProcessInf
         - class: DropnaLabel
         - class: CSRankNorm
           kwargs:
@@ -43,6 +44,7 @@ data_handler_config: &data_handler_config
         - class: Fillna
           kwargs:
               fields_group: feature
+        - class: ProcessInf
         - class: CSRankNorm
           kwargs:
               fields_group: feature
