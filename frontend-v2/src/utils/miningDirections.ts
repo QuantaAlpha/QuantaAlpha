@@ -15,7 +15,7 @@ export interface MiningDirectionItem {
   factors?: FactorHint[];
 }
 
-/** Reference mining directions (Alpha158(20) style, can be added/deleted/modified as needed; factors can be filled from original_direction.json) */
+/** Reference mining directions (Alpha158(20) style, can be added/deleted/modified as needed; factors can be filled from original_direction_CN.json) */
 export const REFERENCE_MINING_DIRECTIONS: MiningDirectionItem[] = [
   {
     label: '价量关系与开盘收益率',

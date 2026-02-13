@@ -35,7 +35,7 @@
   <a href="docs/user_guide.md" style="text-decoration: none; margin: 0 4px;">
     <img src="https://img.shields.io/badge/📖_User_Guide-Complete_Guide-2196F3?style=flat-square&logo=gitbook&logoColor=white&labelColor=1565C0" alt="User Guide" />
   </a>
-  <a href="experiment/README_EXPERIMENT_EN.md" style="text-decoration: none; margin: 0 4px;">
+  <a href="experiment/README_EXPERIMENT.md" style="text-decoration: none; margin: 0 4px;">
     <img src="https://img.shields.io/badge/🔬_Experiments-Replication-9C27B0?style=flat-square&logo=labview&logoColor=white&labelColor=7B1FA2" alt="Experiments" />
   </a>
 </div>
@@ -96,7 +96,7 @@
 ## 🚀 Quick Start
 
 <p align="center" style="font-size: 13px; color: #666; margin-top: 10px;">
-  🔬 Experiments: paper reproduction settings & metric definitions. <a href="experiment/README_EXPERIMENT_EN.md">Read</a> | <a href="experiment/README_EXPERIMENT.md">中文</a>
+  🔬 Experiments: paper reproduction settings & metric definitions — <a href="experiment/README_EXPERIMENT.md"><b>English</b></a> · <a href="experiment/README_EXPERIMENT_CN.md"><b>中文</b></a>
 </p>
 
 ### 1. Clone & Install

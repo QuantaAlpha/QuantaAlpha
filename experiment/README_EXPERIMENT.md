@@ -1,36 +1,36 @@
-# QuantaAlpha 论文实验复现说明
+# QuantaAlpha Paper Experiment Reproduction Notes
 
-本文用于对论文中的实验配置进行说明。
+This document explains the experiment configurations used in the paper.
 
-English version: [README_EXPERIMENT_EN.md](README_EXPERIMENT_EN.md) (same content in English)
+> 🌐 Language: **English** | [中文](README_EXPERIMENT_CN.md)
 
-## 1. 初始种子因子 (Seed Factors)
-*   **文件**: `experiment/original_direction.json`
-*   **含义**: 以 **Alpha158(20)** 因子库为基础整理的 10 组“方向种子”（每组若干因子）。
-*   **用法**: 配置初始 Prompt 时可选取一组或多组，作为 LLM 的探索起点。
+## 1. Initial Seed Factors
+*   **File**: `experiment/original_direction.json`
+*   **Meaning**: 10 groups of "direction seeds" organized based on the **Alpha158(20)** factor library (each group contains multiple factors).
+*   **Usage**: When constructing the initial prompt, you may select one or multiple groups as the LLM's exploration starting point.
 
-## 2. 主实验参数（论文默认）
-*   **Plan 并行数**: 10 个方向（Directions）
-*   **进化轮次**: 5 个 Epoch，合计 11 个 Round；Round 1 为 Origin，其后交替进行 Mutation / Crossover。
+## 2. Main Experiment Settings (Paper Defaults)
+*   **Plan parallelism**: 10 directions
+*   **Evolution**: 5 epochs, 11 rounds in total; Round 1 is Origin, followed by alternating Mutation / Crossover.
 
-## 3. IC 指标：两种口径（务必区分）
-系统展示的 IC 均为“模型预测值 vs 未来收益”的相关性指标，用于衡量选股排序能力。
+## 3. IC Metric: Two Definitions (Do Not Mix)
+The IC shown in the system is the correlation between "model prediction vs. future returns", used to measure ranking ability.
 
-### 3.1 挖掘阶段 IC（Mining Feedback）
-*   **用途**: 进化过程中给 LLM 的实时反馈（代理指标）。
-*   **特征**: “本轮新因子（通常 3 个）+ 4 个基础量价因子”。
-*   **回测期**: 2021-01-01 至 2021-12-31 。
-*   **口径**: 预测值（Prediction Score）与 T+2 收益率的 **Rank IC**。
+### 3.1 Mining-Stage IC (Mining Feedback)
+*   **Purpose**: Real-time feedback to the LLM during evolution (a proxy metric).
+*   **Features**: "new factors from the current round (usually 3) + 4 base price-volume factors".
+*   **Backtest period**: 2021-01-01 to 2021-12-31.
+*   **Definition**: **Rank IC** between the Prediction Score and T+2 returns.
 
-### 3.2 回测阶段 IC（Backtest Metrics）
-*   **用途**: 评估最终策略的样本外泛化能力。
-*   **特征**: “筛选后的全量因子池（N 个）”。
-*   **回测期**: 2022-01-01 至 2025-12-26 。
-*   **口径**: 预测值（Prediction Score）与 T+2 收益率的 **Rank IC**。
+### 3.2 Backtest-Stage IC (Backtest Metrics)
+*   **Purpose**: Evaluate out-of-sample generalization of the final strategy.
+*   **Features**: "selected full factor pool (N factors)".
+*   **Backtest period**: 2022-01-01 to 2025-12-26.
+*   **Definition**: **Rank IC** between the Prediction Score and T+2 returns.
 
-### 注意
-*   文中主实验展示的高 IC 均为全量因子池经 LGBM 融合后的“组合因子 IC”，其增益主要来自自进化带来的因子多样性与非线性互补；而实验分析结果与因子挖掘阶段中的 IC 偏向反映“单因子”的独立预测能力。二者不可直接比较（特征输入量、评估时段与模型训练参数有差异）
+### Note
+*   The high IC reported in the paper's main experiment is the "ensemble factor IC" after LGBM fusion over the full factor pool. The gains mainly come from factor diversity and nonlinear complementarity introduced by self-evolution. In contrast, the experiment analysis results and the mining-stage IC tend to reflect the standalone predictive power of a single factor. They are not directly comparable due to differences in feature inputs, evaluation periods, and model training hyperparameters.
 
 ## 4. Embedding
-*   **用途**: 因子去重（语义相似度）与知识库检索。
-*   **要求**: 当前版本需要正确配置 Embedding 服务，无降级逻辑，后续版本会进行补充。
+*   **Purpose**: Factor deduplication (semantic similarity) and knowledge-base retrieval.
+*   **Requirement**: The current version requires a properly configured embedding service, with no fallback logic. A future version will add supplemental handling.

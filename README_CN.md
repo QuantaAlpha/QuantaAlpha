@@ -35,7 +35,7 @@
   <a href="docs/user_guide.md" style="text-decoration: none; margin: 0 4px;">
     <img src="https://img.shields.io/badge/📖_用户指南-完整文档-2196F3?style=flat-square&logo=gitbook&logoColor=white&labelColor=1565C0" alt="用户指南" />
   </a>
-  <a href="experiment/README_EXPERIMENT.md" style="text-decoration: none; margin: 0 4px;">
+  <a href="experiment/README_EXPERIMENT_CN.md" style="text-decoration: none; margin: 0 4px;">
     <img src="https://img.shields.io/badge/🔬_实验复现-详细说明-9C27B0?style=flat-square&logo=labview&logoColor=white&labelColor=7B1FA2" alt="实验复现" />
   </a>
 </div>
@@ -85,7 +85,7 @@
 ## 🚀 快速开始
 
 <p align="center" style="font-size: 13px; color: #666; margin-top: 10px;">
-  🔬 实验复现：论文实验配置与指标口径说明。<a href="experiment/README_EXPERIMENT.md">阅读</a> | <a href="experiment/README_EXPERIMENT_EN.md">English</a>
+  🔬 实验复现：论文实验配置与指标口径说明 — <a href="experiment/README_EXPERIMENT_CN.md"><b>中文</b></a> · <a href="experiment/README_EXPERIMENT.md"><b>English</b></a>
 </p>
 
 ### 1. 克隆与安装
