@@ -1,0 +1,44 @@
+{
+    "factor_portfolios": [
+      {
+        "portfolio_id": 1,
+        "description": "参考以下组合给出假设。组合1包含RSQR10（表达式：Rsquare($close, 10)，含义：10日价格线性回归R²，反映中期趋势稳定性）、KLEN（表达式：($high-$low)/$open，含义：日内K线总长度，衡量价格波动幅度）、WVMA5（表达式：Std(Abs($close/Ref($close, 1)-1)*$volume, 5)/(Mean(Abs($close/Ref($close, 1)-1)*$volume, 5)+1e-12)，含义：5日成交量加权价格波动率，反映量价共振）。"
+      },
+      {
+        "portfolio_id": 2,
+        "description": "参考以下组合给出假设。组合2包含ROC60（表达式：Ref($close, 60)/$close，含义：60日价格反转因子，值>1表示长期下跌）、CORR20（表达式：Corr($close, Log($volume+1), 20)，含义：20日收盘价与成交量对数的相关系数）、VSTD5（表达式：Std($volume, 5)/($volume+1e-12)，含义：5日成交量标准差，反映资金流向稳定性）。"
+      },
+      {
+        "portfolio_id": 3,
+        "description": "参考以下组合给出假设。组合3包含RESI5（表达式：Resi($close, 5)/$close，含义：5日线性回归残差，反映价格偏离趋势程度）、KLOW（表达式：(Less($open, $close)-$low)/$open，含义：K线下影线长度，反映盘中支撑力度）、STD5（表达式：Std($close, 5)/$close，含义：5日收盘价标准差，衡量纯价格波动幅度）。"
+      },
+      {
+        "portfolio_id": 4,
+        "description": "参考以下组合给出假设。组合4包含RSQR60（表达式：Rsquare($close, 60)，含义：60日价格线性回归R²，反映长期趋势稳定性）、CORD10（表达式：Corr($close/Ref($close,1), Log($volume/Ref($volume, 1)+1), 10)，含义：10日价格/成交量变化率的相关系数）、WVMA60（表达式：Std(Abs($close/Ref($close, 1)-1)*$volume, 60)/(Mean(Abs($close/Ref($close, 1)-1)*$volume, 60)+1e-12)，含义：60日成交量加权价格波动率）。"
+      },
+      {
+        "portfolio_id": 5,
+        "description": "参考以下组合给出假设,假设不需要太复杂。包含RSQR20（表达式：Rsquare($close, 20)，含义：20日价格线性回归R²，中期趋势稳定性）、VSUMP5（表达式：Sum(Greater($volume-Ref($volume, 1), 0), 5)/(Sum(Abs($volume-Ref($volume, 1)), 5)+1e-12)，含义：5日成交量上涨幅度占比，反映资金流入强度）、RSV5（表达式：($close-Min($low, 5))/(Max($high, 5)-Min($low, 5)+1e-12)，含义：5日价格相对位置，类似KDJ未成熟随机值）。"
+      },
+      {
+        "portfolio_id": 6,
+        "description": "参考以下组合给出假设。组合6包含BETA5（表达式：Slope($close, 5)/$close，含义：5日价格线性回归斜率，反映短期趋势方向）、CNTD5（表达式：Mean($close>Ref($close, 1), 5)-Mean($close<Ref($close, 1), 5)，含义：5日涨跌天数差，反映短期涨跌占优程度）、IMXD5（表达式：(IdxMax($high, 5)-IdxMin($low, 5))/5，含义：5日高低点出现时间差，反映价格反转节奏）。"
+      },
+      {
+        "portfolio_id": 7,
+        "description": "参考以下组合给出假设。组合7包含MA5（表达式：Mean($close, 5)/$close，含义：5日均价与现价比，反映短期价格偏离度）、VMA5（表达式：Mean($volume, 5)/($volume+1e-12)，含义：5日均量与当前成交量比，反映量能变化）、KMID（表达式：($close-$open)/$open，含义：K线实体长度，反映日内价格涨跌幅度）。"
+      },
+      {
+        "portfolio_id": 8,
+        "description": "参考以下组合给出假设。组合8包含CORR5（表达式：Corr($close, Log($volume+1), 5)，含义：5日收盘价与成交量对数的相关系数）、MAX5（表达式：Max($high, 5)/$close，含义：5日最高价与现价比，反映短期压力位）、VSUMD5（表达式：(Sum(Greater($volume-Ref($volume, 1), 0), 5)-Sum(Greater(Ref($volume, 1)-$volume, 0), 5))/(Sum(Abs($volume-Ref($volume, 1)), 5)+1e-12)，含义：5日成交量涨跌差占比，反映资金流向）。"
+      },
+      {
+        "portfolio_id": 9,
+        "description": "参考以下组合给出假设。RESI10（表达式：Resi($close, 10)/$close，含义：10日线性回归残差，中期价格偏离趋势度）、KMID2（表达式：($close-$open)/($high-$low+1e-12)，含义：K线实体占总长度比，反映涨跌有效性）、QTLU5（表达式：Quantile($close, 5, 0.8)/$close，含义：5日价格80分位数，反映价格相对高位）。"
+      },
+      {
+        "portfolio_id": 10,
+        "description": "参考以下组合给出假设。组合10包含CORD60（表达式：Corr($close/Ref($close,1), Log($volume/Ref($volume, 1)+1), 60)，含义：60日价格/成交量变化率的相关系数）、RANK5（表达式：Rank($close, 5)，含义：5日价格排名，反映短期价格相对位置）、VSTD10（表达式：Std($volume, 10)/($volume+1e-12)，含义：10日成交量标准差，中期资金流向稳定性）。"
+      }
+    ]
+  }
