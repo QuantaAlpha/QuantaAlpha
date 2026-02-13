@@ -19,13 +19,13 @@ The IC shown in the system is the correlation between "model prediction vs. futu
 ### 3.1 Mining-Stage IC (Mining Feedback)
 *   **Purpose**: Real-time feedback to the LLM during evolution (a proxy metric).
 *   **Features**: "new factors from the current round (usually 3) + 4 base price-volume factors".
-*   **Evaluation period**: **2021 (validation set)**.
+*   **Backtest period**: 2021-01-01 to 2021-12-31.
 *   **Definition**: **Rank IC** between the Prediction Score and T+2 returns.
 
 ### 3.2 Backtest-Stage IC (Backtest Metrics)
 *   **Purpose**: Evaluate out-of-sample generalization of the final strategy.
 *   **Features**: "selected full factor pool (N factors)".
-*   **Evaluation period**: **2022–2025 (test set)**.
+*   **Backtest period**: 2022-01-01 to 2025-12-26.
 *   **Definition**: **Rank IC** between the Prediction Score and T+2 returns.
 
 ### Note
