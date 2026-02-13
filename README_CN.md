@@ -40,10 +40,6 @@
   </a>
 </div>
 
-<p align="center" style="font-size: 13px; color: #666; margin-top: 10px;">
-  🔬 实验复现：论文实验配置与指标口径说明。<a href="experiment/README_EXPERIMENT.md">阅读</a> | <a href="experiment/README_EXPERIMENT_EN.md">English</a>
-</p>
-
 ---
 
 ## 🎯 概述
@@ -87,6 +83,10 @@
 
 <a id="quick-start"></a>
 ## 🚀 快速开始
+
+<p align="center" style="font-size: 13px; color: #666; margin-top: 10px;">
+  🔬 实验复现：论文实验配置与指标口径说明。<a href="experiment/README_EXPERIMENT.md">阅读</a> | <a href="experiment/README_EXPERIMENT_EN.md">English</a>
+</p>
 
 ### 1. 克隆与安装
 

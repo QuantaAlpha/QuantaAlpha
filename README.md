@@ -40,10 +40,6 @@
   </a>
 </div>
 
-<p align="center" style="font-size: 13px; color: #666; margin-top: 10px;">
-  🔬 Experiments: paper reproduction settings & metric definitions. <a href="experiment/README_EXPERIMENT_EN.md">Read</a> | <a href="experiment/README_EXPERIMENT.md">中文</a>
-</p>
-
 ---
 
 ## 🎯 Overview
@@ -98,6 +94,10 @@
 ---
 
 ## 🚀 Quick Start
+
+<p align="center" style="font-size: 13px; color: #666; margin-top: 10px;">
+  🔬 Experiments: paper reproduction settings & metric definitions. <a href="experiment/README_EXPERIMENT_EN.md">Read</a> | <a href="experiment/README_EXPERIMENT.md">中文</a>
+</p>
 
 ### 1. Clone & Install
 
