@@ -709,6 +709,8 @@ class APIBackend:
             except Exception as e:  # noqa: BLE001
                 logger.warning(e)
                 logger.warning(f"Retrying {i+1}th time...")
+                if chat_completion and kwargs.get("json_mode") and "contain the word 'json'" in str(e).lower():
+                    kwargs["add_json_in_prompt"] = True
                 if i < max_retry - 1:
                     time.sleep(self.retry_wait_seconds)
         error_message = f"Failed to create chat completion after {max_retry} retries."
@@ -880,7 +882,9 @@ class APIBackend:
         else:
             if self.use_responses_api:
                 # Codex Responses API (chatgpt.com/backend-api/codex/responses)
-                resp, finish_reason = self._call_codex_responses_api(model, messages)
+                resp, finish_reason = self._call_codex_responses_api(
+                    model, messages, json_mode=json_mode, add_json_in_prompt=add_json_in_prompt,
+                )
 
                 if LLM_SETTINGS.log_llm_chat_content:
                     display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
@@ -979,6 +983,9 @@ class APIBackend:
         self,
         model: str,
         messages: list[dict],
+        *,
+        json_mode: bool = False,
+        add_json_in_prompt: bool = True,
     ) -> tuple[str, str | None]:
         """Call the Codex Responses API (chatgpt.com/backend-api/codex/responses).
 
@@ -999,21 +1006,46 @@ class APIBackend:
             if msg["role"] == "system":
                 instructions += ("\n" if instructions else "") + msg["content"]
             else:
-                input_messages.append(msg)
+                input_messages.append(dict(msg))
 
         if not instructions:
             instructions = "You are a helpful assistant."
 
+        # Codex rejects json_object formatting unless the request explicitly
+        # mentions JSON, and the requirement is enforced on input messages.
+        if json_mode:
+            instructions_mention_json = "json" in instructions.lower()
+            input_mentions_json = any(
+                "json" in str(msg.get("content", "")).lower() for msg in input_messages
+            )
+            json_hint = "\nPlease respond in json format."
+            if add_json_in_prompt or not instructions_mention_json:
+                instructions += json_hint
+            if add_json_in_prompt or not input_mentions_json:
+                for msg in reversed(input_messages):
+                    if msg.get("role") == "user":
+                        msg["content"] = f'{msg.get("content", "")}{json_hint}'
+                        break
+                else:
+                    input_messages.append({"role": "user", "content": "Please respond in json format."})
+
         # Use override model if configured, else use the model passed in
         codex_model = self._codex_model or model
 
-        body = json.dumps({
+        payload: dict[str, Any] = {
             "model": codex_model,
             "instructions": instructions,
             "input": input_messages,
             "stream": True,
             "store": False,
-        })
+        }
+        if json_mode:
+            payload["text"] = {"format": {"type": "json_object"}}
+        # Note: Codex Responses API does not support temperature,
+        # max_output_tokens, frequency_penalty, or presence_penalty.
+        # All are silently dropped to avoid HTTP 400 "Unsupported parameter".
+
+        body = json.dumps(payload)
 
         url = f"{self._codex_base_url}/codex/responses"
         req = urllib.request.Request(url, data=body.encode(), method="POST")
