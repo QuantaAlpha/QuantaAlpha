@@ -20,7 +20,6 @@ import tiktoken
 
 from quantaalpha.core.utils import LLM_CACHE_SEED_GEN, SingletonBaseClass
 from quantaalpha.log import LogColors, logger
-from quantaalpha.log import logger
 from quantaalpha.llm.config import LLM_SETTINGS
 
 DEFAULT_QLIB_DOT_PATH = Path("./")
@@ -348,6 +347,7 @@ class APIBackend:
         use_embedding_cache: bool | None = None,
         dump_embedding_cache: bool | None = None,
     ) -> None:
+        self.use_responses_api = False
         if LLM_SETTINGS.use_llama2:
             self.generator = Llama.build(
                 ckpt_dir=LLM_SETTINGS.llama2_ckpt_dir,
@@ -487,8 +487,47 @@ class APIBackend:
                         azure_endpoint=self.embedding_api_base,
                     )
             else:
-                self.chat_client = openai.OpenAI(api_key=self.chat_api_key, base_url=self.base_url)
-                self.embedding_client = openai.OpenAI(api_key=self.embedding_api_key, base_url=self.embedding_base_url)
+                # When using Codex Responses API exclusively, the OpenAI client
+                # is not needed for chat (only for embeddings if configured).
+                if self.chat_api_key:
+                    self.chat_client = openai.OpenAI(api_key=self.chat_api_key, base_url=self.base_url)
+                else:
+                    self.chat_client = None
+                if self.embedding_api_key:
+                    self.embedding_client = openai.OpenAI(api_key=self.embedding_api_key, base_url=self.embedding_base_url)
+                else:
+                    self.embedding_client = None
+
+            # Override chat path for Codex Responses API (ChatGPT subscription OAuth)
+            if LLM_SETTINGS.use_responses_api:
+                raw_path = LLM_SETTINGS.codex_auth_token_path
+                paths = [p.strip() for p in raw_path.split(",") if p.strip()] if raw_path else []
+                if len(paths) > 1:
+                    from quantaalpha.llm.codex_auth import MultiCodexAuthProvider
+                    self._codex_auth = MultiCodexAuthProvider(paths)
+                else:
+                    from quantaalpha.llm.codex_auth import CodexAuthProvider
+                    self._codex_auth = CodexAuthProvider(paths[0] if paths else "")
+                self._codex_base_url = LLM_SETTINGS.responses_api_base_url.rstrip("/")
+                self.use_responses_api = True
+
+                # Resolve codex model: auto-detect latest if not explicitly set
+                configured_model = LLM_SETTINGS.responses_api_model.strip()
+                if not configured_model or configured_model == "auto":
+                    from quantaalpha.llm.codex_auth import fetch_latest_codex_model
+                    if hasattr(self._codex_auth, 'get_token_and_account'):
+                        _tok, _acct = self._codex_auth.get_token_and_account()
+                    else:
+                        _tok, _acct = self._codex_auth.get_token(), self._codex_auth.account_id
+                    self._codex_model = fetch_latest_codex_model(self._codex_base_url, _tok, _acct)
+                    logger.info(f"Codex Responses API: auto-selected model '{self._codex_model}'")
+                else:
+                    self._codex_model = configured_model
+
+                if len(paths) > 1:
+                    logger.info(f"Codex Responses API: round-robin across {len(paths)} auth files")
+            else:
+                self.use_responses_api = False
 
         self.dump_chat_cache = LLM_SETTINGS.dump_chat_cache if dump_chat_cache is None else dump_chat_cache
         self.use_chat_cache = LLM_SETTINGS.use_chat_cache if use_chat_cache is None else use_chat_cache
@@ -839,61 +878,70 @@ class APIBackend:
             if LLM_SETTINGS.log_llm_chat_content:
                 logger.info(f"{LogColors.CYAN}Response:{resp}{LogColors.END}", tag="llm_messages")
         else:
-            kwargs = dict(
-                model=model,
-                messages=messages,
-                max_tokens=max_tokens,
-                temperature=temperature,
-                stream=self.chat_stream,
-                seed=self.chat_seed,
-                frequency_penalty=frequency_penalty,
-                presence_penalty=presence_penalty,
-            )
-            
-            if json_mode:
-                if add_json_in_prompt:
-                    for message in messages[::-1]:
-                        message["content"] = message["content"] + "\nPlease respond in json format."
-                        if message["role"] == "system":
-                            break
-                kwargs["response_format"] = {"type": "json_object"}
-            response = self.chat_client.chat.completions.create(**kwargs)
-
-            
-            if self.chat_stream:
-                resp = ""
-                for chunk in response:
-                    content = (
-                        chunk.choices[0].delta.content
-                        if len(chunk.choices) > 0 and chunk.choices[0].delta.content is not None
-                        else ""
-                    )
-                    resp += content
-                    if len(chunk.choices) > 0 and chunk.choices[0].finish_reason is not None:
-                        finish_reason = chunk.choices[0].finish_reason
+            if self.use_responses_api:
+                # Codex Responses API (chatgpt.com/backend-api/codex/responses)
+                resp, finish_reason = self._call_codex_responses_api(model, messages)
 
                 if LLM_SETTINGS.log_llm_chat_content:
                     display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
-                    logger.info(f"{LogColors.CYAN}Response:{display_resp}{LogColors.END}", tag="llm_messages")
-
+                    logger.info(f"{LogColors.CYAN}Response(codex):{display_resp}{LogColors.END}", tag="llm_messages")
             else:
-                resp = response.choices[0].message.content
-                finish_reason = response.choices[0].finish_reason
-                if LLM_SETTINGS.log_llm_chat_content:
-                    display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
-                    logger.info(f"{LogColors.CYAN}Response:{display_resp}{LogColors.END}", tag="llm_messages")
-                    logger.info(
-                        json.dumps(
-                            {
-                                "tag": tag,
-                                "total_tokens": response.usage.total_tokens,
-                                "prompt_tokens": response.usage.prompt_tokens,
-                                "completion_tokens": response.usage.completion_tokens,
-                                "model": model,
-                            }
-                        ),
-                        tag="llm_messages",
-                    )
+                kwargs = dict(
+                    model=model,
+                    messages=messages,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                    stream=self.chat_stream,
+                    seed=self.chat_seed,
+                    frequency_penalty=frequency_penalty,
+                    presence_penalty=presence_penalty,
+                )
+
+                if json_mode:
+                    if add_json_in_prompt:
+                        for message in messages[::-1]:
+                            message["content"] = message["content"] + "\nPlease respond in json format."
+                            if message["role"] == "system":
+                                break
+                    kwargs["response_format"] = {"type": "json_object"}
+                response = self.chat_client.chat.completions.create(**kwargs)
+
+
+            if not self.use_responses_api:
+                if self.chat_stream:
+                    resp = ""
+                    for chunk in response:
+                        content = (
+                            chunk.choices[0].delta.content
+                            if len(chunk.choices) > 0 and chunk.choices[0].delta.content is not None
+                            else ""
+                        )
+                        resp += content
+                        if len(chunk.choices) > 0 and chunk.choices[0].finish_reason is not None:
+                            finish_reason = chunk.choices[0].finish_reason
+
+                    if LLM_SETTINGS.log_llm_chat_content:
+                        display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
+                        logger.info(f"{LogColors.CYAN}Response:{display_resp}{LogColors.END}", tag="llm_messages")
+
+                else:
+                    resp = response.choices[0].message.content
+                    finish_reason = response.choices[0].finish_reason
+                    if LLM_SETTINGS.log_llm_chat_content:
+                        display_resp = resp[:200] + f"... [{len(resp)} chars]" if len(resp) > 200 else resp
+                        logger.info(f"{LogColors.CYAN}Response:{display_resp}{LogColors.END}", tag="llm_messages")
+                        logger.info(
+                            json.dumps(
+                                {
+                                    "tag": tag,
+                                    "total_tokens": response.usage.total_tokens,
+                                    "prompt_tokens": response.usage.prompt_tokens,
+                                    "completion_tokens": response.usage.completion_tokens,
+                                    "model": model,
+                                }
+                            ),
+                            tag="llm_messages",
+                        )
             if json_mode or reasoning_flag:
                 # Extract JSON part
                 json_start = resp.find('{')
@@ -925,6 +973,106 @@ class APIBackend:
                         logger.warning(f"JSON fix failed: {e2}, using raw response")
         if self.dump_chat_cache:
             self.cache.chat_set(input_content_json, resp)
+        return resp, finish_reason
+
+    def _call_codex_responses_api(
+        self,
+        model: str,
+        messages: list[dict],
+    ) -> tuple[str, str | None]:
+        """Call the Codex Responses API (chatgpt.com/backend-api/codex/responses).
+
+        Uses raw urllib instead of the OpenAI SDK because the Codex endpoint
+        differs from the standard Responses API: different URL path, mandatory
+        streaming, and custom headers.
+        """
+        if hasattr(self._codex_auth, 'get_token_and_account'):
+            token, account_id = self._codex_auth.get_token_and_account()
+        else:
+            token = self._codex_auth.get_token()
+            account_id = self._codex_auth.account_id
+
+        # Split system prompt from messages
+        instructions = ""
+        input_messages = []
+        for msg in messages:
+            if msg["role"] == "system":
+                instructions += ("\n" if instructions else "") + msg["content"]
+            else:
+                input_messages.append(msg)
+
+        if not instructions:
+            instructions = "You are a helpful assistant."
+
+        # Use override model if configured, else use the model passed in
+        codex_model = self._codex_model or model
+
+        body = json.dumps({
+            "model": codex_model,
+            "instructions": instructions,
+            "input": input_messages,
+            "stream": True,
+            "store": False,
+        })
+
+        url = f"{self._codex_base_url}/codex/responses"
+        req = urllib.request.Request(url, data=body.encode(), method="POST")
+        req.add_header("Authorization", f"Bearer {token}")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("Accept", "text/event-stream")
+        req.add_header("chatgpt-account-id", account_id)
+        req.add_header("OpenAI-Beta", "responses=experimental")
+        req.add_header("originator", "pi")
+        req.add_header("User-Agent", "quantaalpha/1.0")
+
+        try:
+            resp_http = urllib.request.urlopen(req, timeout=300)  # noqa: S310
+        except urllib.error.HTTPError as http_err:
+            body = http_err.read().decode()
+            try:
+                err_json = json.loads(body)
+                err_detail = err_json.get("error", err_json.get("detail", body))
+                if isinstance(err_detail, dict):
+                    err_msg = err_detail.get("message", "")
+                    resets_in = err_detail.get("resets_in_seconds")
+                    if resets_in:
+                        mins = max(0, round(resets_in / 60))
+                        err_msg = f"{err_msg} (resets in ~{mins} min)"
+                    err_detail = err_msg or str(err_detail)
+            except json.JSONDecodeError:
+                err_detail = body[:300]
+            raise RuntimeError(
+                f"Codex Responses API HTTP {http_err.code}: {err_detail}"
+            ) from http_err
+
+        with resp_http:
+            sse_data = resp_http.read().decode()
+
+        # Parse SSE stream and extract text deltas
+        text_parts: list[str] = []
+        finish_reason: str | None = None
+        for line in sse_data.split("\n"):
+            if not line.startswith("data: ") or line == "data: [DONE]":
+                continue
+            try:
+                event = json.loads(line[6:])
+            except json.JSONDecodeError:
+                continue
+            etype = event.get("type", "")
+            if etype == "response.output_text.delta":
+                text_parts.append(event.get("delta", ""))
+            elif etype in ("response.completed", "response.done"):
+                r = event.get("response", {})
+                finish_reason = r.get("status")
+            elif etype == "response.failed":
+                err_msg = event.get("response", {}).get("error", {}).get("message", "")
+                raise RuntimeError(f"Codex Responses API error: {err_msg or event}")
+            elif etype == "error":
+                raise RuntimeError(
+                    f"Codex Responses API error: {event.get('message', event.get('code', event))}"
+                )
+
+        resp = "".join(text_parts)
         return resp, finish_reason
 
     def calculate_token_from_messages(self, messages: list[dict]) -> int:
