@@ -1,0 +1,44 @@
+{
+    "factor_portfolios": [
+      {
+        "portfolio_id": 1,
+        "description": "Portfolio 1 includes RSQR10 (expression: Rsquare($close, 10); meaning: 10-day price linear regression R^2, measuring mid-term trend stability), KLEN (expression: ($high-$low)/$open; meaning: intraday full candlestick length, measuring price range), WVMA5 (expression: Std(Abs($close/Ref($close, 1)-1)*$volume, 5)/(Mean(Abs($close/Ref($close, 1)-1)*$volume, 5)+1e-12); meaning: 5-day volume-weighted price volatility, reflecting price-volume resonance)."
+      },
+      {
+        "portfolio_id": 2,
+        "description": "Portfolio 2 includes ROC60 (expression: Ref($close, 60)/$close; meaning: 60-day price reversal factor; values > 1 indicate a long-term decline), CORR20 (expression: Corr($close, Log($volume+1), 20); meaning: 20-day correlation between close price and log(volume+1)), VSTD5 (expression: Std($volume, 5)/($volume+1e-12); meaning: 5-day volume standard deviation, reflecting flow stability)."
+      },
+      {
+        "portfolio_id": 3,
+        "description": "Portfolio 3 includes RESI5 (expression: Resi($close, 5)/$close; meaning: 5-day linear regression residual, measuring deviation from trend), KLOW (expression: (Less($open, $close)-$low)/$open; meaning: lower shadow length, indicating intraday support), STD5 (expression: Std($close, 5)/$close; meaning: 5-day close-price standard deviation, measuring pure price volatility)."
+      },
+      {
+        "portfolio_id": 4,
+        "description": "Portfolio 4 includes RSQR60 (expression: Rsquare($close, 60); meaning: 60-day price linear regression R^2, measuring long-term trend stability), CORD10 (expression: Corr($close/Ref($close,1), Log($volume/Ref($volume, 1)+1), 10); meaning: 10-day correlation between price change rate and volume change rate), WVMA60 (expression: Std(Abs($close/Ref($close, 1)-1)*$volume, 60)/(Mean(Abs($close/Ref($close, 1)-1)*$volume, 60)+1e-12); meaning: 60-day volume-weighted price volatility)."
+      },
+      {
+        "portfolio_id": 5,
+        "description": "Portfolio 5 includes RSQR20 (expression: Rsquare($close, 20); meaning: 20-day price linear regression R^2, measuring mid-term trend stability), VSUMP5 (expression: Sum(Greater($volume-Ref($volume, 1), 0), 5)/(Sum(Abs($volume-Ref($volume, 1)), 5)+1e-12); meaning: proportion of 5-day volume increases, reflecting inflow strength), RSV5 (expression: ($close-Min($low, 5))/(Max($high, 5)-Min($low, 5)+1e-12); meaning: 5-day relative price position, similar to the immature stochastic value in KDJ)."
+      },
+      {
+        "portfolio_id": 6,
+        "description": "Portfolio 6 includes BETA5 (expression: Slope($close, 5)/$close; meaning: 5-day linear regression slope of price, indicating short-term trend direction), CNTD5 (expression: Mean($close>Ref($close, 1), 5)-Mean($close<Ref($close, 1), 5); meaning: difference between up days and down days over 5 days, reflecting dominance), IMXD5 (expression: (IdxMax($high, 5)-IdxMin($low, 5))/5; meaning: timing gap between the highest high and lowest low within 5 days, reflecting reversal rhythm)."
+      },
+      {
+        "portfolio_id": 7,
+        "description": "Portfolio 7 includes MA5 (expression: Mean($close, 5)/$close; meaning: ratio of 5-day average close to current close, measuring short-term price deviation), VMA5 (expression: Mean($volume, 5)/($volume+1e-12); meaning: ratio of 5-day average volume to current volume, reflecting volume change), KMID (expression: ($close-$open)/$open; meaning: candlestick body return, reflecting intraday price change)."
+      },
+      {
+        "portfolio_id": 8,
+        "description": "Portfolio 8 includes CORR5 (expression: Corr($close, Log($volume+1), 5); meaning: 5-day correlation between close price and log(volume+1)), MAX5 (expression: Max($high, 5)/$close; meaning: ratio of 5-day highest high to current close, reflecting short-term resistance), VSUMD5 (expression: (Sum(Greater($volume-Ref($volume, 1), 0), 5)-Sum(Greater(Ref($volume, 1)-$volume, 0), 5))/(Sum(Abs($volume-Ref($volume, 1)), 5)+1e-12); meaning: normalized 5-day volume up-minus-down difference, reflecting flow direction)."
+      },
+      {
+        "portfolio_id": 9,
+        "description": "Portfolio 9 includes RESI10 (expression: Resi($close, 10)/$close; meaning: 10-day linear regression residual, measuring mid-term deviation from trend), KMID2 (expression: ($close-$open)/($high-$low+1e-12); meaning: candlestick body as a fraction of total range, reflecting move effectiveness), QTLU5 (expression: Quantile($close, 5, 0.8)/$close; meaning: 80th percentile of 5-day close prices relative to current close, reflecting relative high position)."
+      },
+      {
+        "portfolio_id": 10,
+        "description": "Portfolio 10 includes CORD60 (expression: Corr($close/Ref($close,1), Log($volume/Ref($volume, 1)+1), 60); meaning: 60-day correlation between price change rate and volume change rate), RANK5 (expression: Rank($close, 5); meaning: 5-day price rank, reflecting short-term relative position), VSTD10 (expression: Std($volume, 10)/($volume+1e-12); meaning: 10-day volume standard deviation, reflecting mid-term flow stability)."
+      }
+    ]
+  }

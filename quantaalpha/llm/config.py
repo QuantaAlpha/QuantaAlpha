@@ -58,6 +58,12 @@ class LLMSettings(ExtendedBaseSettings):
     embedding_azure_api_base: str = ""
     embedding_azure_api_version: str = ""
 
+    # Codex OAuth / Responses API (ChatGPT subscription)
+    use_responses_api: bool = False
+    responses_api_base_url: str = "https://chatgpt.com/backend-api"
+    responses_api_model: str = ""  # empty or "auto" = pick latest; or explicit slug like "gpt-5.2-codex"
+    codex_auth_token_path: str = ""  # comma-separated for multiple accounts
+
     # Offline/endpoint (rarely used)
     use_llama2: bool = False
     use_gcr_endpoint: bool = False
