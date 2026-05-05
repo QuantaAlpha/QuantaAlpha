@@ -291,5 +291,3 @@ frontend-v2/
 ---
 
 **🎨 更美观 | 📊 更直观 | ⚡ 更快速 | 🚀 更高级 | 📚 更完善**
-
-Made with ❤️ by QuantaAlpha Team

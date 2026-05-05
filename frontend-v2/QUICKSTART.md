@@ -204,5 +204,3 @@ frontend-v2/
 - **样式**: TailwindCSS + 自定义 CSS（深色主题）
 
 ---
-
-Made with ❤️ by QuantaAlpha Team

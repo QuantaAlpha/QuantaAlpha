@@ -6,9 +6,6 @@ requires = [
 ]
 
 [project]
-authors = [
-  {email = "tangzy27@mail2.sysu.edu.cn", name = "Ziyi Tang"},
-]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: MIT License",
@@ -36,7 +33,6 @@ requires-python = ">=3.10"
 quantaalpha = "quantaalpha.cli:app"
 
 [project.urls]
-homepage = "https://github.com/QuantaAlpha/quantaalpha"
 issue = "https://github.com/QuantaAlpha/quantaalpha/issues"
 
 [tool.setuptools]
