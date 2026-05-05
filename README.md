@@ -19,10 +19,6 @@
     <a href="https://github.com/QuantaAlpha/QuantaAlpha"><img src="https://img.shields.io/github/stars/QuantaAlpha/QuantaAlpha?style=flat-square&logo=github&logoColor=white&color=yellow" /></a>
   </p>
 
-  <p style="font-size: 16px; color: #666; margin: 15px 0; font-weight: 500;">
-    🌐 <a href="README.md" style="text-decoration: none; color: #0066cc;">English</a> | <a href="README_CN.md" style="text-decoration: none; color: #0066cc;">中文</a>
-  </p>
-
 </div>
 
 <div align="center" style="margin: 30px 0;">
@@ -44,20 +40,6 @@
 **QuantaAlpha** transforms how you discover quantitative alpha factors by combining LLM intelligence with evolutionary strategies. Just describe your research direction, and watch as factors are automatically mined, evolved, and validated through self-evolving trajectories.
 
 <p align="center">💬 Research Direction → 🧩 Diversified Planning → 🔄 Trajectory → ✅ Validated Alpha Factors</p>
-
-**Demo**: Below is a short demo of the full flow from research direction to factor mining and backtesting UI. 
-
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/726511ce-a384-4727-a7be-948a2cf05e4b"
-         controls
-         style="max-width: 90%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-    Your browser does not support the video tag.
-    <a href="https://github.com/user-attachments/assets/726511ce-a384-4727-a7be-948a2cf05e4b">Watch the demo video</a>.
-  </video>
-  <p style="font-size: 12px; color: #666; margin-top: 8px;">
-    ▶ Click to play the QuantaAlpha end-to-end workflow demo.
-  </p>
-</div>
 
 ---
 
