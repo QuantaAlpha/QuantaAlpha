@@ -25,8 +25,8 @@
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/QuantaAlpha/QuantaAlpha.git
-cd QuantaAlpha
+git clone <repository-url>
+cd <repository-dir>
 conda create -n quantaalpha python=3.10
 conda activate quantaalpha
 # Install the package in development mode
@@ -58,9 +58,7 @@ REASONING_MODEL=deepseek-v3
 
 ### 3. Prepare Data
 
-QuantaAlpha requires two types of data: **Qlib market data** (for backtesting) and **pre-computed price-volume HDF5 files** (for factor mining). We provide all of them on HuggingFace for convenience.
-
-> **Dataset**: [https://huggingface.co/datasets/QuantaAlpha/qlib_csi300](https://huggingface.co/datasets/QuantaAlpha/qlib_csi300)
+QuantaAlpha requires two types of data: **Qlib market data** (for backtesting) and **pre-computed price-volume HDF5 files** (for factor mining). Prepare these files from your local storage or artifact distribution channel.
 
 | File | Description | Size | Usage |
 | :--- | :--- | :--- | :--- |
@@ -73,15 +71,11 @@ QuantaAlpha requires two types of data: **Qlib market data** (for backtesting) a
 #### Step 1: Download
 
 ```bash
-# Option A: Using huggingface-cli (recommended)
-pip install huggingface_hub
-huggingface-cli download QuantaAlpha/qlib_csi300 --repo-type dataset --local-dir ./hf_data
-
-# Option B: Using wget
 mkdir -p hf_data
-wget -P hf_data https://huggingface.co/datasets/QuantaAlpha/qlib_csi300/resolve/main/cn_data.zip
-wget -P hf_data https://huggingface.co/datasets/QuantaAlpha/qlib_csi300/resolve/main/daily_pv.h5
-wget -P hf_data https://huggingface.co/datasets/QuantaAlpha/qlib_csi300/resolve/main/daily_pv_debug.h5
+# Place the required files under ./hf_data
+# - cn_data.zip
+# - daily_pv.h5
+# - daily_pv_debug.h5
 ```
 
 #### Step 2: Extract & Place Files
@@ -183,10 +177,10 @@ bash start.sh
 
 ## 🤝 Contributing
 
-We welcome all forms of contributions to make QuantaAlpha better! Here's how you can get involved:
+We welcome all forms of contributions to improve the project:
 
-- **🐛 Bug Reports**: Found a bug? [Open an issue](https://github.com/QuantaAlpha/QuantaAlpha/issues) to help us fix it.
-- **💡 Feature Requests**: Have a great idea? [Start a discussion](https://github.com/QuantaAlpha/QuantaAlpha/discussions) to suggest new features.
+- **🐛 Bug Reports**: Report reproducible bugs with environment details and minimal reproduction steps.
+- **💡 Feature Requests**: Share concrete use cases and expected behavior for new features.
 - **📝 Docs & Tutorials**: Improve documentation, add usage examples, or write tutorials.
 - **🔧 Code Contributions**: Submit PRs for bug fixes, performance improvements, or new functionality.
 - **🧬 New Factors**: Share high-quality factors discovered in your own runs to benefit the community.
