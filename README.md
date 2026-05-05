@@ -43,35 +43,6 @@
 
 ---
 
-## 📊 Performance
-
-### 1. Factor Performance
-
-<div align="center">
-  <img src="docs/images/figure3.png" width="90%" alt="Zero-Shot Transfer" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-  <p style="font-size: 12px; color: #666;">CSI 300 factors transferred to CSI 500/S&P 500</p>
-</div>
-
-### 2. Key Results
-
-<div align="center">
-
-| Dimension | Metric | Performance |
-| :---: | :---: | :---: |
-| **Predictive Power** | Information Coefficient (IC) | **0.1501** |
-| | Rank IC | **0.1465** |
-| **Strategy Return** | Annualized Excess Return (ARR) | **27.75%** |
-| | Max Drawdown (MDD) | **7.98%** |
-| | Calmar Ratio (CR) | **3.4774** |
-
-</div>
-
-<div align="center">
-  <img src="docs/images/主实验.png" width="90%" alt="Main Experiment Results" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-</div>
-
----
-
 ## 🚀 Quick Start
 
 ### 1. Clone & Install
