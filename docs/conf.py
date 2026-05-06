@@ -11,8 +11,8 @@ import subprocess
 latest_tag = subprocess.check_output(["git", "describe", "--tags", "--abbrev=0"], text=True).strip()
 
 project = "QuantaAlpha"
-copyright = "2026, hanjun"
-author = "hanjun"
+copyright = "2026, Anonymous Authors"
+author = "Anonymous Authors"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -66,7 +66,7 @@ html_static_path = ["_static"]
 html_favicon = "_static/favicon.ico"
 
 html_theme_options = {
-    "source_repository": "https://github.com/hj1650782738/quantaalpha",
-    "source_branch": "evolution",
+    "source_repository": "https://anonymous.4open.science/r/QuantaAlpha-8E73",
+    "source_branch": "main",
     "source_directory": "docs/",
 }

@@ -77,7 +77,7 @@ class FactorFBWorkspace(FBWorkspace):
     Input data and output factor value are also written to files.
     """
 
-    # TODO: (Xiao) think raising errors may get better information for processing
+    # TODO: raising errors may get better information for processing
     FB_EXEC_SUCCESS = "Execution succeeded without error."
     FB_CODE_NOT_SET = "code is not set."
     FB_EXECUTION_SUCCEEDED = "Execution succeeded without error."

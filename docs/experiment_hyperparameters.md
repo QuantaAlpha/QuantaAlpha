@@ -71,7 +71,7 @@ OPENAI_BASE_URL=<base_url>     # API 端点
 | `step_n` | `null` | int | 总步数 (最高优先级，覆盖 max_loops × steps_per_loop) |
 | `use_local` | `true` | bool | 使用本地环境回测 (vs Docker) |
 | `parallel_execution` | `false` | bool | 是否使用多进程并行运行分支 |
-| `branch_log_root` | `/mnt/DATA/quantagent/AlphaAgent/log` | str | 分支日志根目录 |
+| `branch_log_root` | `/path/to/log` | str | 分支日志根目录 |
 | `branch_log_prefix` | `branch` | str | 分支日志前缀 |
 
 ---
@@ -274,8 +274,8 @@ label = "Ref($close, -2) / Ref($close, -1) - 1"  # T+2 日收益率
 
 ```bash
 # 自动生成 (默认)
-WORKSPACE_PATH=/mnt/DATA/quantagent/QuantaAlpha/QuantaAlpha_workspace_exp_YYYYMMDD_HHMMSS
-PICKLE_CACHE_FOLDER_PATH=/mnt/DATA/quantagent/AlphaAgent/pickle_cache_exp_YYYYMMDD_HHMMSS
+WORKSPACE_PATH=/path/to/workspace/QuantaAlpha_workspace_exp_YYYYMMDD_HHMMSS
+PICKLE_CACHE_FOLDER_PATH=/path/to/cache/pickle_cache_exp_YYYYMMDD_HHMMSS
 
 # 手动指定
 EXPERIMENT_ID=my_exp bash 运行实验.sh "方向"

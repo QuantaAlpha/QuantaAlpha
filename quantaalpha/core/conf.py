@@ -53,10 +53,10 @@ class ExtendedBaseSettings(BaseSettings):
 
 
 class RDAgentSettings(ExtendedBaseSettings):
-    # TODO: (xiao) I think LLMSetting may be a better name.
-    # TODO: (xiao) I think most of the config should be in oai.config
+    # TODO: LLMSetting may be a better name.
+    # TODO: most of the config should be in oai.config
     # Log configs
-    # TODO: (xiao) think it can be a separate config.
+    # TODO: this can be a separate config.
     log_trace_path: str | None = None
 
     # azure document intelligence configs

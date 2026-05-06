@@ -325,11 +325,11 @@ class APIBackend:
     """
     This is a unified interface for different backends.
 
-    (xiao) thinks integrate all kinds of API in a single class is not a good design.
+    Note: integrating all kinds of API in a single class is not an ideal design.
     So we should split them into different classes in `oai/backends/` in the future.
     """
 
-    # FIXME: (xiao) We should avoid using self.xxxx.
+    # FIXME: We should avoid using self.xxxx.
     # Instead, we can use LLM_SETTINGS directly. If it's difficult to support different backend settings, we can split them into multiple BaseSettings.
     def __init__(  # noqa: C901, PLR0912, PLR0915
         self,

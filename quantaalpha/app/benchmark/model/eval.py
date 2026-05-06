@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     model_experiment = mtg.develop(model_experiment)
 
-    # TODO: Align it with the benchmark framework after @wenjun's refine the evaluation part.
+    # TODO: Align it with the benchmark framework after refining the evaluation part.
     # Currently, we just handcraft a workflow for fast evaluation.
 
     mil = ModelWsLoader(bench_folder / "gt_code")

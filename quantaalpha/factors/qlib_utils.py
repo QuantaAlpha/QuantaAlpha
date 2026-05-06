@@ -159,7 +159,7 @@ def get_data_folder_intro(
         not Path(FACTOR_COSTEER_SETTINGS.data_folder).exists()
         or not Path(FACTOR_COSTEER_SETTINGS.data_folder_debug).exists()
     ):
-        # FIXME: (xiao) I think this is writing in a hard-coded way.
+        # FIXME: this is writing in a hard-coded way.
         # get data folder intro does not imply that we are generating the data folder.
         generate_data_folder_from_qlib(use_local=use_local)
     content_l = []

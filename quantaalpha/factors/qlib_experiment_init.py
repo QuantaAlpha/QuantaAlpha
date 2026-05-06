@@ -10,7 +10,7 @@ import sys
 try:
     current_file = Path(__file__).resolve()
     repo_root = current_file.parents[5]
-    rd_agent_root = repo_root / "wuyinze" / "RD-Agent"
+    rd_agent_root = repo_root / "RD-Agent"
     if rd_agent_root.exists():
         rd_agent_root_str = str(rd_agent_root)
         if rd_agent_root_str not in sys.path:

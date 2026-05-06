@@ -422,7 +422,7 @@ def calculate_factor(expr: str, name: str):
 
 **缓存机制**：
 - 计算结果保存为 HDF5 格式（`result.h5`）
-- 工作空间路径：`/mnt/DATA/quantagent/QuantaAlpha/QuantaAlpha_workspace/{UUID}/`
+- 工作空间路径：`/path/to/workspace/QuantaAlpha_workspace/{UUID}/`
 - 独立回测框架可通过缓存提取工具复用这些计算结果
 
 #### Step 4: factor_backtest（因子回测）
@@ -975,7 +975,7 @@ AlphaAgent/                      # Quanta Alpha 主目录
 │   │   └── proposal/            # 提案生成
 │   └── scenarios/               # 场景配置
 │       └── qlib/                # Qlib 场景
-└── /mnt/DATA/quantagent/        # 数据存储
+└── /path/to/data/              # 数据存储
     └── AlphaAgent/
         ├── factor_cache/        # 因子缓存
         ├── backtest_v2_results/ # 回测结果
