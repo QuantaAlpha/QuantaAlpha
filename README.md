@@ -1,24 +1,3 @@
-<div align="center">
-
-  <h1 align="center" style="color: #2196F3; font-size: 32px; font-weight: 700; margin: 20px 0; line-height: 1.4;">
-    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>LLM-Driven Self-Evolving Framework for Factor Mining</em></span>
-  </h1>
-
-  <p align="center" style="font-size: 14px; color: #888; max-width: 700px; margin: 10px auto;">
-    🧬 <em>Achieving superior quantitative alpha through trajectory-based self-evolution with diversified planning initialization, trajectory-level evolution, and structured hypothesis-code constraint</em>
-  </p>
-
-</div>
-
----
-
-## 🎯 Overview
-
-**QuantaAlpha** transforms how you discover quantitative alpha factors by combining LLM intelligence with evolutionary strategies. Just describe your research direction, and watch as factors are automatically mined, evolved, and validated through self-evolving trajectories.
-
-<p align="center">💬 Research Direction → 🧩 Diversified Planning → 🔄 Trajectory → ✅ Validated Alpha Factors</p>
-
----
 
 ## 🚀 Quick Start
 
@@ -175,14 +154,3 @@ bash start.sh
 
 ---
 
-## 🤝 Contributing
-
-We welcome all forms of contributions to improve the project:
-
-- **🐛 Bug Reports**: Report reproducible bugs with environment details and minimal reproduction steps.
-- **💡 Feature Requests**: Share concrete use cases and expected behavior for new features.
-- **📝 Docs & Tutorials**: Improve documentation, add usage examples, or write tutorials.
-- **🔧 Code Contributions**: Submit PRs for bug fixes, performance improvements, or new functionality.
-- **🧬 New Factors**: Share high-quality factors discovered in your own runs to benefit the community.
-
----
