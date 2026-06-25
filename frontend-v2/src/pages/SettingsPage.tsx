@@ -313,19 +313,13 @@ export const SettingsPage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-2">模型名称</label>
-                <select
+                <input
+                  type="text"
                   value={config.modelName}
                   onChange={(e) => updateConfigField('modelName', e.target.value)}
+                  placeholder="请输入模型名称，如 deepseek-v3"
                   className="w-full rounded-lg border border-input bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                >
-                  <option value="deepseek-v3">DeepSeek V3</option>
-                  <option value="deepseek-r1">DeepSeek R1</option>
-                  <option value="qwen-max">Qwen Max</option>
-                  <option value="qwen-plus">Qwen Plus</option>
-                  <option value="gpt-4">GPT-4</option>
-                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                </select>
+                />
               </div>
 
               {/* Connection Status */}
@@ -469,6 +463,9 @@ export const SettingsPage: React.FC = () => {
                     <option value="csi500">CSI 500 (中证500)</option>
                     <option value="sp500">S&P 500</option>
                   </select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    切换市场需要本地计算相应的h5文件，默认提供csi300
+                  </p>
                 </div>
 
                 <div>

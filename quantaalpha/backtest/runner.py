@@ -385,11 +385,13 @@ class BacktestRunner:
                     else:
                         result = self._data.copy()
                 if selector is not None:
+                    if isinstance(selector, str):
+                        selector = self._segments.get(selector, selector)
                     try:
                         dates = result.index.get_level_values('datetime')
                     except KeyError:
                         dates = result.index.get_level_values(0)
-                    if isinstance(selector, tuple) and len(selector) == 2:
+                    if isinstance(selector, (tuple, list)) and len(selector) == 2:
                         start, end = selector
                         mask = (dates >= pd.Timestamp(start)) & (dates <= pd.Timestamp(end))
                         result = result.loc[mask]
