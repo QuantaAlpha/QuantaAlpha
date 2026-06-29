@@ -748,6 +748,93 @@ async def list_factor_libraries():
     return ApiResponse(success=True, data={"libraries": libs})
 
 
+# Diversification analysis endpoints. Must be registered before
+# /api/v1/factors/{factor_id}, otherwise FastAPI matches the literal
+# path segments as factor_id values.
+
+def _resolve_library_path(library):
+    if library:
+        candidate = PROJECT_ROOT / "data" / "factorlib" / library
+        if candidate.exists():
+            return str(candidate)
+        alt = PROJECT_ROOT / library
+        if alt.exists():
+            return str(alt)
+        raise HTTPException(status_code=404, detail=f"Factor library not found: {library}")
+
+    jsons = _find_factor_jsons()
+    if not jsons:
+        raise HTTPException(status_code=404, detail="No factor library found")
+    return jsons[0]
+
+
+@app.get("/api/v1/factors/correlation", response_model=ApiResponse)
+async def factor_correlation(
+    library: Optional[str] = Query(None, description="Factor library JSON filename"),
+    redundancy_threshold: float = Query(0.9),
+):
+    """Pairwise correlation + redundant-pair list for a factor library."""
+    lib_path = _resolve_library_path(library)
+    from quantaalpha.analysis.correlation import (
+        FactorDiversificationAnalyzer, _matrix_to_records,
+    )
+
+    analyzer = FactorDiversificationAnalyzer(lib_path)
+    n_with_values = analyzer.load()
+    matrix = analyzer.correlation_matrix()
+    redundant = analyzer.redundant_pairs(threshold=redundancy_threshold)
+    clusters = analyzer.cluster() if len(matrix) >= 2 else {}
+
+    return ApiResponse(
+        success=True,
+        data={
+            "library": Path(lib_path).name,
+            "summary": {
+                "total_factors": len(analyzer.records),
+                "factors_with_values": n_with_values,
+                "redundant_pairs": len(redundant),
+                "n_clusters": (max(clusters.values()) + 1) if clusters else 0,
+            },
+            "redundant_pairs": redundant,
+            "clusters": clusters,
+            "correlation_matrix": _matrix_to_records(matrix),
+        },
+    )
+
+
+class DiversifiedSubsetRequest(BaseModel):
+    library: Optional[str] = None
+    top: int = 20
+    maxCorr: float = 0.7
+    writeSubset: Optional[str] = None
+
+
+@app.post("/api/v1/factors/diversified-subset", response_model=ApiResponse)
+async def factor_diversified_subset(req: DiversifiedSubsetRequest):
+    """Pick a high-IC, low-correlation subset and optionally write it as a library JSON."""
+    lib_path = _resolve_library_path(req.library)
+    from quantaalpha.analysis.correlation import FactorDiversificationAnalyzer
+
+    analyzer = FactorDiversificationAnalyzer(lib_path)
+    analyzer.load()
+    subset = analyzer.diversified_subset(top_n=req.top, max_corr=req.maxCorr)
+
+    written_path = None
+    if req.writeSubset:
+        out_path = PROJECT_ROOT / "data" / "factorlib" / req.writeSubset
+        analyzer.write_subset_library(out_path, subset)
+        written_path = str(out_path)
+
+    return ApiResponse(
+        success=True,
+        data={
+            "library": Path(lib_path).name,
+            "subset": subset,
+            "writtenTo": written_path,
+        },
+    )
+
+
 @app.get("/api/v1/factors/{factor_id}", response_model=ApiResponse)
 async def get_factor_detail(factor_id: str):
     """Get full detail of a single factor."""
