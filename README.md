@@ -1,15 +1,15 @@
 <div align="center">
-  <img src="docs/images/overview.jpg" alt="QuantaAlpha Framework Overview" width="90%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 10px 0;"/>
+  <img src="docs/images/overview.jpg" alt="QuantaAlpha 框架概览" width="90%" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 10px 0;"/>
 </div>
 
 <div align="center">
 
   <h1 align="center" style="color: #2196F3; font-size: 32px; font-weight: 700; margin: 20px 0; line-height: 1.4;">
-    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>LLM-Driven Self-Evolving Framework for Factor Mining</em></span>
+    🌟 QuantaAlpha: <span style="color: #555; font-weight: 400; font-size: 20px;"><em>LLM 驱动的自进化因子挖掘框架</em></span>
   </h1>
 
   <p align="center" style="font-size: 14px; color: #888; max-width: 700px; margin: 10px auto;">
-    🧬 <em>Achieving superior quantitative alpha through trajectory-based self-evolution with diversified planning initialization, trajectory-level evolution, and structured hypothesis-code constraint</em>
+    🧬 <em>基于轨迹的自进化范式，通过多样化规划初始化、轨迹级进化和结构化假设-代码约束，实现卓越的量化 Alpha 因子挖掘</em>
   </p>
 
   <p style="margin: 20px 0;">
@@ -20,161 +20,167 @@
   </p>
 
   <p style="font-size: 16px; color: #666; margin: 15px 0; font-weight: 500;">
-    🌐 <a href="README.md" style="text-decoration: none; color: #0066cc;">English</a> | <a href="README_CN.md" style="text-decoration: none; color: #0066cc;">中文</a>
+    🌐 <a href="README_EN.md" style="text-decoration: none; color: #0066cc;">English</a> | <a href="README.md" style="text-decoration: none; color: #0066cc;">中文</a>
   </p>
 
 </div>
 
 <div align="center" style="margin: 30px 0;">
-  <a href="#-quick-start" style="text-decoration: none; margin: 0 4px;">
-    <img src="https://img.shields.io/badge/🚀_Quick_Start-Get_Started-4CAF50?style=flat-square&logo=rocket&logoColor=white&labelColor=2E7D32" alt="Quick Start" />
+  <a href="#quick-start" style="text-decoration: none; margin: 0 4px;">
+    <img src="https://img.shields.io/badge/🚀_快速开始-立即体验-4CAF50?style=flat-square&logo=rocket&logoColor=white&labelColor=2E7D32" alt="快速开始" />
   </a>
-  <a href="#️-web-dashboard" style="text-decoration: none; margin: 0 4px;">
-    <img src="https://img.shields.io/badge/🖥️_Web_UI-Try_It_Now-FF9800?style=flat-square&logo=play&logoColor=white&labelColor=F57C00" alt="Web Dashboard" />
+  <a href="#web-ui" style="text-decoration: none; margin: 0 4px;">
+    <img src="https://img.shields.io/badge/🖥️_Web_界面-立即体验-FF9800?style=flat-square&logo=play&logoColor=white&labelColor=F57C00" alt="Web 界面" />
   </a>
   <a href="docs/user_guide.md" style="text-decoration: none; margin: 0 4px;">
-    <img src="https://img.shields.io/badge/📖_User_Guide-Complete_Guide-2196F3?style=flat-square&logo=gitbook&logoColor=white&labelColor=1565C0" alt="User Guide" />
+    <img src="https://img.shields.io/badge/📖_用户指南-完整文档-2196F3?style=flat-square&logo=gitbook&logoColor=white&labelColor=1565C0" alt="用户指南" />
+  </a>
+  <a href="#coming-soon" style="text-decoration: none; margin: 0 4px;">
+    <img src="https://img.shields.io/badge/🔭_Coming--Soon-Agent--Native-7B61FF?style=flat-square&logo=github&logoColor=white&labelColor=5B42C8" alt="QuantaAlpha-claw" />
   </a>
 </div>
 
 ---
 
-## 🎯 Overview
+<a id="coming-soon"></a>
 
-**QuantaAlpha** transforms how you discover quantitative alpha factors by combining LLM intelligence with evolutionary strategies. Just describe your research direction, and watch as factors are automatically mined, evolved, and validated through self-evolving trajectories.
+## 🔭 Coming Soon：[QuantaAlpha-claw](https://github.com/QuantaAlpha/QuantaAlpha-claw) (Agent-Native Alpha Research)
 
-<p align="center">💬 Research Direction → 🧩 Diversified Planning → 🔄 Trajectory → ✅ Validated Alpha Factors</p>
+我们正在推进 **[QuantaAlpha-claw](https://github.com/QuantaAlpha/QuantaAlpha-claw)**，它是 QuantaAlpha 的下一代研究 Harness。
 
-**Demo**: Below is a short demo of the full flow from research direction to factor mining and backtesting UI. 
+它会把当前自进化因子挖掘框架进一步推进到蜂群式、agent-native 的研究形态：Lead / Reviewer / Miner 多角色并行探索，通过 session 记忆协同，并用 Skill 化算子完成带血统追踪的因子进化与更严格的 Walk-Forward 验证链路。
 
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/726511ce-a384-4727-a7be-948a2cf05e4b"
-         controls
-         style="max-width: 90%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-    Your browser does not support the video tag.
-    <a href="https://github.com/user-attachments/assets/726511ce-a384-4727-a7be-948a2cf05e4b">Watch the demo video</a>.
-  </video>
-  <p style="font-size: 12px; color: #666; margin-top: 8px;">
-    ▶ Click to play the QuantaAlpha end-to-end workflow demo.
-  </p>
-</div>
+`蜂群式 Agent 协同进化` · `Skill 驱动研究闭环` · `持久化因子记忆` · `血统可追踪因子进化`
+
+关注下一阶段工作：**https://github.com/QuantaAlpha/QuantaAlpha-claw**
 
 ---
 
-## 📊 Performance
+## 🎯 概述
 
-### 1. Zero-Shot Cross-Market Transfer
+**QuantaAlpha** 将大语言模型（LLM）与进化策略结合，通过自进化轨迹自动完成量化 Alpha 因子的挖掘、进化与验证。你只需输入研究方向，其余流程将自动运行。
+
+<p align="center">💬 研究方向 → 🧩 多样化规划 → 🔄 轨迹进化 → ✅ 已验证的 Alpha 因子</p>
+
+**系统演示**：下方为 QuantaAlpha 本地UI从输入研究方向到因子挖掘与回测的完整流程演示，可点击观看。[📹 观看演示视频](docs/images/demo.mp4)
+
+---
+
+## 📊 实验结果
+
+### 1. 跨市场零样本迁移
 
 <div align="center">
-  <img src="docs/images/figure3.png" width="90%" alt="Zero-Shot Transfer" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-  <p style="font-size: 12px; color: #666;">Factors mined on CSI 300, transferred zero-shot to CSI 500 and S&P 500 (cumulative return). By the end of the test period, QuantaAlpha reaches ~40.3% cumulative excess return on CSI 500 and ~19.1% on S&P 500.</p>
+  <img src="docs/images/figure3.png" width="90%" alt="零样本迁移" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <p style="font-size: 12px; color: #666;">CSI 300 上挖掘的因子零样本迁移至 CSI 500 与 S&P 500（累计收益）。到测试期末，QuantaAlpha 在 CSI 500 上累计超额收益约 40.3%，在 S&P 500 上约 19.1%。</p>
 </div>
 
-### 2. Main Results on CSI 300
+### 2. CSI 300 主实验结果
 
 <div align="center">
 
-| Dimension | Metric | Performance |
+| 维度 | 指标 | 表现 |
 | :---: | :---: | :---: |
-| **Predictive Power** | Information Coefficient (IC) | **0.0472** |
+| **预测效能** | 信息系数 (IC) | **0.0472** |
 | | Rank IC | **0.0459** |
-| **Strategy Performance** | Annualized Return (ARR) | **4.68%** |
-| | Information Ratio (IR) | **0.6453** |
-| | Max Drawdown (MDD) | **11.80%** |
+| **策略表现** | 年化收益 (ARR) | **4.68%** |
+| | 信息比率 (IR) | **0.6453** |
+| | 最大回撤 (MDD) | **11.80%** |
 
-<p style="font-size: 12px; color: #666;">Best configuration (QuantaAlpha + GPT-5.2) on CSI 300, test period 2022–2025. Full comparison against classical machine-learning, deep-learning, factor-library, and LLM-agent baselines below.</p>
+<p style="font-size: 12px; color: #666;">最优配置（QuantaAlpha + GPT-5.2），CSI 300，测试期 2022–2025。下表为与传统机器学习、深度学习、因子库及 LLM 智能体基线的完整对比。</p>
 
 </div>
 
 <div align="center">
-  <img src="docs/images/主实验.png" width="95%" alt="Main Experiment Results" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <img src="docs/images/主实验.png" width="95%" alt="主实验结果" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
 </div>
 
-### 3. Robustness & Mining Efficiency
+### 3. 鲁棒性与挖掘效率
 
 <div align="center">
-  <img src="docs/images/figure4.png" width="80%" alt="Annual IC and Rank IC" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-  <p style="font-size: 12px; color: #666;">Annual IC and Rank IC on CSI 300 (2022–2025): QuantaAlpha stays robust through the 2023 market regime shift, where baselines collapse.</p>
+  <img src="docs/images/figure4.png" width="80%" alt="逐年 IC 与 Rank IC" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <p style="font-size: 12px; color: #666;">CSI 300 上逐年 IC 与 Rank IC（2022–2025）：在 2023 年市场风格切换、基线集体失效时，QuantaAlpha 仍保持稳健。</p>
 </div>
 
 <div align="center">
-  <img src="docs/images/figure5.png" width="52%" alt="IC Evolution over Iterations" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-  <p style="font-size: 12px; color: #666;">IC evolution over the first five mining iterations: QuantaAlpha maintains the highest IC throughout.</p>
+  <img src="docs/images/figure5.png" width="52%" alt="IC 随迭代演化" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <p style="font-size: 12px; color: #666;">前五轮挖掘迭代中的 IC 演化：QuantaAlpha 全程保持最高 IC。</p>
 </div>
 
 ---
 
-## 🚀 Quick Start
+<a id="quick-start"></a>
+## 🚀 快速开始
 
-### 1. Clone & Install
+### 1. 克隆与安装
 
 ```bash
 git clone https://github.com/QuantaAlpha/QuantaAlpha.git
 cd QuantaAlpha
 conda create -n quantaalpha python=3.10
 conda activate quantaalpha
-# Install the package in development mode
+# 以开发模式安装包
 SETUPTOOLS_SCM_PRETEND_VERSION=0.1.0 pip install -e .
 
-# Install additional dependencies
+# 安装额外依赖
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
+### 2. 配置环境变量
 
 ```bash
 cp configs/.env.example .env
 ```
 
-Edit `.env` with your settings:
+编辑 `.env` 文件：
 
 ```bash
-# === Required: Data Paths ===
-QLIB_DATA_DIR=/path/to/your/qlib/cn_data      # Qlib data directory
-DATA_RESULTS_DIR=/path/to/your/results         # Output directory
+# === 必填：数据路径 ===
+QLIB_DATA_DIR=/path/to/your/qlib/cn_data      # Qlib 数据目录
+DATA_RESULTS_DIR=/path/to/your/results         # 输出目录
 
-# === Required: LLM API ===
+# === 必填：LLM API ===
 OPENAI_API_KEY=your-api-key
-OPENAI_BASE_URL=https://your-llm-provider/v1   # e.g. DashScope, OpenAI
-CHAT_MODEL=deepseek-v3                         # or gpt-4, qwen-max, etc.
+OPENAI_BASE_URL=https://your-llm-provider/v1   # 如: DashScope, OpenAI
+CHAT_MODEL=deepseek-v3                         # 或 gpt-4, qwen-max 等
 REASONING_MODEL=deepseek-v3
 ```
 
-### 3. Prepare Data
+### 3. 准备数据
 
-QuantaAlpha requires two types of data: **Qlib market data** (for backtesting) and **pre-computed price-volume HDF5 files** (for factor mining). We provide all of them on HuggingFace for convenience.
+QuantaAlpha 需要两类数据：**Qlib 行情数据**（用于回测）和**预计算的价量 HDF5 文件**（用于因子挖掘）。我们已将所有数据上传至 HuggingFace，方便下载使用。
 
-> **Dataset**: [https://huggingface.co/datasets/QuantaAlpha/qlib_csi300](https://huggingface.co/datasets/QuantaAlpha/qlib_csi300)
+> **数据集地址**：[https://huggingface.co/datasets/QuantaAlpha/qlib_csi300](https://huggingface.co/datasets/QuantaAlpha/qlib_csi300)
 
-| File | Description | Size | Usage |
-| :--- | :--- | :--- | :--- |
-| `cn_data.zip` | Qlib raw market data (A-share, 2016–2025) | 493 MB | Required for Qlib initialization & backtesting |
-| `daily_pv.h5` | Pre-computed full price-volume data | 398 MB | Required for factor mining |
-| `daily_pv_debug.h5` | Pre-computed debug subset (smaller) | 1.41 MB | Required for factor mining (debug/validation) |
+| 文件 | 说明 | 用途 |
+| :--- | :--- | :--- |
+| `cn_data.zip` | Qlib 原始行情数据（A 股，2016–2025） | Qlib 初始化 & 回测必需 |
+| `daily_pv.h5` | 预计算的完整价量数据 | 因子挖掘必需 |
+| `daily_pv_debug.h5` | 预计算的调试子集（数据量较小） | 因子挖掘（调试/验证）必需 |
 
-> **Why provide HDF5 files?** The system can auto-generate `daily_pv.h5` from Qlib data on first run, but this process is very slow. Downloading pre-built HDF5 files saves significant time.
+> **为什么同时提供 HDF5 文件？** 系统可以在首次运行时从 Qlib 数据自动生成 `daily_pv.h5`，但该过程非常耗时。直接下载预计算好的 HDF5 文件可以大幅节省时间。
 
-#### Step 1: Download
+#### 第一步：下载数据
 
 ```bash
-# Option A: Using huggingface-cli (recommended)
+# 方式 A：使用 huggingface-cli（推荐）
 pip install huggingface_hub
 huggingface-cli download QuantaAlpha/qlib_csi300 --repo-type dataset --local-dir ./hf_data
 
-# Option B: Using wget
+# 方式 B：使用 wget
 mkdir -p hf_data
 wget -P hf_data https://huggingface.co/datasets/QuantaAlpha/qlib_csi300/resolve/main/cn_data.zip
 wget -P hf_data https://huggingface.co/datasets/QuantaAlpha/qlib_csi300/resolve/main/daily_pv.h5
 wget -P hf_data https://huggingface.co/datasets/QuantaAlpha/qlib_csi300/resolve/main/daily_pv_debug.h5
 ```
 
-#### Step 2: Extract & Place Files
+#### 第二步：解压并放置文件
 
 ```bash
-# 1. Extract Qlib data
+# 1. 解压 Qlib 数据
 unzip hf_data/cn_data.zip -d ./data/qlib
 
-# 2. Place HDF5 files into the default data directories
+# 2. 将 HDF5 文件放置到默认数据目录
 mkdir -p git_ignore_folder/factor_implementation_source_data
 mkdir -p git_ignore_folder/factor_implementation_source_data_debug
 
@@ -182,58 +188,59 @@ cp hf_data/daily_pv.h5       git_ignore_folder/factor_implementation_source_data
 cp hf_data/daily_pv_debug.h5  git_ignore_folder/factor_implementation_source_data_debug/daily_pv.h5
 ```
 
-> **Note**: `daily_pv_debug.h5` must be renamed to `daily_pv.h5` when placed in the debug directory.
+> **注意**：`daily_pv_debug.h5` 放入调试目录时需重命名为 `daily_pv.h5`。
 
-#### Step 3: Configure Paths in `.env`
+#### 第三步：在 `.env` 中配置路径
 
 ```bash
-# Point to the extracted Qlib data directory (must contain calendars/, features/, instruments/)
+# 指向解压后的 Qlib 数据目录（需包含 calendars/、features/、instruments/ 子目录）
 QLIB_DATA_DIR=./data/qlib/cn_data
 
-# Output directory for experiment results
+# 实验结果输出目录
 DATA_RESULTS_DIR=./data/results
 ```
 
-The HDF5 data directories can also be customized via environment variables if you prefer a different location:
+HDF5 数据目录也可以通过环境变量自定义（如果你希望放在其他位置）：
 
 ```bash
-# Optional: override default HDF5 data paths
+# 可选：自定义 HDF5 数据路径
 FACTOR_CoSTEER_DATA_FOLDER=/your/custom/path/factor_source_data
 FACTOR_CoSTEER_DATA_FOLDER_DEBUG=/your/custom/path/factor_source_data_debug
 ```
 
-### 4. Run Factor Mining
+
+### 4. 运行因子挖掘
 
 ```bash
-./run.sh "<your input>"
+./run.sh "<你的输入>"
 
-# Example: Run with a research direction
-./run.sh "Price-Volume Factor Mining"
+# 示例：指定研究方向运行
+./run.sh "价量因子挖掘"
 
-# Example: Run with custom factor library suffix
-./run.sh "Microstructure Factors" "exp_micro"
+# 示例：指定因子库后缀
+./run.sh "微观结构因子" "exp_micro"
 ```
 
-The experiment will automatically mine, evolve, and validate alpha factors, and save all discovered factors to `all_factors_library*.json`.
+实验会自动挖掘、进化和验证 Alpha 因子，并将所有发现的因子保存到 `all_factors_library*.json`。
 
-### 5. Independent Backtesting
+### 5. 独立回测
 
-After mining, combine factors from the library for a full-period backtest:
+挖掘完成后，从因子库中组合因子进行全周期回测：
 
 ```bash
-# Backtest with custom factors only
+# 仅使用自定义因子回测
 python -m quantaalpha.backtest.run_backtest \
   -c configs/backtest.yaml \
   --factor-source custom \
   --factor-json all_factors_library.json
 
-# Combine with Alpha158(20) baseline factors
+# 结合 Alpha158(20) 基线因子
 python -m quantaalpha.backtest.run_backtest \
   -c configs/backtest.yaml \
   --factor-source combined \
   --factor-json all_factors_library.json
 
-# Dry run (load factors only, skip backtest)
+# 仅加载因子，不执行回测（检查因子加载是否正常）
 python -m quantaalpha.backtest.run_backtest \
   -c configs/backtest.yaml \
   --factor-source custom \
@@ -241,99 +248,96 @@ python -m quantaalpha.backtest.run_backtest \
   --dry-run -v
 ```
 
-Results are saved to the directory specified in `configs/backtest.yaml` (`experiment.output_dir`).
+结果保存在 `configs/backtest.yaml` 中 `experiment.output_dir` 指定的目录。
 
-> 📘 Need help? Check our comprehensive **[User Guide](docs/user_guide.md)** for advanced configuration, experiment reproduction, and detailed usage examples.
+> 📘 需要帮助？请查阅完整的 **[用户指南](docs/user_guide.md)**，了解高级配置、实验复现和详细使用示例。
 
 ---
 
-## 🖥️ Web UI
+<a id="web-ui"></a>
+## 🖥️ Web 界面
 
-QuantaAlpha provides a web-based dashboard where you can complete the entire workflow through a visual interface — no command line needed.
+QuantaAlpha 提供基于 Web 的可视化界面，你可以在界面中完成全部工作流——无需命令行操作。
 
 ```bash
 conda activate quantaalpha
 cd frontend-v2
 bash start.sh
-# Visit http://localhost:3000
+# 访问 http://localhost:3000
 ```
 
-- **⚙️ Settings**: Configure LLM API, data paths, and experiment parameters directly in the UI
-- **⛏️ Factor Mining**: Start experiments with natural language input and monitor progress in real-time
-- **📚 Factor Library**: Browse, search, and filter all discovered factors with quality classifications
-- **📈 Independent Backtest**: Select a factor library and run full-period backtests with visual results
+- **⚙️ 系统设置**：在界面中直接配置 LLM API、数据路径和实验参数
+- **⛏️ 因子挖掘**：通过自然语言输入启动实验，实时监控进度
+- **📚 因子库**：浏览、搜索和筛选所有已挖掘因子，支持质量分级
+- **📈 独立回测**：选择因子库，运行全周期回测并查看可视化结果
 
 ---
 
-## 💬 User Community
+## 💬 用户社区
 
 <div align="center">
 
-| WeChat Group |
+| 微信群 |
 | :---: |
-| <img src="docs/images/WeChat.jpg" width="250" alt="WeChat Group" /> |
+| <img src="docs/images/WeChat.jpg" width="250" alt="微信群" /> |
 
 </div>
 
 ---
 
-## 🤝 Contributing
+## 🤝 参与贡献
 
-We welcome all forms of contributions to make QuantaAlpha better! Here's how you can get involved:
+我们欢迎任何形式的贡献，让 QuantaAlpha 变得更好！以下是参与方式：
 
-- **🐛 Bug Reports**: Found a bug? [Open an issue](https://github.com/QuantaAlpha/QuantaAlpha/issues) to help us fix it.
-- **💡 Feature Requests**: Have a great idea? [Start a discussion](https://github.com/QuantaAlpha/QuantaAlpha/discussions) to suggest new features.
-- **📝 Docs & Tutorials**: Improve documentation, add usage examples, or write tutorials.
-- **🔧 Code Contributions**: Submit PRs for bug fixes, performance improvements, or new functionality.
-- **🧬 New Factors**: Share high-quality factors discovered in your own runs to benefit the community.
-
----
-
-## 🙏 Acknowledgments
-
-Special thanks to:
-- [Qlib](https://github.com/microsoft/qlib) - Quantitative investment platform by Microsoft
-- [RD-Agent](https://github.com/microsoft/RD-Agent) - An automated R&D framework by Microsoft (NeurIPS 2025)
-- [AlphaAgent](https://github.com/RndmVariableQ/AlphaAgent) - Multi-agent alpha factor mining framework (KDD 2025)
+- **🐛 Bug 反馈**：发现了 Bug？[提交 Issue](https://github.com/QuantaAlpha/QuantaAlpha/issues) 帮助我们修复。
+- **💡 功能建议**：有好的想法？[发起讨论](https://github.com/QuantaAlpha/QuantaAlpha/discussions) 提出新功能建议。
+- **📝 文档与教程**：改进文档、添加使用示例或编写教程。
+- **🔧 代码贡献**：提交 PR 修复 Bug、优化性能或添加新功能。
+- **🧬 因子分享**：分享你在实验中发现的高质量因子，造福社区。
 
 ---
 
-## 🌐 About QuantaAlpha
-- QuantaAlpha was founded in **April 2025** by a team of professors, postdocs, PhDs, and master's students from **Tsinghua University, Peking University, CAS, CMU, HKUST**, and more.  
+## 🙏 致谢
 
-🌟 Our mission is to explore the **"quantum"** of intelligence and pioneer the **"alpha"** frontier of agent research — from **CodeAgents** to **self-evolving intelligence**, and further to **financial and cross-domain specialized agents**, we are committed to redefining the boundaries of AI. 
-
-✨ In **2026**, we will continue to produce high-quality research in the following directions:  
-
-- **CodeAgent**: End-to-end autonomous execution of real-world tasks  
-
-- **DeepResearch**: Deep reasoning and retrieval-augmented intelligence  
-
-- **Agentic Reasoning / Agentic RL**: Agent-based reasoning and reinforcement learning 
-
-- **Self-evolution and collaborative learning**: Evolution and coordination of multi-agent systems  
-
-📢 We welcome students and researchers interested in these directions to join us!  
-
-🔗 **Team Homepage**: [QuantaAlpha](https://quantaalpha.github.io/)
-
-📧 **Email**: quantaalpha.ai@gmail.com
-
-## 🌐 About AIFin Lab
-
-Initiated by Professor Liwen Zhang from Shanghai University of Finance and Economics (SUFE), **AIFin Lab** is deeply rooted in the interdisciplinary fields of **AI + Finance, Statistics, and Data Science**. The team brings together cutting-edge scholars from top institutions such as SUFE, FDU, SEU, CMU, and CUHK. We are dedicated to building a comprehensive "full-link" system covering data, models, benchmarks, and intelligent prompting. 
-
-📢 We are actively looking for talented students (UG/Master/PhD) and researchers worldwide who are passionate about AI Agent security and financial intelligence to join **AIFin Lab**! 
-
-📧 **Email**: [aifinlab.sufe@gmail.com](mailto:aifinlab.sufe@gmail.com) (please CC to [zhang.liwen@shufe.edu.cn](mailto:zhang.liwen@shufe.edu.cn))
-
-We look forward to hearing from you!
+特别感谢：
+- [Qlib](https://github.com/microsoft/qlib) - 微软开源的量化投资平台
+- [RD-Agent](https://github.com/microsoft/RD-Agent) - 微软的自动化研发框架 (NeurIPS 2025)
+- [AlphaAgent](https://github.com/RndmVariableQ/AlphaAgent) - 多智能体 Alpha 因子挖掘框架 (KDD 2025)
 
 ---
 
-## 📖 Citation
+## 🌐 关于 QuantaAlpha
 
-If you find QuantaAlpha useful in your research, please cite our work:
+- QuantaAlpha 团队成立于 **2025 年 4 月**，由来自**清华大学、北京大学、中国科学院、CMU、HKUST** 等高校的教授、博士后、博士生和硕士生组成。
+
+🌟 我们的使命是探索智能的 **"量子 (Quantum)"** 本质，开拓 Agent 研究的 **"Alpha"** 前沿——从 **CodeAgent** 到**自进化智能**，再到**金融及跨领域专用 Agent**，致力于重新定义 AI 的边界。
+
+✨ **2026 年**，我们将持续在以下方向产出高质量研究：
+- **CodeAgent**：端到端自主执行真实世界任务
+- **DeepResearch**：深度推理与检索增强智能
+- **Agentic Reasoning / Agentic RL**：基于 Agent 的推理与强化学习
+- **自进化与协作学习**：多智能体系统的进化与协调
+
+📢 欢迎对以上方向感兴趣的同学和研究者加入我们！
+
+🔗 **团队主页**：[QuantaAlpha](https://quantaalpha.github.io/)
+📧 **邮箱**：quantaalpha.ai@gmail.com
+
+## 🌐 关于 AIFin Lab
+
+- AIFin Lab 由上财张立文教授发起，深耕 **AI + 金融 / 统计 / 数据科学** 交叉领域，团队汇聚上财、复旦、东大、CMU、港中文等校前沿学者，打造数据、模型、评测、智能提示全链路体系。
+
+📢 我们诚挚欢迎全球优秀的本科、硕士、博士生以及前沿学者加入 **AIFin Lab**，共同探索金融人工智能的边界！
+
+📧 **邮箱**：[aifinlab.sufe@gmail.com](mailto:aifinlab.sufe@gmail.com)（主收件），同时抄送 (CC) 至 [zhang.liwen@shufe.edu.cn](mailto:zhang.liwen@shufe.edu.cn)
+
+期待你的加入！
+
+---
+
+## 📖 引用
+
+如果 QuantaAlpha 对你的研究有帮助，请引用我们的工作：
 
 ```bibtex
 @misc{han2026quantaalphaevolutionaryframeworkllmdriven,
@@ -349,16 +353,17 @@ If you find QuantaAlpha useful in your research, please cite our work:
 
 ---
 
-## ⭐ Star History
+## ⭐ Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=QuantaAlpha/QuantaAlpha&type=date&legend=top-left)](https://www.star-history.com/#QuantaAlpha/QuantaAlpha&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=QuantaAlpha/QuantaAlpha&type=Date&v=20260209)](https://www.star-history.com/#QuantaAlpha/QuantaAlpha&Date)
 
 ---
 
 <div align="center">
 
-**⭐ If QuantaAlpha helps you, please give us a star!**
+**⭐ 如果 QuantaAlpha 对你有帮助，请给我们一个 Star！**
 
-Made with ❤️ by the QuantaAlpha Team
+由 QuantaAlpha 团队用 ❤️ 打造
+
 
 </div>
